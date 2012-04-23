@@ -25,6 +25,7 @@ Obsoletes: %oname
 Provides: %oname = %version
 
 Requires: nx
+Requires: setxkbmap
 Requires: openssl
 Requires: netcat
 Requires: expect
