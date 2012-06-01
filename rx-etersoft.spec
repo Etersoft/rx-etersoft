@@ -11,7 +11,7 @@ Url: http://wiki.etersoft.ru/RX
 
 Packager: Denis Baranov <baraka@etersoft.ru>
 
-Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/unstable/sources/tarball/%oname-%version.tar.bz2
+Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/unstable/%version/tarball/%oname-%version.tar.bz2
 Source1: %oname.init
 Source2: %oname.outformat
 Source6: sudoers.conf
@@ -41,6 +41,7 @@ Requires: binutils
 %endif
 
 BuildPreReq: rpm-build-intro
+
 BuildRequires: imake xorg-cf-files gccmakedep xauth openssh-server
 
 %description
@@ -135,7 +136,7 @@ fi
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
 %config(noreplace) %_sysconfdir/sysconfig/%oname
-%_sysconfdir/cron.hourly/terminate-suspend-nx.sh
+%_bindir/terminate-suspend-nx
 %_initdir/%oname
 %if %_vendor == "alt"
 %else
