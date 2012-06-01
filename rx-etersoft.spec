@@ -1,8 +1,8 @@
 %define cups_root %_prefix/lib
 %define oname freenx-server
 Name: rx-etersoft
-Version: 1.1.1
-Release: alt13
+Version: 1.1.2
+Release: alt1
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -152,6 +152,20 @@ fi
 %_datadir/%oname/
 
 %changelog
+* Fri Jun 01 2012 Denis Baranov <baraka@altlinux.ru> 1.1.2-alt1
+- add clean old know_host
+- add requires setxkbmap
+- change syscups printername to
+- cosmetology code formating
+- eNABLE_CUPS_SERVER_MODE for ipp + download ppds
+- fix CUPS_SERVER export
+- fixes ps output format errors
+- fix remount printers
+- more logs when printer mount
+- revert "Add message..." - ideology epicfail
+- reverting fast kill of suspend
+- some stderr to /dev/null
+
 * Fri Oct 21 2011 Denis Baranov <baraka@altlinux.ru> 1.1.1-alt13
 - add nx-3.5.0 version in check function (eterbug #7728)
 
