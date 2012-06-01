@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt1
+Release: alt2
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -153,6 +153,9 @@ fi
 %_datadir/%oname/
 
 %changelog
+* Fri Jun 01 2012 Denis Baranov <baraka@altlinux.ru> 1.1.2-alt2
+- fix spec
+
 * Fri Jun 01 2012 Denis Baranov <baraka@altlinux.ru> 1.1.2-alt1
 - add clean old know_host
 - add requires setxkbmap
