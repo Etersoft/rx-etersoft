@@ -273,7 +273,6 @@ ENABLE_SHARE_MULTIMOUNT="0"
 SMB_MOUNT_OPTIONS=""
 NUMLOCKX="numlockx"
 NODE_APP_WAIT_TIMEOUT="5"
-KDE4_ENABLE="1"
 
 ############################################################################
 # OS specific directives
@@ -698,6 +697,9 @@ then
 	fi
 	! mywhich "$COMMAND_MD5SUM" >/dev/null 2>&1 && \
 		ERROR="yes" && echo "Error: Invalid value \"COMMAND_MD5SUM=$COMMAND_MD5SUM\""
+
+	[ -n "$COMMAND_START_KDE4" ] && \
+		ERROR="yes" && echo "Error: use COMMAND_START_KDE instead"
 
 	# Check for expect
 	COMMAND_EXPECT=$(head -n1 $PATH_BIN/nxnode-login | cut -d'!' -f2)
