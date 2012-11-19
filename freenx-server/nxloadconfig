@@ -214,8 +214,6 @@ COMMAND_START_GNOME="gnome-session"
 COMMAND_START_CDE=cdwm
 COMMAND_XTERM=xterm
 COMMAND_XAUTH=/usr/bin/xauth
-COMMAND_SMBMOUNT=smbmount
-COMMAND_SMBUMOUNT=smbumount
 COMMAND_SMBMOUNT_CIFS=/sbin/mount.cifs
 COMMAND_SMBUMOUNT_CIFS=/sbin/umount.cifs
 COMMAND_NETCAT=netcat
@@ -663,18 +661,14 @@ then
 					  && echo "         Users will not be able to request an xterm session."
 	! mywhich "$COMMAND_XAUTH" >/dev/null 2>&1 && \
 		ERROR="yes" && echo "Error: Invalid value \"COMMAND_XAUTH=$COMMAND_XAUTH\""
-	! mywhich "$COMMAND_SMBMOUNT" >/dev/null 2>&1 && \
-		WARNING="yes" && echo "Warning: Invalid value \"COMMAND_SMBMOUNT=$COMMAND_SMBMOUNT\". You'll not be able to use SAMBA. "
 	! mywhich "$COMMAND_SMBMOUNT_CIFS" >/dev/null 2>&1 && \
 		WARNING="yes" && echo "Warning: Invalid value \"COMMAND_SMBMOUNT_CIFS=$COMMAND_SMBMOUNT_CIFS\". You'll not be able to use SAMBA. "
-	mywhich "$COMMAND_SMBMOUNT_CIFS" >/dev/null 2>&1 && \
-		[ $(stat -c %a `mywhich "$COMMAND_SMBMOUNT_CIFS"`) -ne 4711 ] && ( WARNING="yes" ; echo "Warning: Invalid permissions on \"$COMMAND_SMBMOUNT_CIFS\". Valid permissions are \"4711\". You'll not be able to use SAMBA. " )
-	! mywhich "$COMMAND_SMBUMOUNT" >/dev/null 2>&1 && \
-		WARNING="yes" && echo "Warning: Invalid value \"COMMAND_SMBUMOUNT=$COMMAND_SMBUMOUNT\". You'll not be able to use SAMBA."
+	#mywhich "$COMMAND_SMBMOUNT_CIFS" >/dev/null 2>&1 && \
+	#	[ $(stat -c %a `mywhich "$COMMAND_SMBMOUNT_CIFS"`) -ne 4711 ] && ( WARNING="yes" ; echo "Warning: Invalid permissions on \"$COMMAND_SMBMOUNT_CIFS\". Valid permissions are \"4711\". You'll not be able to use SAMBA. " )
 	! mywhich "$COMMAND_SMBUMOUNT_CIFS" >/dev/null 2>&1 && \
 		WARNING="yes" && echo "Warning: Invalid value \"COMMAND_SMBUMOUNT_CIFS=$COMMAND_SMBUMOUNT_CIFS\". You'll not be able to use SAMBA. "
-	mywhich "$COMMAND_SMBUMOUNT_CIFS" >/dev/null 2>&1 && \
-		[ $(stat -c %a `mywhich "$COMMAND_SMBUMOUNT_CIFS"`) -ne 4711 ] && ( WARNING="yes" ; echo "Warning: Invalid permissions on \"$COMMAND_SMBUMOUNT_CIFS\". Valid permission are \"4711\". You'll not be able to use SAMBA. " )
+	#mywhich "$COMMAND_SMBUMOUNT_CIFS" >/dev/null 2>&1 && \
+	#	[ $(stat -c %a `mywhich "$COMMAND_SMBUMOUNT_CIFS"`) -ne 4711 ] && ( WARNING="yes" ; echo "Warning: Invalid permissions on \"$COMMAND_SMBUMOUNT_CIFS\". Valid permission are \"4711\". You'll not be able to use SAMBA. " )
 	! mywhich "$COMMAND_NETCAT" >/dev/null 2>&1 && \
 		ERROR="yes" && echo "Error: Invalid value \"COMMAND_NETCAT=$COMMAND_NETCAT\""
 	! mywhich "$COMMAND_SSH" >/dev/null 2>&1 && \

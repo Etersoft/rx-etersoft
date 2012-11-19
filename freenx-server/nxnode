@@ -1238,15 +1238,14 @@ sudomount_enable()
 {
     # checks available starting mode with sudo of mount/umount.cifs
     ret=1; logstr0="$FUNCNAME ($$):"
-    ostr="$(/usr/bin/sudo -l 2>&1)"; RC=$?
-    [ $RC -ne 0 ] && { nxlog "$logstr0 $ostr" &
-	ret=0; } || {
-	    [ -z "$(echo "$ostr" | grep "$COMMAND_SMBMOUNT" | grep NOPASSWD)" ] && { ret=0
-		nxlog "$logstr0 Mounting with sudo is disabled. To enable, you must to change etc/sudo.d/nxserver or etc/sudoers file." &
-	    }
-	    [ -z "$(echo "$ostr" | grep "$COMMAND_SMBUMOUNT" | grep NOPASSWD)" ] && { ret=0
-		nxlog "$logstr0 Umounting with sudo is disabled. To enable, you must to change etc/sudo.d/nxserver or etc/sudoers file." &
-	    }
+    ostr="$(/usr/bin/sudo $COMMAND_SMBMOUNT -V 2>&1)"; RC=$?
+    [ $RC -ne 0 ] && { ret=0
+        nxlog "$logstr0 Mounting with sudo is disabled due $ostr. To enable, you must to change /etc/sudo.d/nxserver or /etc/sudoers file." &
+    }
+
+    ostr="$(/usr/bin/sudo $COMMAND_SMBUMOUNT -V 2>&1)"; RC=$?
+    [ $RC -ne 0 ] && { ret=0
+        nxlog "$logstr0 Umounting with sudo is disabled due $ostr. To enable, you must to change /etc/sudo.d/nxserver or /etc/sudoers file." &
     }
     echo $ret; return $RC
 }
@@ -1256,10 +1255,10 @@ try_mount_smb()
     # params: sharename(1), mountpoint(2), smb-username(3), port(4),
     # ex-options/uid,gid/(5), smb-password(6)
     RC=1; nxlog "$FUNCNAME ($$): Starting: TRY_USER=$TRY_USER, TRY_SUDO=$TRY_SUDO" &
-    [ -n "$SMB_MOUNT_OPTIONS" -a "${SMB_MOUNT_OPTIONS:0:1}" != "," ] && SMB_MOUNT_OPTIONS=",$SMB_MOUNT_OPTIONS"
-    SMB_OPTS="username=$3,"
-    [ -n "$6" ] && SMB_OPTS="$SMB_OPTS""password=$6," || SMB_OPTS="$SMB_OPTS""password=,"
-    SMB_OPTS="$SMB_OPTS""ip=127.0.0.1,port=$4$SMB_MOUNT_OPTIONS"
+    [ -n "$SMB_MOUNT_OPTIONS" -a "${SMB_MOUNT_OPTIONS:0:1}" != "," ] && SMB_MOUNT_OPTIONS=",$SMB_MOUNT_OPTIONS,"
+    SMB_OPTS="ip=127.0.0.1,port=$4$SMB_MOUNT_OPTIONS"
+    SMB_OPTS="$SMB_OPTS""username=$3,"
+    [ -n "$6" ] && SMB_OPTS="$SMB_OPTS""password=$6" || SMB_OPTS="$SMB_OPTS""password="
     [ $TRY_USER -ne 0 ] && {
 	MNTSTR="$COMMAND_SMBMOUNT $1 $2 -o $SMB_OPTS"
 	nxlog "$FUNCNAME ($$): invoke $MNTSTR 2>&1" &
