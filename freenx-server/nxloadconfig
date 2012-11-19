@@ -202,11 +202,15 @@ DEFAULT_X_WM=""
 KILL_DEFAULT_X_WM="1"
 BOOTSTRAP_X_SESSION="0"
 USER_X_STARTUP_SCRIPT=.Xclients
-DEFAULT_X_SESSION=/etc/X11/xdm/Xsession
+DEFAULT_X_SESSION=/etc/X11/Xsession
+if [ ! -r "$DEFAULT_X_SESSION" ] ; then
+	DEFAULT_X_SESSION=/etc/X11/xdm/Xsession
+fi
+
 COMMAND_GDM_X_SESSION="/etc/X11/gdm/Xsession custom"
 if [ ! -x "$COMMAND_GDM_X_SESSION" ]
 then
-	COMMAND_GDM_X_SESSION="/etc/X11/Xsession"
+	COMMAND_GDM_X_SESSION=$DEFAULT_X_SESSION
 fi
 COMMAND_START_KDE="startkde"
 COMMAND_START_KDE4="startkde4"
@@ -685,7 +689,7 @@ then
 		ERROR="yes" && echo "Error: Invalid value \"COMMAND_MD5SUM=$COMMAND_MD5SUM\""
 
 	[ -n "$COMMAND_START_KDE4" ] && \
-		ERROR="yes" && echo "Error: use COMMAND_START_KDE instead"
+		ERROR="yes" && echo "Error: use COMMAND_START_KDE instead COMMAND_START_KDE4"
 
 	# Check for expect
 	COMMAND_EXPECT=$(head -n1 $PATH_BIN/nxnode-login | cut -d'!' -f2)
