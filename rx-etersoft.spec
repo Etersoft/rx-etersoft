@@ -55,16 +55,16 @@ of the nxserver component.
 %setup -n %oname-%version
 # wrong install path
 %__subst "s|/usr/lib|%_libdir|g" nxredir/Makefile
-%__subst "s|%_libdir/cups|%cups_root/cups|g" Makefile
+%__subst "s|/usr/lib/cups|%cups_root/cups|g" Makefile
 # install use nxloadconfig
 %__subst "s|/usr/lib|%_libdir|g" nxloadconfig
-%__subst "s|%_libdir/cups|%cups_root/cups|g" nxloadconfig
+%__subst "s|/usr/lib/cups|%cups_root/cups|g" nxloadconfig
 %__subst "s|\$NX_DIR/lib|%_libdir|g" nxloadconfig
 # nxredir nxsmb
 %__subst "s|/usr/lib|%_libdir|g" nxredir/nxredir
 %__subst "s|/usr/lib|%_libdir|g" nxredir/nxsmb
 %__subst "s|/usr/lib|%_libdir|g" %SOURCE10
-%__subst "s|%_libdir/cups|%cups_root/cups|g" nxredir/nxsmb
+%__subst "s|/usr/lib/cups|%cups_root/cups|g" nxredir/nxsmb
 
 %build
 %make_build
