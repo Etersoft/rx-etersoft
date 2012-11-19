@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt2
+Release: alt3
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -149,6 +149,18 @@ fi
 %_datadir/%oname/
 
 %changelog
+* Mon Nov 19 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt3
+- remove detect NX_BACKEND_VERSION - drop using strings command and drop binutils requires
+- sudoers.conf: use NXUSERS var instead USERS
+- add detect for COMMAND_SMBUMOUNT_CIFS, fix checking
+- remove COMMAND_SMBMOUNT/SMBUMOUNT
+- rewrite sudomount_enable checking
+- move passwd arg to the end of the cmdline
+- remove KDE4_ENABLE and COMMAND_START_KDE4 support
+- add detect for COMMAND_START_GNOME
+- set startxfce4 as default for all COMMAND_START
+- add requires setxkbmap
+
 * Fri Jun 01 2012 Denis Baranov <baraka@altlinux.ru> 1.1.2-alt2
 - fix spec
 
