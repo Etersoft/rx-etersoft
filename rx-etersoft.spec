@@ -29,15 +29,11 @@ Requires: setxkbmap
 Requires: openssl
 Requires: netcat
 Requires: expect
-Requires: foomatic-db-engine
 Requires: zenity
+Requires: foomatic-db-engine
+
 %if %_vendor == "alt"
 Requires: dbus-tools-gui
-# FIXME: it needs for strings command, need to be removed
-Requires: binutils
-#Requires: Xdialog
-# FIXME: for which purposes?
-#Requires: /usr/bin/xvt
 %endif
 
 BuildPreReq: rpm-build-intro
