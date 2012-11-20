@@ -213,15 +213,16 @@ if [ ! -x "$COMMAND_GDM_X_SESSION" ]
 then
 	COMMAND_GDM_X_SESSION=$DEFAULT_X_SESSION
 fi
-COMMAND_START_KDE="startkde"
-COMMAND_START_KDE4="startkde4"
-COMMAND_START_GNOME="gnome-session"
-COMMAND_START_CDE=cdwm
+
+COMMAND_START_KDE="`which startkde4 2>/dev/null || env PATH=/usr/lib/kde4/bin:/usr/lib64/kde4/bin:$PATH which startkde 2>/dev/null || which startxfce4 2>/dev/null`"
+COMMAND_START_GNOME="`which gnome-session 2>/dev/null || which startgnome2 2>/dev/null || which startxfce4 2>/dev/null`"
+COMMAND_START_CDE="`which cdwm 2>/dev/null || which startxfce4 2>/dev/null`"
+
 COMMAND_XTERM=xterm
 COMMAND_XAUTH=/usr/bin/xauth
 COMMAND_SMBMOUNT_CIFS=/sbin/mount.cifs
-COMMAND_SMBUMOUNT_CIFS=/sbin/umount.cifs
-COMMAND_NETCAT=netcat
+COMMAND_SMBUMOUNT_CIFS="`which /sbin/umount.cifs 2>/dev/null || which umount`"
+COMMAND_NETCAT="`which netcat 2>/dev/null || which nc`"
 COMMAND_SSH=ssh
 COMMAND_SSH_KEYGEN=ssh-keygen
 COMMAND_CUPSD=/usr/sbin/cupsd
