@@ -130,12 +130,31 @@ fi
 %config(noreplace) %_sysconfdir/sysconfig/%oname
 %_bindir/terminate-suspend-nx
 %_initdir/%oname
-%if %_vendor == "alt"
-%else
+%if %_vendor != "alt"
 %_initdir/%oname.outformat
 %endif
+
+%_bindir/nx-session-launcher
 %attr(4711,nx,root) %_bindir/nx-session-launcher-suid
-%_bindir/nx*
+%_bindir/nxacl.app
+%_bindir/nxacl.sample
+%_bindir/nxcheckload.sample
+%_bindir/nxcups-gethost
+%_bindir/nxdesktop_helper
+%_bindir/nxdialog
+%_bindir/nxkeygen
+%_bindir/nxloadconfig
+%_bindir/nxnode
+%_bindir/nxnode-login
+%_bindir/nxpasswd
+%_bindir/nxprint
+%_bindir/nxredir
+%_bindir/nxserver
+%_bindir/nxserver-helper
+%_bindir/nxserver-suid
+%_bindir/nxserver-usermode
+%_bindir/nxsetup
+%_bindir/nxviewer_helper
 %_bindir/rxsetup
 %dir %_libdir/%oname/
 %attr(755,root,root) %_libdir/%oname/libnxredir.so.0
