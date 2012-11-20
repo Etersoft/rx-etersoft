@@ -1114,8 +1114,8 @@ EOF
 
 	touch "$USER_FAKE_HOME/.nx/C-$sess_id/cups/printers.conf" "$USER_FAKE_HOME/.nx/C-$sess_id/cups/classes.conf"
 
-	#JJK: Also copy over pstoraster.convs
-	cp -af "$CUPS_ETC"/mime.* "$CUPS_ETC"/pstoraster.convs "$USER_FAKE_HOME/.nx/C-$sess_id/cups/"
+	#JJK: Also copy over pstoraster.convs, LAV: Also copy gstoraster.convs
+	cp -af "$CUPS_ETC"/mime.* "$CUPS_ETC"/pstoraster.convs "$CUPS_ETC"/gstoraster.convs "$USER_FAKE_HOME/.nx/C-$sess_id/cups/"
 
 	# start cupsd
 #JJK: Note the directive PidFile in the original cupsd.conf intended for

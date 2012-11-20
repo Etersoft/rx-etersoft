@@ -16,7 +16,6 @@ Source1: %oname.init
 Source2: %oname.outformat
 Source6: sudoers.conf
 Source8: terminate-suspend-nx.sh
-Source10: 99-altlinux.conf
 
 Obsoletes: freenx
 Provides: freenx = %version
@@ -59,7 +58,6 @@ of the nxserver component.
 # nxredir nxsmb
 %__subst "s|/usr/lib|%_libdir|g" nxredir/nxredir
 %__subst "s|/usr/lib|%_libdir|g" nxredir/nxsmb
-%__subst "s|/usr/lib|%_libdir|g" %SOURCE10
 %__subst "s|/usr/lib/cups|%cups_root/cups|g" nxredir/nxsmb
 
 %build
@@ -89,9 +87,7 @@ install -Dp -m644 node.conf %buildroot%_sysconfdir/nxserver/node.conf
 install -m644 conf/conf.d/*.conf %buildroot%_datadir/%oname/node.conf.d
 install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d
 install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls
-%if %_vendor == "alt"
-install -m644 %SOURCE10 %buildroot%_sysconfdir/nxserver/node.conf.d/
-%else
+%if %_vendor != "alt"
 install -m755 %SOURCE2 %buildroot%_initdir/
 %endif
 
