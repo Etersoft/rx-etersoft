@@ -771,10 +771,6 @@ do
 		hello*|HELLO*)
 			PROTO=$(echo $CMD | sed 's/.*Version \(.*\)/\1/g')
 			echo_x "NX> 134 Accepted protocol: $PROTO"
-			if [ "$PROTO" = "1.3.0" -o "$PROTO" = "1.3.2" ]
-			then
-				[ "$ENABLE_AUTORECONNECT_BEFORE_140" = "1" ] && ENABLE_AUTORECONNECT="1"
-			fi
 		;;
 		"set auth_mode*"|"SET AUTH_MODE*")
 			if [ "$CMD" = "set auth_mode password" -o "$CMD" = "SET AUTH_MODE PASSWORD" ]
