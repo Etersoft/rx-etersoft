@@ -2124,6 +2124,9 @@ cmd_node_smbmount()
 	share=$(norm_param $share)
 	dir=$(norm_param $dir)
 	computername=$(norm_param $computername)
+	
+	# http://bugs.etersoft.ru/show_bug.cgi?id=8841
+	computername=127.0.0.1
 
 	[ -n "$(echo "$dir" | grep MyShares)" ] && dir="$HOME/$dir"
 
