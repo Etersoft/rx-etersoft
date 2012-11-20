@@ -20,20 +20,6 @@
 # Read the config file
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --userconf
 
-#JJK: Added	following 'if' stanza as a kluge since the following variables
-#JJK: need to be set in cmd_node_smbmount node_umount_smb
-#JJK: but they are currently set only in startsession which is called
-#JJK: separately from nxserver via ssh so environment variables
-#JJK: aren't preserved.
-if [[ "$SAMBA_MOUNT_SHARE_PROTOCOL" = "cifs" || \
-	 ( "$SAMBA_MOUNT_SHARE_PROTOCOL" = "both" && \
-	  `which "$COMMAND_SMBMOUNT_CIFS"` && `which "$COMMAND_SMBUMOUNT_CIFS"` ) \
-			]] > /dev/null 2>&1; then
-	COMMAND_SMBMOUNT=$COMMAND_SMBMOUNT_CIFS
-	COMMAND_SMBUMOUNT=$COMMAND_SMBUMOUNT_CIFS
-	SAMBA_MOUNT_SHARE_PROTOCOL="cifs"
-fi
-
 #
 # -----------------------------------------------------------------------------
 # Startup of nxnode
@@ -230,7 +216,7 @@ check_remote_printer()
     PATH_LIB="/usr/lib/freenx-server" # this is correct on all systems?
     NXREDIR_LIBRARY="$PATH_LIB/libnxredir.so.0"
     [ -n "$5" ] && upass="$4%$5" || upass="$4 -N"
-    [ "$SAMBA_MOUNT_SHARE_PROTOCOL" = "cifs" ] && dport=445 || dport=139
+    dport=445 # cifs
     CMDSTR="/usr/bin/rpcclient -U $upass -c 'openprinter $2' -p $dport -I 127.0.0.1 127.0.0.1 2>&1"
     nxlog "$FUNCNAME ($$): invoke command \"$CMDSTR\"" &
     res=""; numa="0"; ret="0"
@@ -1214,22 +1200,22 @@ usermount_enable()
 {
     # check if available starting mode of mount/umount.cifs
     ret=1; logstr0="$FUNCNAME ($$):"
-    ostr="$(stat -c %a "$COMMAND_SMBMOUNT" 2>&1)"; RC=$?
+    ostr="$(stat -c %a "$COMMAND_SMBMOUNT_CIFS" 2>&1)"; RC=$?
     [ $RC -ne 0 ] && { nxlog "$logstr0 $ostr" &
 	ret="0"; }
     [ "$ret" != "0" -a "$ostr" != "4711" ] && { ret="0"
-	nxlog "$logstr0 Permissions of  $COMMAND_SMBMOUNT ($ostr) != 4711. mounting in user-mode is disabled." &
+	nxlog "$logstr0 Permissions of  $COMMAND_SMBMOUNT_CIFS ($ostr) != 4711. mounting in user-mode is disabled." &
     }
     [ "$ret" != "0" -a $RC -eq 0 ] && {
-	ostr="$($COMMAND_SMBMOUNT 2>&1)"
+	ostr="$($COMMAND_SMBMOUNT_CIFS 2>&1)"
 	[ -n "$(echo "$ostr" | grep "setuid root program disabled")" ] && { nxlog "$logstr0 $ostr" &
 	    ret="0"; }
     }
-    ostr="$(stat -c %a "$COMMAND_SMBUMOUNT" 2>&1)"; RC2=$?
+    ostr="$(stat -c %a "$COMMAND_SMBUMOUNT_CIFS" 2>&1)"; RC2=$?
     [ $RC2 -ne 0 ] && { nxlog "$logstr0 $ostr" &
 	ret="0"; RC=$RC2; }
     [ "$ret" != "0" -a "$ostr" != "4711" ] && { ret=0
-	nxlog "$logstr0 Permissions of  $COMMAND_SMBUMOUNT ($ostr) != 4711. umounting in user-mode is disabled." &
+	nxlog "$logstr0 Permissions of  $COMMAND_SMBUMOUNT_CIFS ($ostr) != 4711. umounting in user-mode is disabled." &
     }
     echo $ret; return $RC
 }
@@ -1238,12 +1224,12 @@ sudomount_enable()
 {
     # checks available starting mode with sudo of mount/umount.cifs
     ret=1; logstr0="$FUNCNAME ($$):"
-    ostr="$(/usr/bin/sudo $COMMAND_SMBMOUNT -V 2>&1)"; RC=$?
+    ostr="$(/usr/bin/sudo $COMMAND_SMBMOUNT_CIFS -V 2>&1)"; RC=$?
     [ $RC -ne 0 ] && { ret=0
         nxlog "$logstr0 Mounting with sudo is disabled due $ostr. To enable, you must to change /etc/sudo.d/nxserver or /etc/sudoers file." &
     }
 
-    ostr="$(/usr/bin/sudo $COMMAND_SMBUMOUNT -V 2>&1)"; RC=$?
+    ostr="$(/usr/bin/sudo $COMMAND_SMBUMOUNT_CIFS -V 2>&1)"; RC=$?
     [ $RC -ne 0 ] && { ret=0
         nxlog "$logstr0 Umounting with sudo is disabled due $ostr. To enable, you must to change /etc/sudo.d/nxserver or /etc/sudoers file." &
     }
@@ -1260,13 +1246,13 @@ try_mount_smb()
     SMB_OPTS="$SMB_OPTS""username=$3,"
     [ -n "$6" ] && SMB_OPTS="$SMB_OPTS""password=$6" || SMB_OPTS="$SMB_OPTS""password="
     [ $TRY_USER -ne 0 ] && {
-	MNTSTR="$COMMAND_SMBMOUNT $1 $2 -o $SMB_OPTS"
+	MNTSTR="$COMMAND_SMBMOUNT_CIFS $1 $2 -o $SMB_OPTS"
 	nxlog "$FUNCNAME ($$): invoke $MNTSTR 2>&1" &
 	error="$($MNTSTR 2>&1)"; RC=$?
 	[ $RC -ne 0 ] && nxlog "$FUNCNAME ($$): Mount error: \"$error\"" &
     }
     [ $TRY_SUDO -ne 0 -a $RC -ne 0 ] && {
-	MNTSTR="/usr/bin/sudo $COMMAND_SMBMOUNT $1 $2 -o $5$SMB_OPTS"
+	MNTSTR="/usr/bin/sudo $COMMAND_SMBMOUNT_CIFS $1 $2 -o $5$SMB_OPTS"
     	nxlog "$FUNCNAME ($$): invoke $MNTSTR 2>&1" &
 	error="$($MNTSTR 2>&1)"; RC=$?
 	[ $RC -ne 0 ] && nxlog "$FUNCNAME ($$): Mount error: \"$error\"" &
@@ -1287,13 +1273,13 @@ try_umount_smb()
 	    RC=1; (( cn++ ))
 	    [ $TRY_USER -ne 0 ] && {
 		logstr2="$logstr1"" umount attempt #$cn \"$1\" in user-mode"
-		ostr="$($COMMAND_SMBUMOUNT $FFL "$1" 2>&1)"; RC=$?
+		ostr="$($COMMAND_SMBUMOUNT_CIFS $FFL "$1" 2>&1)"; RC=$?
 		[ $RC -eq 0 ] && { nxlog "$logstr2 completed succesfully." &
 		    break; } || nxlog "$logstr2 FAILED. Error: \"$ostr\"" &
 	    }
 	    [ $TRY_SUDO -ne 0 -a $RC -ne 0 ] && {
 		logstr2="$logstr1"" umount attempt #$cn \"$1\" with sudo"
-		ostr="$(/usr/bin/sudo $COMMAND_SMBUMOUNT $FFL "$1" 2>&1)"; RC=$?
+		ostr="$(/usr/bin/sudo $COMMAND_SMBUMOUNT_CIFS $FFL "$1" 2>&1)"; RC=$?
 		[ $RC -eq 0 ] && { nxlog "$logstr2 completed succesfully." &
 		    break; } || nxlog "$logstr2 FAILED. Error: \"$ostr\"" &
 	    }
@@ -1314,7 +1300,6 @@ node_umount_smb()
 
     TRY_USER=1; TRY_SUDO=0;
     [ "$smbport" = "445" ] && {
-	COMMAND_SMBMOUNT=$COMMAND_SMBMOUNT_CIFS; COMMAND_SMBUMOUNT=$COMMAND_SMBUMOUNT_CIFS
 	TRY_USER=$(usermount_enable)
 	TRY_SUDO=$(sudomount_enable)
 	[ $TRY_USER -eq 0 -a $TRY_SUDO -eq 0 ] && { nxlog "$FUNCNAME ($$): Any methods of (u)mounting are not available. Stop umounting." &
@@ -1794,40 +1779,7 @@ startsession()
 
 	if [ "$samba" = "1" ]
 	then
-		# We know from protocol traces that client=linux,winnt,macosx are valid values.
-		# I hope with smbclientproto=smb on default and smbclientproto=cifs on all valid
-		# values we get support for all those systems.
-
-		smbproto="$SAMBA_MOUNT_SHARE_PROTOCOL"
-
-		if [ "$smbproto" = "both" ]
-		then
-			smbproto="smbfs"
-
-			[ "$client" = "linux" ] && smbproto="cifs"
-			[ "$client" = "winnt" ] && smbproto="cifs"
-			[ "$client" = "macosx" ] && smbproto="cifs"
-
-			# FIXME: This is a rather wild guess
-			[ "$client" = "win9x" ] && smbproto="smbfs"
-		fi
-
-		if [ "$smbproto" = "cifs" ]
-		then
-			smbport=445
-			COMMAND_SMBMOUNT=$COMMAND_SMBMOUNT_CIFS
-			COMMAND_SMBUMOUNT=$COMMAND_SMBUMOUNT_CIFS
-		elif [ "$smbproto" = "none" ] # none
-		then
-			# we set this to true so that the
-			# SMB mount does not give an error message.
-
-			COMMAND_SMBMOUNT=/bin/true
-			COMMAND_SMBUMOUNT=/bin/true
-			smbport=139    #JJK: still may want to do printer sharing...
-		else # smbfs
-			smbport=139
-		fi
+		smbport=445 # cifs
 	fi
 	
 	# FreeNX specific variables
@@ -2138,18 +2090,15 @@ cmd_node_smbmount()
 	    return 1; }
 	
 	smbport=""; smbport=$(cat "$sess_dir/scripts/smbport" 2>/dev/null)
-	IDS_OPTS="uid=$USER,gid=$EGROUP,"; TRY_USER=1; TRY_SUDO=0;
-	# this function run dedicated. We must define smbproto and COMMAND_SMBMOUNT here, not in startsession.
-	if [ "$smbport" = "445" ] ; then
-	    COMMAND_SMBMOUNT=$COMMAND_SMBMOUNT_CIFS; COMMAND_SMBUMOUNT=$COMMAND_SMBUMOUNT_CIFS
+	IDS_OPTS="uid=$USER,gid=$EGROUP,";
+
+	if [ "$smbport" = "445" ] ; then # cifs
 	    TRY_USER=$(usermount_enable)
 	    TRY_SUDO=$(sudomount_enable)
 	    [ $TRY_USER -eq 0 -a $TRY_SUDO -eq 0 ] && { nxlog "$FUNCNAME ($$): Any methods of (u)mounting are not available. Stop mounting." &
 		return 1; }
 	elif [ "x$smbport" = "x" ] ; then
-	    COMMAND_SMBMOUNT=/bin/true
-	else # smbfs
-	    smbport=139
+	    COMMAND_SMBMOUNT_CIFS=/bin/true
 	fi
 	
 	#do not mount twice
