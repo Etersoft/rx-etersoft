@@ -54,7 +54,7 @@ start_freenx_server()
 check_expect()
 {
 	EXPECT=`which expect 2>/dev/null`
-	[-n "$EXPECT" ] || echo "Error: please install expect"
+	[ -n "$EXPECT" ] || echo "Error: please install expect"
 }
 
 clean_freenx()
