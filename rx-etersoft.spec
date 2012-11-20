@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt3
+Release: alt4
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -164,6 +164,14 @@ fi
 %_datadir/%oname/
 
 %changelog
+* Tue Nov 20 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt4
+- add autodetect CUPS_ETC and remove 99-altlinux.conf
+- drop using ENABLE_AUTORECONNECT_BEFORE_140, ENABLE_1_5_0_BACKEND
+- remove SAMBA_MOUNT_SHARE_PROTOCOL, COMMAND_SMBMOUNT/COMMAND_SMBUMOUNT using
+- node: always use //127.0.0.1 for remote share (eterbug #8841)
+- use autodetect for DEFAULT_X_SESSION
+- move autodetect to nxloadconfig, remove unneeded params from config
+
 * Mon Nov 19 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt3
 - remove detect NX_BACKEND_VERSION - drop using strings command and drop binutils requires
 - sudoers.conf: use NXUSERS var instead USERS
