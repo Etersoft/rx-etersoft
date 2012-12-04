@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt4
+Release: alt5
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -164,6 +164,9 @@ fi
 %_datadir/%oname/
 
 %changelog
+* Tue Dec 04 2012 Denis Baranov <baraka@altlinux.ru> 1.1.2-alt5
+- kill wineserver on terminate from session
+
 * Tue Nov 20 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt4
 - add autodetect CUPS_ETC and remove 99-altlinux.conf
 - drop using ENABLE_AUTORECONNECT_BEFORE_140, ENABLE_1_5_0_BACKEND
