@@ -635,6 +635,9 @@ node_start_applications()
 		nxlog "$FUNCNAME ($$): Call 'node_terminate_agent \"$sess_id\"'" &
 		node_terminate_agent "$sess_id"
 	fi
+	# Kill wineserver
+	nxlog "Kill wineserver" &
+	killall wineserver 2>/dev/null
 	nxlog "$FUNCNAME ($$): end" &
 }
 
