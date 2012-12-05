@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt6
+Release: alt7
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -158,6 +158,13 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Dec 06 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt7
+- cleanup spec, update and fix requires, remove fonts dir linking code (eterbug #7265)
+- move /etc/init.d/freenx-server.outformat to /usr/share/misc (eterbug #8381)
+- nxsmb: run nxredir instead duplicated code, use nxloadconfig for get PATH_LIB
+- rename /etc/sysconfig/freenx-server to /etc/sysconfig/rx-etersoft
+- rename _libdir/freenx-server to _libdir/rx-etersoft
+
 * Wed Dec 05 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt6
 - move terminate-suspend-nx.sh to /usr/sbin/nx-terminate-suspend
 - remove obsoleted files (from /usr/share/freenx-server too)
