@@ -15,7 +15,7 @@ clean:
 
 ifneq ($(NX_VERSION),)
 install: all
-	install -m755 $(LIBNAME).$(VERSION) $(DESTDIR)/$$PATH_LIB/freenx-server/
+	install -m755 $(LIBNAME).$(VERSION) $(DESTDIR)/$$PATH_LIB/rx-etersoft/
 	install -m755 nxredir $(DESTDIR)/$$PATH_BIN/
 	install -m755 nxsmb $(DESTDIR)/$$CUPS_BACKEND/
 	perl -pi -e "s,PATH_LIB=.*,PATH_LIB=\"$$PATH_LIB\",g" $(DESTDIR)/$$PATH_BIN/nxredir
@@ -23,9 +23,8 @@ install: all
 	perl -pi -e "s,CUPS_BACKEND=.*,CUPS_BACKEND=\"$$CUPS_BACKEND\",g" $(DESTDIR)/$$CUPS_BACKEND/nxsmb
 else
 install: all
-	install -m755 $(LIBNAME).$(VERSION) $(DESTDIR)/usr/lib/freenx-server/
-	install -m755 nxredir $(DESTDIR)/usr/bin
-	install -m755 nxsmb $(DESTDIR)/usr/lib/cups/backend/
+	echo "run only under global makefile"
+	exit 1
 endif
 
 .PHONY: clean install

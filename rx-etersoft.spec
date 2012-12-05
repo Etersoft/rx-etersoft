@@ -151,8 +151,8 @@ fi
 %_bindir/nxsetup
 %_bindir/nxviewer_helper
 %_bindir/rxsetup
-%dir %_libdir/%oname/
-%attr(755,root,root) %_libdir/%oname/libnxredir.so.0
+%dir %_libdir/%name/
+%attr(755,root,root) %_libdir/%name/libnxredir.so.0
 %cups_root/cups/backend/nx*
 %attr(2750,nx,nx) %_var/lib/nxserver/home/
 %attr(2750,root,nx) %_var/lib/nxserver/db/
