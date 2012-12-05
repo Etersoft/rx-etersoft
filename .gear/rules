@@ -1,5 +1,5 @@
 copy: *.init
 copy: *.outformat
 copy: *.conf
-copy: *.sh
-tar.bz2: freenx-server
+copy: nx-terminate-suspend
+tar: freenx-server

@@ -11,11 +11,11 @@ Url: http://wiki.etersoft.ru/RX
 
 Packager: Denis Baranov <baraka@etersoft.ru>
 
-Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/unstable/%version/tarball/%oname-%version.tar.bz2
+Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/unstable/%version/tarball/%oname-%version.tar
 Source1: %oname.init
 Source2: %oname.outformat
 Source6: sudoers.conf
-Source8: terminate-suspend-nx.sh
+Source8: nx-terminate-suspend
 
 Obsoletes: freenx
 Provides: freenx = %version
@@ -70,11 +70,8 @@ mkdir -p %buildroot%_var/lib/nxserver/home/
 mkdir -p %buildroot%_var/lib/nxserver/db/
 mkdir -p %buildroot%_sysconfdir/nxserver/node.conf.d/
 mkdir -p %buildroot%_sysconfdir/nxserver/acls/
-mkdir -p %buildroot%_datadir/%oname/node.conf.d/
 mkdir -p %buildroot%_sysconfdir/sysconfig/
 
-
-echo "# See /etc/nxserver/node.conf.d/*.conf" > node.conf
 
 install -m755 rxsetup %buildroot%_bindir/
 install -Dp -m755 %SOURCE1 %buildroot%_initdir/%oname
@@ -82,16 +79,15 @@ install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/nxserver/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/nxserver/Xsession
 install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/nxserver/Xkbmap
 install -Dp -m400 %SOURCE6 %buildroot%_sysconfdir/sudoers.d/nxserver
-install -Dp -m700 %SOURCE8 %buildroot%_bindir/terminate-suspend-nx
-install -Dp -m644 node.conf %buildroot%_sysconfdir/nxserver/node.conf
-install -m644 conf/conf.d/*.conf %buildroot%_datadir/%oname/node.conf.d
-install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d
+install -Dp -m700 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
+install -Dp -m644 conf/node.conf %buildroot%_sysconfdir/nxserver/node.conf
+install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
 install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls
 %if %_vendor != "alt"
 install -m755 %SOURCE2 %buildroot%_initdir/
 %endif
 
-install -Dp -m644 data/logrotate %buildroot%_sysconfdir/logrotate.d/freenx-server
+install -Dp -m644 data/logrotate %buildroot%_sysconfdir/logrotate.d/%name
 install -Dp -m644 nx-session-launcher/ConsoleKit-NX.conf %buildroot%_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 mv nx-session-launcher/README nx-session-launcher/README.suid
 
@@ -113,22 +109,21 @@ then
 fi
 
 %files
-%doc AUTHORS ChangeLog CONTRIB nxcheckload.sample node.conf.sample nx-session-launcher/README.suid
+%doc AUTHORS ChangeLog CONTRIB nx-session-launcher/README.suid
 %dir %_sysconfdir/nxserver/
 %dir %_sysconfdir/nxserver/node.conf.d/
 %dir %_sysconfdir/nxserver/acls/
 %config(noreplace) %_sysconfdir/nxserver/node.conf
 %config(noreplace) %_sysconfdir/nxserver/node.conf.d/*
 %config(noreplace) %_sysconfdir/nxserver/acls/*
-%_sysconfdir/nxserver/node.conf.sample
-%config(noreplace) %_sysconfdir/logrotate.d/freenx-server
+%config(noreplace) %_sysconfdir/logrotate.d/%name
 %attr(0400,root,root) %config %_sysconfdir/sudoers.d/nxserver
 %config(noreplace) %_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
 %config(noreplace) %_sysconfdir/sysconfig/%oname
-%_bindir/terminate-suspend-nx
+%_sbindir/nx-terminate-suspend
 %_initdir/%oname
 %if %_vendor != "alt"
 %_initdir/%oname.outformat
@@ -138,7 +133,7 @@ fi
 %attr(4711,nx,root) %_bindir/nx-session-launcher-suid
 %_bindir/nxacl.app
 %_bindir/nxacl.sample
-%_bindir/nxcheckload.sample
+%_bindir/nxcheckload
 %_bindir/nxcups-gethost
 %_bindir/nxdesktop_helper
 %_bindir/nxdialog
@@ -161,7 +156,6 @@ fi
 %cups_root/cups/backend/nx*
 %attr(2750,nx,nx) %_var/lib/nxserver/home/
 %attr(2750,root,nx) %_var/lib/nxserver/db/
-%_datadir/%oname/
 
 %changelog
 * Tue Dec 04 2012 Denis Baranov <baraka@altlinux.ru> 1.1.2-alt5

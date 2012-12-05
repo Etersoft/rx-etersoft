@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/bin/sh
 
 [ -e /etc/sysconfig/freenx-server ] && . /etc/sysconfig/freenx-server
 
