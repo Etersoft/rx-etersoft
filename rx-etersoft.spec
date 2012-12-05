@@ -61,6 +61,7 @@ mkdir -p %buildroot%_var/lib/nxserver/db/
 mkdir -p %buildroot%_sysconfdir/nxserver/node.conf.d/
 mkdir -p %buildroot%_sysconfdir/nxserver/acls/
 mkdir -p %buildroot%_sysconfdir/sysconfig/
+mkdir -p %buildroot%_datadir/misc/
 
 
 install -m755 rxsetup %buildroot%_bindir/
@@ -73,8 +74,9 @@ install -Dp -m700 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
 install -Dp -m644 conf/node.conf %buildroot%_sysconfdir/nxserver/node.conf
 install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
 install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls
+
 %if %_vendor != "alt"
-install -m755 %SOURCE2 %buildroot%_initdir/
+install -m755 %SOURCE2 %buildroot%_datadir/misc/
 %endif
 
 install -Dp -m644 data/logrotate %buildroot%_sysconfdir/logrotate.d/%name
@@ -120,7 +122,7 @@ fi
 %_sbindir/nx-terminate-suspend
 %_initdir/%oname
 %if %_vendor != "alt"
-%_initdir/%oname.outformat
+%_datadir/misc/%oname.outformat
 %endif
 
 %_bindir/nx-session-launcher

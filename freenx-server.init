@@ -15,13 +15,13 @@
 ### END INIT INFO
 
 # Read the config file
-
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --
+
 SERVNAME=`basename $0`
 AUTH_NAME=$NX_HOME_DIR/.ssh/$SSH_AUTHORIZED_KEYS
 LOCKFILE=/var/lock/$SERVNAME
 OUTFORMAT=/etc/init.d/outformat
-[ -x $OUTFORMAT ] || OUTFORMAT=/etc/init.d/$SERVNAME.outformat
+[ -x $OUTFORMAT ] || OUTFORMAT=/usr/share/misc/$SERVNAME.outformat
 if which tput >/dev/null && test -x $OUTFORMAT ; then
         . $OUTFORMAT
 else
