@@ -8,8 +8,9 @@
 
 # turn on DEBUG?
 #set -x -v
-CUPS_BACKEND="/usr/lib/cups/backend"
-PATH_LIB="/usr/lib"
+
+# Read the config file
+. $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --
 
 NXREDIR_LIBRARY="$PATH_LIB/rx-etersoft/libnxredir.so.0"
 COMMAND_SMB="$CUPS_BACKEND/smb"
@@ -24,25 +25,10 @@ then
 	exec "$COMMAND_SMB" "$@"
 fi
 
-if [ ! -x "$NXREDIR_LIBRARY" ]
-then
-	# repair DEVICE_URI
-	DEVICE_URI=$(echo $DEVICE_URI | sed "s|/$PROTOCOL||g")
-	echo "Error: Not using nxredir library. $NXREDIR_LIBRARY could not be found or is not executable."
-	exec "$COMMAND_SMB" "$@"
-fi
-
-if [ "$PROTOCOL" = "cifs" -o "$PROTOCOL" = "CIFS" ]
-then
-	REAL_PORT="445"
-else
-	REAL_PORT="139"
-fi
-
+REAL_PORT="445" # CIFS
 DEVICE_URI=$(echo $DEVICE_URI | sed "s|:$PORT/$PROTOCOL/|:$REAL_PORT/|g")
 export DEVICE_URI=$(echo $DEVICE_URI | sed "s|nxsmb://|smb://|g")
 
 export NXSAMBA_PORT="$PORT"
-export LD_PRELOAD="$NXREDIR_LIBRARY${LD_PRELOAD:+:$LD_PRELOAD}"
 
-exec "$COMMAND_SMB" "$@"
+exec $PATH_BIN/nxredir "$COMMAND_SMB" "$@"

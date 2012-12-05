@@ -1,6 +1,7 @@
 #!/bin/sh
 
-PATH_LIB="/usr/lib"
+# Read the config file
+. $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --
 
 NXREDIR_LIBRARY="$PATH_LIB/rx-etersoft/libnxredir.so.0"
 
