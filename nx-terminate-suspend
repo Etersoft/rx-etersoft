@@ -1,10 +1,12 @@
 #!/bin/sh
 
-[ -e /etc/sysconfig/freenx-server ] && . /etc/sysconfig/freenx-server
+[ -e /etc/sysconfig/rx-etersoft ] && . /etc/sysconfig/rx-etersoft
 
-SESSION_TTL=${SESSION_TTL:-3600}
+[ -n "$SESSION_TTL" ] || return
+
 nxdir="/var/lib/nxserver/db/running"
 nxserver="/usr/bin/nxserver"
+
 if [ -d "$nxdir" -a $SESSION_TTL -gt 0 ] ; then
   for f in `ls $nxdir` ; do
     sessiontype=`cat $nxdir/$f | grep status | cut -d= -f2`

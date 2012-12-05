@@ -91,9 +91,8 @@ install -Dp -m644 data/logrotate %buildroot%_sysconfdir/logrotate.d/%name
 install -Dp -m644 nx-session-launcher/ConsoleKit-NX.conf %buildroot%_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 mv nx-session-launcher/README nx-session-launcher/README.suid
 
-cat >> %buildroot%_sysconfdir/sysconfig/%oname << EOF
-#Time to live SUSPENDED freenx session in seconds for cron task.
-#If not set default value is 3600.
+cat >> %buildroot%_sysconfdir/sysconfig/%name << EOF
+#Time to live SUSPENDED RX@Etersoft session for cron task (in seconds).
 #Cron task enable if value greater than 0.
 SESSION_TTL=0
 EOF
@@ -106,6 +105,11 @@ EOF
 if [ ! -d %_datadir/fonts/misc ] && [ ! -e %_datadir/fonts/misc ] && [ -d %_datadir/fonts/bitmap/misc ]
 then
     ln -s %_datadir/fonts/bitmap/misc %_datadir/fonts/misc
+fi
+
+# rename config if updated
+if [ -r %_sysconfdir/sysconfig/%oname ] && [ ! -r %_sysconfdir/sysconfig/%name ] ; then
+    mv -vf %_sysconfdir/sysconfig/%oname %_sysconfdir/sysconfig/%name
 fi
 
 %files
@@ -122,7 +126,7 @@ fi
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
-%config(noreplace) %_sysconfdir/sysconfig/%oname
+%config(noreplace) %_sysconfdir/sysconfig/%name
 %_sbindir/nx-terminate-suspend
 %_initdir/%oname
 %if %_vendor != "alt"
