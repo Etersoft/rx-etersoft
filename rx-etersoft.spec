@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt5
+Release: alt6
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -158,6 +158,11 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Wed Dec 05 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt6
+- move terminate-suspend-nx.sh to /usr/sbin/nx-terminate-suspend
+- remove obsoleted files (from /usr/share/freenx-server too)
+- install nxcheckload.sample as nxcheckload
+
 * Tue Dec 04 2012 Denis Baranov <baraka@altlinux.ru> 1.1.2-alt5
 - kill wineserver on terminate from session
 
