@@ -24,12 +24,19 @@ Obsoletes: %oname
 Provides: %oname = %version
 
 Requires: nx
+
 Requires: setxkbmap
-Requires: openssl
+Requires: openssl openssh-server openssh-clients
 Requires: netcat
 Requires: expect
 Requires: zenity
+Requires: xauth
+
+Requires: cups
 Requires: foomatic-db-engine
+
+# for /usr/lib/cups/backend/smb
+# Requires: samba-client
 
 %if %_vendor == "alt"
 Requires: dbus-tools-gui
@@ -37,10 +44,12 @@ Requires: dbus-tools-gui
 
 BuildPreReq: rpm-build-intro
 
-BuildRequires: imake xorg-cf-files gccmakedep xauth openssh-server
+BuildRequires: imake xorg-cf-files gccmakedep
+
+AutoReq: yes, nopython
 
 %description
-Freenx is an application/thin-client server based on nx technology.
+RX@Etersoft (formely freenx-server) is an application/thin-client server based on nx technology.
 NoMachine nx is the next-generation X compression and roundtrip suppression
 scheme. It can operate remote X11 sessions over 56k modem dialup links
 or anything better. This package contains a free (GPL) implementation
@@ -90,14 +99,9 @@ SESSION_TTL=0
 EOF
 
 %pre
-%groupadd nx 2> /dev/null ||:
+%groupadd nx 2>/dev/null ||:
 %useradd -g nx -G utmp -d /var/lib/nxserver/home/ -s %_bindir/nxserver \
-        -c "NX System User" nx 2> /dev/null ||:
-# FIXME: remove it strange code
-if [ ! -d %_datadir/fonts/misc ] && [ ! -e %_datadir/fonts/misc ] && [ -d %_datadir/fonts/bitmap/misc ]
-then
-    ln -s %_datadir/fonts/bitmap/misc %_datadir/fonts/misc
-fi
+        -c "NX System User" nx 2>/dev/null ||:
 
 # rename config if updated
 if [ -r %_sysconfdir/sysconfig/%oname ] && [ ! -r %_sysconfdir/sysconfig/%name ] ; then
@@ -105,7 +109,7 @@ if [ -r %_sysconfdir/sysconfig/%oname ] && [ ! -r %_sysconfdir/sysconfig/%name ]
 fi
 
 %files
-%doc AUTHORS ChangeLog CONTRIB nx-session-launcher/README.suid
+%doc AUTHORS CONTRIB nx-session-launcher/README.suid
 %dir %_sysconfdir/nxserver/
 %dir %_sysconfdir/nxserver/node.conf.d/
 %dir %_sysconfdir/nxserver/acls/
