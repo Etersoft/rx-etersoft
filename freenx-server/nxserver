@@ -676,14 +676,6 @@ fi
 # Get the hostname out of SSH_ORIGINAL_COMMAND
 PREFERRED_HOST=$(echo $SSH_ORIGINAL_COMMAND | tr '&' '\n' | grep "^host=" | cut -d'=' -f2)
 
-# forward the connection to commercial NoMachine server?
-if [ "$ENABLE_NOMACHINE_FORWARD_PORT" = "1" -a "$NOMACHINE_FORWARD_PORT" = "$(echo $SSH_CLIENT $SSH2_CLIENT| cut -d' ' -f3)" -a -n "$NOMACHINE_SERVER" ]
-then
-	log 3 "Info: Detected SSH destination port $NOMACHINE_FORWARD_PORT. Forwarding connection to commercial NoMachine server."
-	exec $NOMACHINE_SERVER
-	log 1 "Error: Forwarding to NoMachine Server $NOMACHINE_SERVER failed. Using FreeNX server instead."
-fi
-
 #
 # nxnode slave mode preparations
 #

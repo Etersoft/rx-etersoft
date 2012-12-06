@@ -155,11 +155,6 @@ SERVER_FORWARD_HOST=""
 SERVER_FORWARD_PORT=22
 SERVER_FORWARD_KEY="/usr/NX/share/client.id_dsa.key"
 
-NOMACHINE_SERVER="/usr/NX/bin/nxserver"
-NOMACHINE_NX_HOME_DIR="/usr/NX/home/nx"
-ENABLE_NOMACHINE_FORWARD_PORT="0"
-NOMACHINE_FORWARD_PORT="22"
-
 LOAD_BALANCE_SERVERS=""
 LOAD_BALANCE_ALGORITHM="random"
 ENABLE_LOAD_BALANCE_PREFERENCE="0"
@@ -571,13 +566,6 @@ then
 		ERROR="yes" && echo "Error: Invalid value \"SERVER_FORWARD_PORT=$SERVER_FORWARD_PORT\""
 	[ "$ENABLE_SERVER_FORWARD" = "1" -a ! -e "$SERVER_FORWARD_KEY" ] && \
 		ERROR="yes" && echo "Error: Invalid value \"SERVER_FORWARD_KEY=$SERVER_FORWARD_KEY\""
-	
-	[ -z $(echo "$ENABLE_NOMACHINE_FORWARD_PORT" | egrep "^[0|1]$") ] && \
-		ERROR="yes" && echo "Error: Invalid value \"ENABLE_NOMACHINE_FORWARD_PORT=$ENABLE_NOMACHINE_FORWARD_PORT\""
-	[ "$ENABLE_NOMACHINE_FORWARD_PORT" = "1" ] && ! mywhich "$NOMACHINE_SERVER" >/dev/null 2>&1 && \
-		ERROR="yes" && echo "Error: Invalid value \"NOMACHINE_SERVER=$NOMACHINE_SERVER\""
-	[ "$ENABLE_NOMACHINE_FORWARD_PORT" = "1" -a -z $(echo "$NOMACHINE_FORWARD_PORT" | egrep "^[1-9][0-9]{0,4}$") ] && \
-		ERROR="yes" && echo "Error: Invalid value \"NOMACHINE_FORWARD_PORT=$NOMACHINE_FORWARD_PORT\""
 	
 	# Services directives
 	
