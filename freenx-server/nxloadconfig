@@ -52,8 +52,8 @@ fi
 # DO NOT TOUCH unless you REALLY know what you are doing
 #########################################################################
 
-NX_VERSION=3.2.0-74-SVN
-NX_LICENSE="OS (GPL, using backend: %BACKEND%)"
+NX_VERSION="3.2.0-74-SVN"
+NX_LICENSE="RX@Etersoft (GPL, using NX backend: %BACKEND%)"
 
 # Where can different nx components be found
 NX_DIR=/usr
@@ -252,7 +252,8 @@ fi
 
 # Misc directives
 
-NX_BACKEND_VERSION="3.5.0"
+# Note: got it from nxagent binary before
+NX_BACKEND_VERSION="3.5.1"
 
 ENABLE_AUTORECONNECT="0"
 EXPORT_USERIP="0"

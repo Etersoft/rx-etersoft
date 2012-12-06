@@ -23,7 +23,8 @@ Provides: freenx = %version
 Obsoletes: %oname
 Provides: %oname = %version
 
-Requires: nx
+%define NXVERSION 3.5.1
+Requires: nx >= %NXVERSION
 
 Requires: setxkbmap
 Requires: openssl openssh-server openssh-clients
@@ -58,6 +59,9 @@ of the nxserver component.
 %prep
 %setup -n %oname-%version
 %__subst "s|\$NX_DIR/lib|%_libdir|g" nxloadconfig
+# subst version info
+%__subst "s|^\$NX_VERSION=|\$NX_VERSION=\"%version-%release\"|g" nxloadconfig
+%__subst "s|^\$NX_BACKEND_VERSION=|\$NX_BACKEND_VERSION=\"%NXVERSION\"|g" nxloadconfig
 
 %build
 %make_build
