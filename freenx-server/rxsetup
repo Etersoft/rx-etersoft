@@ -96,6 +96,11 @@ selinux_tune()
 	test -n "$RESTORECON" && docmd $RESTORECON -Rv /var/lib/nxserver
 }
 
+nx_test()
+{
+	docmd nxsetup --test
+}
+
 rxsetup_stages()
 {
         local ER=0
@@ -106,7 +111,8 @@ rxsetup_stages()
                     enable_cupsd \
                     nx_install \
                     clean_freenx \
-                    start_freenx_server ; do
+                    start_freenx_server \
+                    nx_test; do
             $func || ER=$?
         done
         return $ER
@@ -121,7 +127,7 @@ if [ "$?" -ne 0 ]; then
         echo "Configuration error, see $LOG for details"
         exit 1
 else
-        echo "Complete. Now, you may use nxclient for connection to this server"
+        echo "Complete. Now, you may use opennx for connection to this server"
         rm -f $LOG
 fi
 
