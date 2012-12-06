@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt7
+Release: alt8
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -162,6 +162,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Dec 06 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt8
+- set actual versions for RX and NX backend
+
 * Thu Dec 06 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt7
 - cleanup spec, update and fix requires, remove fonts dir linking code (eterbug #7265)
 - move /etc/init.d/freenx-server.outformat to /usr/share/misc (eterbug #8381)
