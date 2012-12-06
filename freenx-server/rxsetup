@@ -90,11 +90,18 @@ clean_freenx()
 	docmd rm -fr /var/lib/nxserver/home/.ssh/known_hosts
 }
 
+selinux_tune()
+{
+	RESTORECON=$(which restorecon 2>/dev/null)
+	test -n "$RESTORECON" && docmd $RESTORECON -Rv /var/lib/nxserver
+}
+
 rxsetup_stages()
 {
         local ER=0
         for func in check_expect \
                     unlock_nx_user \
+                    selinux_tune \
                     start_sshd \
                     enable_cupsd \
                     nx_install \
