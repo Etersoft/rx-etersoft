@@ -171,7 +171,7 @@ ESD_BIN_PRELOAD="esddsp"
 ENABLE_ARTSD_PRELOAD="0"
 ARTSD_BIN_PRELOAD="artsdsp"
 
-ENABLE_KDE_CUPS="1"
+ENABLE_KDE_CUPS="0"
 ENABLE_KDE_CUPS_DYNAMIC="0"
 KDE_PRINTRC="" # Calculated
 
@@ -595,10 +595,11 @@ then
 	
 	[ -z $(echo "$ENABLE_KDE_CUPS" | egrep "^[0|1]$") ] && \
 		ERROR="yes" && echo "Error: Invalid value \"ENABLE_KDE_CUPS=$ENABLE_KDE_CUPS\""
+if [ "$UID" != 0 ] ; then
 	[ "$ENABLE_KDE_CUPS" = "1" -a ! -e "$KDE_PRINTRC" ] && \
 		WARNING="yes" && echo "Warning: Invalid value \"KDE_PRINTRC=$KDE_PRINTRC\". ENABLE_KDE_CUPS will not work." \
 					  && echo "         For root it's normal. Try to run 'nxloadconfig --check' by user."
-
+fi
 
 	[ "$ENABLE_FOOMATIC" = "1" ] && ! mywhich "$COMMAND_FOOMATIC" >/dev/null 2>&1 && \
 		WARNING="yes" && echo "Warning: Invalid value \"COMMAND_FOOMATIC=$COMMAND_FOOMATIC\"" \
