@@ -52,6 +52,7 @@ fi
 # DO NOT TOUCH unless you REALLY know what you are doing
 #########################################################################
 
+# Note: this version used by client to use appropriate protocol
 NX_VERSION="3.2.0-74-SVN"
 NX_LICENSE="RX@Etersoft (GPL, using NX backend: %BACKEND%)"
 

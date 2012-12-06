@@ -60,8 +60,8 @@ of the nxserver component.
 %setup -n %oname-%version
 %__subst "s|\$NX_DIR/lib|%_libdir|g" nxloadconfig
 # subst version info
-%__subst "s|^\$NX_VERSION=|\$NX_VERSION=\"%version-%release\"|g" nxloadconfig
-%__subst "s|^\$NX_BACKEND_VERSION=|\$NX_BACKEND_VERSION=\"%NXVERSION\"|g" nxloadconfig
+%__subst 's|^NX_VERSION=.*|NX_VERSION="%NXVERSION %version-%release"|g' nxloadconfig
+%__subst 's|^NX_BACKEND_VERSION=.*|NX_BACKEND_VERSION="%NXVERSION"|g' nxloadconfig
 
 %build
 %make_build
