@@ -1627,7 +1627,7 @@ startsession()
 		smbport=445 # cifs
 	fi
 	
-	# FreeNX specific variables
+	# RX@Etersoft specific variables
 	clientproto=$(getparam clientproto)
 	status=$(getparam status)
 	host=$(getparam host)

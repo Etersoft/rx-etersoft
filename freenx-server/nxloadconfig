@@ -36,7 +36,7 @@ done
 
 if [ "$HELP" = "yes" ]
 then
-	echo "nxloadconfig - Load the FreeNX configuration variables into the environment."
+	echo "nxloadconfig - Load the RX@Etersoft configuration variables into the environment."
 	echo "Syntax: nxloadconfig --help"
 	echo "        nxloadconfig [--check] [--userconf [<username>]]"
 	echo
@@ -82,7 +82,7 @@ NXCONFIG_RETEST=1
 # A user should NEVER touch this, edit $NX_ETC_DIR/node.conf instead
 #########################################################################
 
-# General FreeNX directives
+# General RX@Etersoft directives
 
 SERVER_NAME="$(hostname)"
 EXTERNAL_PROXY_IP=""
@@ -483,7 +483,7 @@ then
 		ERROR="yes" && echo "Error: Invalid value \"SSH_AUTHORIZED_KEYS=$SSH_AUTHORIZED_KEYS\""
 	
 	
-	# General FreeNX directives
+	# General RX@Etersoft directives
 	
 	[ -z "$SERVER_NAME" ] && \
 		ERROR="yes" && echo "Error: Invalid value \"SERVER_NAME=$SERVER_NAME\""

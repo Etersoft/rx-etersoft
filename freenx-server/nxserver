@@ -1841,7 +1841,7 @@ cmd_checkpassdb()
 {
 	if [ "$ENABLE_PASSDB_AUTHENTICATION" != "1" ]
 	then
-		cmd_abort "Error: The passdb function is not activated in node.conf.\n\nMost probably your FreeNX setup will work out of the box without this\nfunctionality and you've been misleaded by an old tutorial or old\ndocumentation to do this step.\n\nIf however you really need this functionality, just set\nENABLE_PASSDB_AUTHENTICATION=\"1\" in node.conf.\n"
+		cmd_abort "Error: The passdb function is not activated in node.conf.\n\nMost probably your RX@Etersoft setup will work out of the box without this\nfunctionality and you've been misleaded by an old tutorial or old\ndocumentation to do this step.\n\nIf however you really need this functionality, just set\nENABLE_PASSDB_AUTHENTICATION=\"1\" in node.conf.\n"
 	fi
 
 	return 0

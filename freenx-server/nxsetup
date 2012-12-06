@@ -70,7 +70,7 @@ parse_cmdline()
 	if [ "$INSTALL" = "no" -a "$UNINSTALL" = "no" -a "$AUTOMATIC" = "no" -a "$HELP" = "no" ]
 	then
 		echo "------> You did select no action."
-		echo "        FreeNX guesses that you want to _install_ the server."
+		echo "        RX@Etersoft guesses that you want to _install_ the server."
 		echo "        Type \"y\" to abort the installation at this point in time."
 		echo "        \"N\" is the default and continues installation."
 		echo "        Use \"${0} --help\" to get more detailed help hints."
@@ -85,7 +85,7 @@ parse_cmdline()
 
 	if [ "$HELP" = "yes" ]
 	then
-		echo "nxsetup - Setup the FreeNX server."
+		echo "nxsetup - Setup the RX@Etersoft server."
 		echo "Syntax: nxsetup --help"
 		echo "        nxsetup --test [--ignore-errors]"
 		echo "        nxsetup --install [--setup-nomachine-key] [--uid <nummber>] [--clean [--purge]]"
@@ -126,7 +126,7 @@ parse_cmdline()
 	if [ "$INSTALL" = "yes" -a "$AUTOMATIC" = "no" -a "$SETUP_NOMACHINE_KEY" = "no" ]
 	then
 		echo "------> It is recommended that you use the NoMachine key for"
-		echo "        easier setup. If you answer \"y\", FreeNX creates a custom"
+		echo "        easier setup. If you answer \"y\", RX@Etersoft creates a custom"
 		echo "        KeyPair and expects you to setup your clients manually. "
 		echo "        \"N\" is default and uses the NoMachine key for installation."
 		echo ""
@@ -453,10 +453,10 @@ then
 	echo 
 	if [ "$PURGE" = "yes" ]
 	then
-		echo "To complete the uninstallation process, remove the FreeNX scripts in $PATH_BIN"
+		echo "To complete the uninstallation process, remove the RX@Etersoft scripts in $PATH_BIN"
 		echo "and the $NX_ETC_DIR/node.conf configuration file."
 	else
-		echo "To complete the uninstallation process, remove the FreeNX scripts in $PATH_BIN"
+		echo "To complete the uninstallation process, remove the RX@Etersoft scripts in $PATH_BIN"
 		echo
 		echo "Configuration files and ssh keys are saved in case you would like to reinstall"
 		echo "freenx at a later time. To remove them, please run 'nxsetup --uninstall --purge'"

@@ -6,7 +6,7 @@
 <policyconfig>
 
  <action id="freenx.session.create">
-    <description>Create a new FreeNX session</description>
+    <description>Create a new RX@Etersoft session</description>
     <message>System policy allows to create a new session</message>
     <defaults>
       <allow_any>no</allow_any>
