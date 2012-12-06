@@ -163,6 +163,8 @@ fi
 
 %changelog
 * Thu Dec 06 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt8
+- rxsetup: run restorecon if possible (eterbug #7462)
+- rxsetup: add docmd for illustrate commands
 - set actual versions for RX and NX backend
 
 * Thu Dec 06 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt7
