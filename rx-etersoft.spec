@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt8
+Release: alt9
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -11,7 +11,7 @@ Url: http://wiki.etersoft.ru/RX
 
 Packager: Denis Baranov <baraka@etersoft.ru>
 
-Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/unstable/%version/tarball/%oname-%version.tar
+Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/%version/source/tarball/%oname-%version.tar
 Source1: %oname.init
 Source2: %oname.outformat
 Source6: sudoers.conf
@@ -33,8 +33,8 @@ Requires: expect
 Requires: zenity
 Requires: xauth
 
-Requires: cups
-Requires: foomatic-db-engine
+Requires: cups cifs-utils
+Requires: foomatic-db foomatic-db-engine
 
 # for /usr/lib/cups/backend/smb
 # Requires: samba-client
@@ -162,6 +162,14 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Fri Dec 07 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt9
+- update buildreqs
+- spec: really fix set version from package version
+- replace FreeNX with RX@Etersoft
+- remove redirect to commercial nomachine server support
+- rxsetup: add nxsetup --test run
+- nxloadconfig: test KDE_PRINTRC only under user, and disable ENABLE_KDE_CUPS by default
+
 * Thu Dec 06 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt8
 - rxsetup: run restorecon if possible (eterbug #7462)
 - rxsetup: add docmd for illustrate commands
