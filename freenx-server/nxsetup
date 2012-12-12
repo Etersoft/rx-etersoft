@@ -427,7 +427,7 @@ then
 		echo "    nxserver --passwd <username>"
 	fi
 	echo
-	echo "  You can change this behaviour in the $NX_ETC_DIR/node.conf file."
+	#echo "  You can change this behaviour in the $NX_ETC_DIR/node.conf file."
 	
 	if [ "$SETUP_NOMACHINE_KEY" = "no" -a "$SETUP_NX_KEY" = "yes" ]
 	then

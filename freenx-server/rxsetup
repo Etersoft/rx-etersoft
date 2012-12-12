@@ -27,9 +27,15 @@ docmd()
 	"$@"
 }
 
+item()
+{
+	echo
+	echo "** $@"
+}
 
 unlock_nx_user()
 {
+        item "Unlock user nx..."
         docmd passwd -u nx
 }
 
@@ -46,6 +52,7 @@ do_chkconfig_on()
 
 start_sshd()
 {
+        item "Check and start OpenSSH server..."
         # FIXME Lav: нужно воспользоваться distr_vendor для определения системы
         for sshd in ssh sshd openssh opensshd; do
                 if [ -e /etc/init.d/$sshd ]; then
@@ -62,40 +69,44 @@ start_sshd()
 
 enable_cupsd()
 {
-        docmd chmod 755 /usr/sbin/cupsd || return
-        docmd chmod 711 /usr/lib/cups/backend/ipp || return
+        item "Check cupsd server..."
+        if [ -x /usr/sbin/cupsd ] ; then
+            docmd chmod 755 /usr/sbin/cupsd || return
+            docmd chmod 711 /usr/lib/cups/backend/ipp || return
+        else
+            echo "cupsd is missing. Skiping this step."
+        fi
 }
 
 nx_install()
 {
+        item "Run setup, install ssh key..."
         docmd nxsetup --setup-nomachine-key --install
 }
 
 start_freenx_server()
 {
+        item "Enable server and run it"
         SERVICECOMMAND="/etc/init.d/freenx-server"
         do_chkconfig_on freenx-server
         # Without direct dependency to /etc/init.d
         $SERVICECOMMAND start
 }
 
-check_expect()
+clean_known_hosts()
 {
-	EXPECT=`which expect 2>/dev/null`
-	[ -n "$EXPECT" ] || echo "Error: please install expect package"
-}
-
-clean_freenx()
-{
+	item "Clean known_hosts..."
 	docmd rm -fr /var/lib/nxserver/home/.ssh/known_hosts
 }
 
 selinux_tune()
 {
+	item "Check SELinux..."
 	RESTORECON=$(which restorecon 2>/dev/null)
 	test -n "$RESTORECON" && docmd $RESTORECON -Rv /var/lib/nxserver
 }
 
+# already run in nxsetup --install
 nx_test()
 {
 	docmd nxsetup --test
@@ -104,15 +115,15 @@ nx_test()
 rxsetup_stages()
 {
         local ER=0
-        for func in check_expect \
+        for func in \
                     unlock_nx_user \
                     selinux_tune \
                     start_sshd \
                     enable_cupsd \
                     nx_install \
-                    clean_freenx \
+                    clean_known_hosts \
                     start_freenx_server \
-                    nx_test; do
+                    ; do
             $func || ER=$?
         done
         return $ER
@@ -121,13 +132,13 @@ rxsetup_stages()
 
 ##### Main #####
 LOG=/var/log/rxsetup.log
-echo "Configuring..."
-rxsetup_stages 2>&1 | cat >$LOG
+echo "Configuring RX@Etersoft..."
+rxsetup_stages 2>&1 | tee $LOG
 if [ "$?" -ne 0 ]; then
-        echo "Configuration error, see $LOG for details"
+        echo "There is some configuration error. All output saved to $LOG."
         exit 1
 else
-        echo "Complete. Now, you may use opennx for connection to this server"
+        echo "Complete. Now, you may use opennx for connection to this server."
         rm -f $LOG
 fi
 
