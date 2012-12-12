@@ -12,8 +12,8 @@ Url: http://wiki.etersoft.ru/RX
 Packager: Denis Baranov <baraka@etersoft.ru>
 
 Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/%version/source/tarball/%oname-%version.tar
-Source1: %oname.init
-Source2: %oname.outformat
+Source1: %name.init
+Source2: %name.outformat
 Source6: sudoers.conf
 Source8: nx-terminate-suspend
 
@@ -78,7 +78,7 @@ mkdir -p %buildroot%_datadir/misc/
 
 
 install -m755 rxsetup %buildroot%_bindir/
-install -Dp -m755 %SOURCE1 %buildroot%_initdir/%oname
+install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
 install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/nxserver/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/nxserver/Xsession
 install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/nxserver/Xkbmap
@@ -128,9 +128,9 @@ fi
 %_sysconfdir/nxserver/Xsession
 %config(noreplace) %_sysconfdir/sysconfig/%name
 %_sbindir/nx-terminate-suspend
-%_initdir/%oname
+%_initddir/%name
 %if %_vendor != "alt"
-%_datadir/misc/%oname.outformat
+%_datadir/misc/%name.outformat
 %endif
 
 %_bindir/nx-session-launcher

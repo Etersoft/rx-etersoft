@@ -65,7 +65,7 @@ passed()
 start()
 {
 	#check for first run
-	[[ ! ( -e "$AUTH_NAME" ) && ! ( -e "$AUTH_NAME.disabled" ) ]] && $PATH_BIN/nxsetup --install --setup-nomachine-key --auto
+	[[ ! ( -e "$AUTH_NAME" ) && ! ( -e "$AUTH_NAME.disabled" ) ]] && $PATH_BIN/rxsetup
 	echo -n $"Starting $SERVNAME service: "
 	if [ -e $LOCKFILE ] ; then
 		passed

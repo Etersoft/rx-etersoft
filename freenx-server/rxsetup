@@ -87,8 +87,8 @@ nx_install()
 start_freenx_server()
 {
         item "Enable server and run it"
-        SERVICECOMMAND="/etc/init.d/freenx-server"
-        do_chkconfig_on freenx-server
+        SERVICECOMMAND="/etc/init.d/rx-etersoft"
+        do_chkconfig_on rx-etersoft
         # Without direct dependency to /etc/init.d
         $SERVICECOMMAND start
 }
