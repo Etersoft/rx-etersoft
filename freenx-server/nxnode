@@ -411,6 +411,9 @@ node_find_application()
 		unix-application|vnc-helper)
 			#[ "$application" = "xterm" ] && application=$COMMAND_XTERM
 			NODE_STARTX=$application
+			# 
+			local try_our=$(PATH=$NX_ETC_DIR/commands/:$PATH which "$application" 2>/dev/null)
+			[ -n "$try_our" ] && NODE_STARTX=try_our
 		;;
 		unix-console)
 			NODE_STARTX=$COMMAND_XTERM

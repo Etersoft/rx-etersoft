@@ -84,7 +84,8 @@ install -Dp -m400 %SOURCE6 %buildroot%_sysconfdir/sudoers.d/nxserver
 install -Dp -m700 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
 install -Dp -m644 conf/node.conf %buildroot%_sysconfdir/nxserver/node.conf
 install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
-install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls
+install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls/
+install -m644 conf/commands/* %buildroot%_sysconfdir/nxserver/commands/
 
 %if %_vendor != "alt"
 install -m755 %SOURCE2 %buildroot%_datadir/misc/
@@ -114,16 +115,18 @@ fi
 %dir %_sysconfdir/nxserver/
 %dir %_sysconfdir/nxserver/node.conf.d/
 %dir %_sysconfdir/nxserver/acls/
+%dir %_sysconfdir/nxserver/commands/
 %config(noreplace) %_sysconfdir/nxserver/node.conf
 %config(noreplace) %_sysconfdir/nxserver/node.conf.d/*
 %config(noreplace) %_sysconfdir/nxserver/acls/*
+%attr (0755,root,root) %config(noreplace) %_sysconfdir/nxserver/commands/*
 %config(noreplace) %_sysconfdir/logrotate.d/%name
 %attr(0400,root,root) %config %_sysconfdir/sudoers.d/nxserver
 %config(noreplace) %_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
-%config(noreplace) %_sysconfdir/cron.d/%name
+%attr(0400,root,root) %config(noreplace) %_sysconfdir/cron.d/%name
 %_sbindir/nx-terminate-suspend
 %_initddir/%name
 %if %_vendor != "alt"

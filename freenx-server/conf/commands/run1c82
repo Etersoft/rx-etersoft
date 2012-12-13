@@ -1,0 +1,3 @@
+#!/bin/sh
+
+wine "C:\\Program Files\\1cv82\\common\\1cestart.exe" "$@"
