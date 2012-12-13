@@ -379,7 +379,8 @@ node_suspend_session()
 # node_find_application <type>
 #
 #	Used config vars: $COMMAND_START_KDE, $COMMAND_START_GNOME,
-#			  $COMMAND_START_CDE, $COMMAND_XTERM, $USER_X_STARTUP_SCRIPT,
+#			  $COMMAND_START_CDE, $COMMAND_START_XFCE,
+#			  $COMMAND_XTERM, $USER_X_STARTUP_SCRIPT,
 #			  $DEFAULT_X_SESSION
 
 node_find_application()
@@ -400,12 +401,15 @@ node_find_application()
 		unix-cde)
 			NODE_STARTX=$COMMAND_START_CDE
 		;;
+		unix-xfce)
+			NODE_STARTX=$COMMAND_START_XFCE
+		;;
 		windows-helper)
 			application="$PATH_BIN/nxdesktop_helper"
 			NODE_STARTX=$application
 		;;
 		unix-application|vnc-helper)
-			[ "$application" = "xterm" ] && application=$COMMAND_XTERM
+			#[ "$application" = "xterm" ] && application=$COMMAND_XTERM
 			NODE_STARTX=$application
 		;;
 		unix-console)
@@ -414,7 +418,7 @@ node_find_application()
 		unix-default|*)
 			if [ -x "$HOME/$USER_X_STARTUP_SCRIPT" ]; then
 				NODE_STARTX="$HOME/$USER_X_STARTUP_SCRIPT"
-			elif which "$DEFAULT_X_SESSION" >/dev/null 2>&1 ; then
+			elif [ -x "$DEFAULT_X_SESSION" ] ; then
 				NODE_STARTX="$DEFAULT_X_SESSION"
 			else
 				NODE_STARTX=$COMMAND_XTERM
@@ -583,7 +587,7 @@ node_start_applications()
 				NODE_APPLICATION=$COMMAND_GDM_X_SESSION
 			fi
 		;;
-		unix-kde|unix-cde)
+		unix-kde|unix-cde|unix-xfce)
 			export STARTUP="$NODE_APPLICATION"
 			if [ "$login_method" = "GUEST" ]
 			then
