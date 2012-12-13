@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt9
+Release: alt10
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -28,10 +28,8 @@ Requires: nx >= %NXVERSION
 
 Requires: setxkbmap
 Requires: openssl openssh-server openssh-clients
-Requires: netcat
-Requires: expect
+Requires: netcat expect xauth
 Requires: zenity
-Requires: xauth
 
 Requires: cups cifs-utils
 Requires: foomatic-db foomatic-db-engine
@@ -162,6 +160,10 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Dec 13 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt10
+- rename service name to rx-etersoft
+- rxsetup: more print to the screen, add print items, check cupsd server only if exists
+
 * Fri Dec 07 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt9
 - update buildreqs
 - spec: really fix set version from package version
