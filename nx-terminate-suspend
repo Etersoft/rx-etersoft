@@ -1,23 +1,42 @@
 #!/bin/sh
 
+# Run via cron for terminate obsoleted suspended sessions
+
+# Under GPL
+
+# Read the config file
+. $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --
+
+# Obsoletes, for compatibility
 [ -e /etc/sysconfig/rx-etersoft ] && . /etc/sysconfig/rx-etersoft
 
-[ -n "$SESSION_TTL" ] || return
+[ -n "$SESSION_TTL" ] || exit
 
 nxdir="/var/lib/nxserver/db/running"
 nxserver="/usr/bin/nxserver"
 
-if [ -d "$nxdir" -a $SESSION_TTL -gt 0 ] ; then
+if [ -d "$nxdir" -a "$SESSION_TTL" -gt 0 ] ; then
   for f in `ls $nxdir` ; do
     sessiontype=`cat $nxdir/$f | grep status | cut -d= -f2`
     user=`cat $nxdir/$f | grep userName | cut -d= -f2`
     sessiontime=`cat $nxdir/$f | grep creationTime | cut -d= -f2`
     sessionid=`cat $nxdir/$f | grep sessionId | cut -d= -f2`
     criticaltime=$(expr `date +%s` - $SESSION_TTL)
+    criticaltime2=$(expr `date +%s` - (1200 * $SESSION_TTL))
+
+    # terminate obsoleted sessions in usual way
     if [ $sessiontime -lt $criticaltime ] ; then
         if [ $sessiontype = "Suspended" ] ; then
             $nxserver --terminate $sessionid
         fi
     fi
+
+    # force terminate more than obsoleted sessions with force
+    if [ $sessiontime -lt $criticaltime2 ] ; then
+        if [ $sessiontype = "Suspended" ] ; then
+            $nxserver --force-terminate $sessionid
+        fi
+    fi
+
   done
 fi

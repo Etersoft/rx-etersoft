@@ -71,7 +71,7 @@ mkdir -p %buildroot%_var/lib/nxserver/home/
 mkdir -p %buildroot%_var/lib/nxserver/db/
 mkdir -p %buildroot%_sysconfdir/nxserver/node.conf.d/
 mkdir -p %buildroot%_sysconfdir/nxserver/acls/
-mkdir -p %buildroot%_sysconfdir/sysconfig/
+mkdir -p %buildroot%_sysconfdir/cron.d/
 mkdir -p %buildroot%_datadir/misc/
 
 
@@ -94,10 +94,9 @@ install -Dp -m644 data/logrotate %buildroot%_sysconfdir/logrotate.d/%name
 install -Dp -m644 nx-session-launcher/ConsoleKit-NX.conf %buildroot%_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 mv nx-session-launcher/README nx-session-launcher/README.suid
 
-cat >> %buildroot%_sysconfdir/sysconfig/%name << EOF
-#Time to live SUSPENDED RX@Etersoft session for cron task (in seconds).
-#Cron task enable if value greater than 0.
-SESSION_TTL=0
+cat >> %buildroot%_sysconfdir/cron.d/%name << EOF
+# Terminate suspend sessions if needed
+#*/5 * * * *       root    %_sbindir/nx-terminate-suspend
 EOF
 
 %pre
@@ -124,7 +123,7 @@ fi
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
-%config(noreplace) %_sysconfdir/sysconfig/%name
+%config(noreplace) %_sysconfdir/cron.d/%name
 %_sbindir/nx-terminate-suspend
 %_initddir/%name
 %if %_vendor != "alt"
