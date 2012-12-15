@@ -431,12 +431,13 @@ node_find_application()
 
 	# dimbor: another personalyzed way to ACLS control and replace X-application
 	[ -d "$NX_ACL_DIR" -a -x "$PATH_BIN/nxacl.app" ] && {
-	    nxlog "$FUNCNAME ($$): !!! call nxacl.app with source NODE_STARTX=\"$NODE_STARTX\"" &
+	    nxlog "$FUNCNAME ($$): call nxacl.app with source NODE_STARTX=\"$NODE_STARTX\"" &
 	    NODE_STARTX="$($PATH_BIN/nxacl.app "$NODE_STARTX" "$CMDLINE")"
 	}
 
 	# last check for command existance
 	which ${NODE_STARTX/ */} 2>/dev/null || NODE_STARTX=$NX_ETC_DIR/rx-missed-command
+
 	nxlog "$FUNCNAME ($$): return NODE_STARTX=\"$NODE_STARTX\"" &
 	echo "$NODE_STARTX"
 	nxlog "$FUNCNAME ($$): end" &
@@ -1993,13 +1994,13 @@ cmd_node_smbmount()
 		echo "//$computername/$share&$dir&$username&$password&$IDS_OPTS" > "$desc_dir/$SFN"
 	    else # not multimount case
     		nxlog "$FUNCNAME ($$): share \"//$computername/$share\" mount on \"$dir\"" &
-		$PATH_BIN/nxdialog -dialog ok -caption "NXServer Message" -message "Info: Share: '//$computername/$share' mounted on: '$dir'" -display :$display &
+		$PATH_BIN/nxdialog -dialog ok -caption "RX@Etersoft message" -message "Info: Share: '//$computername/$share' mounted on: '$dir'" -display :$display &
 	    fi
 	    echo "$dir" >> "$USER_FAKE_HOME/.nx/C-$SERVER_NAME-$display-$sessionid/scripts/mpoint"
 	else
 	    nxlog "$FUNCNAME ($$): Share //$computername/$share mount FAILED." &
 	    rmdir "$dir" >/dev/null 2>/dev/null #JJK: Remove mount point if empty
-	    [ "$ENABLE_SHARE_MULTIMOUNT" = "1" ] || $PATH_BIN/nxdialog -dialog ok -caption "NXServer Message" -message "Info: Share: '//$computername/$share' failed to mount." -display :$display &
+	    [ "$ENABLE_SHARE_MULTIMOUNT" = "1" ] || $PATH_BIN/nxdialog -dialog ok -caption "RX@Etersoft message" -message "Info: Share: '//$computername/$share' failed to mount." -display :$display &
 	fi
 }
 

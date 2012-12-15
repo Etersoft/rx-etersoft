@@ -4,6 +4,8 @@
 # ACLS filenames are usernames, groupnames and "all". Permissions search order:
 # user - group - all. ACL contain one or more strings of regexp-patterns. Format:
 #
+# Under GPL
+#
 # # some comment-string
 # [!]CmdTpl [%%% [[!][@@]OnceAppTpl] %%% Prog|"Msg"]
 #
