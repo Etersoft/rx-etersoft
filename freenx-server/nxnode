@@ -404,6 +404,10 @@ node_find_application()
 		unix-xfce)
 			NODE_STARTX=$COMMAND_START_XFCE
 		;;
+		unix-xdm)
+			# FIXME
+			NODE_STARTX="for xdmcp connection"
+		;;
 		windows-helper)
 			application="$PATH_BIN/nxdesktop_helper"
 			NODE_STARTX=$application
