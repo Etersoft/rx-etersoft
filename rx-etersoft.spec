@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt11
+Release: alt12
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -165,6 +165,10 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Sat Dec 15 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt12
+- fix run scripts, add scripts for 1c80, 1c81
+- add rx-missed-command and use it
+
 * Thu Dec 13 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt11
 - add support for run commands from /etc/nxagent/commands
 - add run1c77, run1c82 scripts for example
