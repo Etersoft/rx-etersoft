@@ -435,6 +435,8 @@ node_find_application()
 	    NODE_STARTX="$($PATH_BIN/nxacl.app "$NODE_STARTX" "$CMDLINE")"
 	}
 
+	# last check for command existance
+	which ${NODE_STARTX/ */} 2>/dev/null || NODE_STARTX=$NX_ETC_DIR/rx-missed-command
 	nxlog "$FUNCNAME ($$): return NODE_STARTX=\"$NODE_STARTX\"" &
 	echo "$NODE_STARTX"
 	nxlog "$FUNCNAME ($$): end" &

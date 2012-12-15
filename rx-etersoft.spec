@@ -79,6 +79,7 @@ install -m755 rxsetup %buildroot%_bindir/
 install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
 install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/nxserver/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/nxserver/Xsession
+install -Dp -m755 data/rx-missed-command %buildroot%_sysconfdir/nxserver/rx-missed-command
 install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/nxserver/Xkbmap
 install -Dp -m400 %SOURCE6 %buildroot%_sysconfdir/sudoers.d/nxserver
 install -Dp -m700 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
@@ -124,6 +125,7 @@ fi
 %attr(0400,root,root) %config %_sysconfdir/sudoers.d/nxserver
 %config(noreplace) %_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
+%config(noreplace) %_sysconfdir/nxserver/rx-missed-command
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
 %attr(0400,root,root) %config(noreplace) %_sysconfdir/cron.d/%name

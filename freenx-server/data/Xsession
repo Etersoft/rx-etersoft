@@ -208,12 +208,11 @@ else
 	RunIfExecutable "$HOME/.xsession"
 	RunIfExecutable "$HOME/.Xclients"
 
-	# Try WM Selector.
+	# Try run any existance WM selector
 	RunIfExecutable wm-select
-
-	# Try WM Manager.
 	RunIfExecutable wmselect
 
 	# Try default from runwm.
-	runwm default
+	RunIfExecutable runwm default && exit
+	/etc/nxserver/rx-missed-command
 fi

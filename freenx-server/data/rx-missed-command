@@ -1,0 +1,2 @@
+#!/bin/sh
+$PATH_BIN/nxdialog -dialog ok -caption "RX@Etersoft" -message "Command $NODE_STARTX is not found"
