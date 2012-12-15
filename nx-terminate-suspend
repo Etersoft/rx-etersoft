@@ -7,8 +7,15 @@
 # Read the config file
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --
 
+SourceIfNotEmpty()
+{
+	local f="$1"
+	shift
+	[ -s "$f" ] && . "$f" "$@"
+}
+
 # Obsoletes, for compatibility
-[ -e /etc/sysconfig/rx-etersoft ] && . /etc/sysconfig/rx-etersoft
+SourceIfNotEmpty /etc/sysconfig/rx-etersoft
 
 [ -n "$SESSION_TTL" ] || exit
 

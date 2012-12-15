@@ -1,0 +1,3 @@
+#!/bin/sh
+
+wine "C:\\Program Files\\1cv81\\bin\\1cv8.exe" "$@"

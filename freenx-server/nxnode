@@ -411,9 +411,11 @@ node_find_application()
 		unix-application|vnc-helper)
 			#[ "$application" = "xterm" ] && application=$COMMAND_XTERM
 			NODE_STARTX=$application
-			# 
+			# try search for our commands first
 			local try_our=$(PATH=$NX_ETC_DIR/commands/:$PATH which "$application" 2>/dev/null)
-			[ -n "$try_our" ] && NODE_STARTX=try_our
+			if [ -n "$try_our" ] ; then
+				NODE_STARTX="$try_our"
+			fi
 		;;
 		unix-console)
 			NODE_STARTX=$COMMAND_XTERM
@@ -436,7 +438,10 @@ node_find_application()
 	}
 
 	# last check for command existance
-	which ${NODE_STARTX/ */} 2>/dev/null || NODE_STARTX=$NX_ETC_DIR/rx-missed-command
+	if ! which ${NODE_STARTX/ */} >/dev/null 2>&1 ; then
+		nxlog "$FUNCNAME ($$): command \"$NODE_STARTX\" does not exists, change it to stub" &
+		NODE_STARTX="$NX_ETC_DIR/commands/rx-missed-command $NODE_STARTX"
+	fi
 
 	nxlog "$FUNCNAME ($$): return NODE_STARTX=\"$NODE_STARTX\"" &
 	echo "$NODE_STARTX"

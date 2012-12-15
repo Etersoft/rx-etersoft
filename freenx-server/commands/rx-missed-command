@@ -1,0 +1,4 @@
+#!/bin/sh
+CMD="$1"
+[ -z "$CMD" ] && CMD="to start"
+nxdialog -dialog ok -caption "RX@Etersoft" -message "Command $CMD is not found"

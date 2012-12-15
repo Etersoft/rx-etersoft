@@ -28,7 +28,7 @@ Requires: nx >= %NXVERSION
 
 Requires: setxkbmap
 Requires: openssl openssh-server openssh-clients
-Requires: netcat expect xauth
+Requires: netcat expect sudo xauth
 Requires: zenity
 
 Requires: cups cifs-utils
@@ -44,6 +44,8 @@ Requires: dbus-tools-gui
 BuildPreReq: rpm-build-intro
 
 BuildRequires: imake xorg-cf-files gccmakedep
+
+BuildRequires: expect sudo
 
 AutoReq: yes, nopython
 
@@ -70,6 +72,7 @@ mkdir -p %buildroot%_bindir/
 mkdir -p %buildroot%_var/lib/nxserver/home/
 mkdir -p %buildroot%_var/lib/nxserver/db/
 mkdir -p %buildroot%_sysconfdir/nxserver/node.conf.d/
+mkdir -p %buildroot%_sysconfdir/nxserver/commands/
 mkdir -p %buildroot%_sysconfdir/nxserver/acls/
 mkdir -p %buildroot%_sysconfdir/cron.d/
 mkdir -p %buildroot%_datadir/misc/
@@ -79,14 +82,13 @@ install -m755 rxsetup %buildroot%_bindir/
 install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
 install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/nxserver/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/nxserver/Xsession
-install -Dp -m755 data/rx-missed-command %buildroot%_sysconfdir/nxserver/rx-missed-command
 install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/nxserver/Xkbmap
 install -Dp -m400 %SOURCE6 %buildroot%_sysconfdir/sudoers.d/nxserver
 install -Dp -m700 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
 install -Dp -m644 conf/node.conf %buildroot%_sysconfdir/nxserver/node.conf
 install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
 install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls/
-install -m644 conf/commands/* %buildroot%_sysconfdir/nxserver/commands/
+install -m755 commands/* %buildroot%_sysconfdir/nxserver/commands/
 
 %if %_vendor != "alt"
 install -m755 %SOURCE2 %buildroot%_datadir/misc/
@@ -122,10 +124,9 @@ fi
 %config(noreplace) %_sysconfdir/nxserver/acls/*
 %attr (0755,root,root) %config(noreplace) %_sysconfdir/nxserver/commands/*
 %config(noreplace) %_sysconfdir/logrotate.d/%name
-%attr(0400,root,root) %config %_sysconfdir/sudoers.d/nxserver
+%attr(0400,root,root) %config(noreplace) %_sysconfdir/sudoers.d/nxserver
 %config(noreplace) %_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
-%config(noreplace) %_sysconfdir/nxserver/rx-missed-command
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
 %attr(0400,root,root) %config(noreplace) %_sysconfdir/cron.d/%name

@@ -213,6 +213,6 @@ else
 	RunIfExecutable wmselect
 
 	# Try default from runwm.
-	RunIfExecutable runwm default && exit
-	/etc/nxserver/rx-missed-command
+	ExecIfExecutable runwm default
+	/etc/nxserver/commands/rx-missed-command runwm
 fi
