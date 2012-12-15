@@ -797,7 +797,7 @@ node_start_agent()
 
 		# Start the agent
 		
-		echo "$agent_password" | $PATH_BIN/nxdesktop -name "NX - $user@$SERVER_NAME:$display - $session (GPL Edition)" -option "$USER_FAKE_HOME/.nx/C-$sess_id/options" $K $G $U $P $D $agent_server $AGENT_EXTRA_OPTIONS_RDP 2>&3 &
+		echo "$agent_password" | $PATH_BIN/nxdesktop -name "RX@Etersoft - $user@$SERVER_NAME:$display - $session" -option "$USER_FAKE_HOME/.nx/C-$sess_id/options" $K $G $U $P $D $agent_server $AGENT_EXTRA_OPTIONS_RDP 2>&3 &
 
 	elif [ "$type" = "vnc" ]
 	then
@@ -830,7 +830,7 @@ node_start_agent()
 		
 		# Start the agent
 		
-		$PATH_BIN/nxviewer -encodings tight hextile copyrect raw -passwd "$USER_FAKE_HOME/.nx/C-$sess_id/scripts/.passwd" -name "NX - $user@$SERVER_NAME:$display - $session (GPL Edition)" -option "$USER_FAKE_HOME/.nx/C-$sess_id/options" $vncfullscreen $G $K $agent_server $AGENT_EXTRA_OPTIONS_RFB 2>&3 &
+		$PATH_BIN/nxviewer -encodings tight hextile copyrect raw -passwd "$USER_FAKE_HOME/.nx/C-$sess_id/scripts/.passwd" -name "RX@Etersoft - $user@$SERVER_NAME:$display - $session" -option "$USER_FAKE_HOME/.nx/C-$sess_id/options" $vncfullscreen $G $K $agent_server $AGENT_EXTRA_OPTIONS_RFB 2>&3 &
 
 	elif [ "$R" = "-R" -a "$rootless" != "1" ]
 	then
@@ -862,9 +862,8 @@ node_start_agent()
 		nxlog "$FUNCNAME ($$): env start `env`" &
 		nxlog "$FUNCNAME ($$): env end" &
 		
-		nxlog "$FUNCNAME ($$): Start nxagent by command: '$COMMAND_NXAGENT $P $R -name \"NX - $user@$SERVER_NAME:$display - $session (GPL Edition)\" -option \"$USER_FAKE_HOME/.nx/C-$sess_id/options\" $B $FP $AGENT_EXTRA_OPTIONS_X :$display'" &
-		#PATH="$PATH_BIN:$PATH" $COMMAND_NXAGENT $P $R -name "NX - $user@$SERVER_NAME:$display - $session (GPL Edition)" -option "$USER_FAKE_HOME/.nx/C-$sess_id/options" $K $G $B $FP $AGENT_EXTRA_OPTIONS_X :$display 2>&3 &
-		PATH="$PATH_BIN:$PATH" $COMMAND_NXAGENT $P $R -name "NX - $user@$SERVER_NAME:$display - $session (GPL Edition)" -option "$USER_FAKE_HOME/.nx/C-$sess_id/options" $B $FP $AGENT_EXTRA_OPTIONS_X :$display 2>&3 &
+		nxlog "$FUNCNAME ($$): Start nxagent by command: '$COMMAND_NXAGENT $P $R -name \"RX@Etersoft - $user@$SERVER_NAME:$display - $session\" -option \"$USER_FAKE_HOME/.nx/C-$sess_id/options\" $B $FP $AGENT_EXTRA_OPTIONS_X :$display'" &
+		PATH="$PATH_BIN:$PATH" $COMMAND_NXAGENT $P $R -name "RX@Etersoft - $user@$SERVER_NAME:$display - $session " -option "$USER_FAKE_HOME/.nx/C-$sess_id/options" $B $FP $AGENT_EXTRA_OPTIONS_X :$display 2>&3 &
 	fi
 	
 	#
