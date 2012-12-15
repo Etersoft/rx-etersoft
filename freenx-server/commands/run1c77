@@ -1,5 +1,5 @@
 #!/bin/sh
 UPATH=$(winepath -u "C:\\Program Files\\1Cv77\\BIN")
 ONECEXE=$(ls -1 "$UPATH"/1cv7*.exe | head -n1)
-exec "$ONECEXE" "$@"
+exec wine "$ONECEXE" "$@"
 #wine "C:\\Program Files\\1Cv77\\BIN\\1cv7s.exe"
