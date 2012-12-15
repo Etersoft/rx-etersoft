@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt12
+Release: alt13
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -165,6 +165,10 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Sat Dec 15 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt13
+- nxnode: add fixme for xdmcp
+- commands: remove wine reqs
+
 * Sat Dec 15 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt12
 - fix run scripts, add scripts for 1c80, 1c81
 - add rx-missed-command and use it
