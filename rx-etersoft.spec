@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt10
+Release: alt11
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -162,6 +162,14 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Dec 13 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt11
+- add support for run commands from /etc/nxagent/commands
+- add run1c77, run1c82 scripts for example
+- add detect for terminal Terminal
+- possible add support for XFCE item in opennx
+- add cron entry for nx-terminate-supend
+- move SESSION_TTL param to conf.d/07-misc.conf
+
 * Thu Dec 13 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt10
 - rename service name to rx-etersoft
 - rxsetup: more print to the screen, add print items, check cupsd server only if exists
