@@ -32,7 +32,8 @@ if [ -d "$nxdir" -a "$SESSION_TTL" -gt 0 ] ; then
     sessiontime=`cat $nxdir/$f | grep creationTime | cut -d= -f2`
     sessionid=`cat $nxdir/$f | grep sessionId | cut -d= -f2`
     criticaltime=$(expr `date +%s` - $SESSION_TTL)
-    criticaltime2=$(expr `date +%s` - ($CRITICAL_TIME + $SESSION_TTL))
+    sessioncriticaltime=$(expr $CRITICAL_TIME + $SESSION_TTL)
+    criticaltime2=$(expr `date +%s` - $sessioncriticaltime)
 
     if [ -z "$sessiontime" ] ; then
         echo "Drop empty $f session file"
