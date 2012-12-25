@@ -2,7 +2,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt13
+Release: alt14
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -165,6 +165,11 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Tue Dec 25 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt14
+- nx-terminate-suspend: fix for remove obsoleted sessions
+- nx-terminate-suspend: fix for handle empty files
+- nxnode: fix title
+
 * Sat Dec 15 2012 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt13
 - nxnode: add fixme for xdmcp
 - commands: remove wine reqs
