@@ -275,6 +275,7 @@ ENABLE_SHARE_MULTIMOUNT="0"
 SMB_MOUNT_OPTIONS=""
 NUMLOCKX="numlockx"
 NODE_APP_WAIT_TIMEOUT="5"
+ENABLE_CUPS_DIALOG="0"
 
 ############################################################################
 # OS specific directives
