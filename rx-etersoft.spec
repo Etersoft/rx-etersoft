@@ -1,7 +1,3 @@
-# since rpm-build-intro 1.7.24
-%define _sudoersdir %_sysconfdir/sudoers.d
-
-%define cups_root %_libexecdir
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
@@ -44,7 +40,8 @@ Requires: foomatic-db foomatic-db-engine
 Requires: dbus-tools-gui
 %endif
 
-BuildPreReq: rpm-build-intro
+# _sudoersdir, _cupslibdir
+BuildPreReq: rpm-build-intro >= 1.7.25
 
 BuildRequires: imake xorg-cf-files gccmakedep
 
@@ -163,7 +160,7 @@ fi
 %_bindir/rxsetup
 %dir %_libdir/%name/
 %attr(755,root,root) %_libdir/%name/libnxredir.so.0
-%cups_root/cups/backend/nx*
+%_cupslibdir/backend/nx*
 %attr(2750,nx,nx) %_var/lib/nxserver/home/
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
