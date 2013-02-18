@@ -14,7 +14,7 @@ Url: http://wiki.etersoft.ru/RX
 
 Packager: Denis Baranov <baraka@etersoft.ru>
 
-Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/%version/source/tarball/%oname-%version.tar
+Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/%version/source/tarball/%name-%version.tar
 Source1: %name.init
 Source2: %name.outformat
 Source6: sudoers.conf
@@ -60,7 +60,7 @@ or anything better. This package contains a free (GPL) implementation
 of the nxserver component.
 
 %prep
-%setup -n %oname-%version
+%setup
 %__subst "s|\$NX_DIR/lib|%_libdir|g" nxloadconfig
 # subst version info
 %__subst 's|^NX_VERSION=.*|NX_VERSION="%NXVERSION %version-%release"|g' nxloadconfig

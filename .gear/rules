@@ -2,4 +2,4 @@ copy: *.init
 copy: *.outformat
 copy: *.conf
 copy: nx-terminate-suspend
-tar: freenx-server
+tar: rx-etersoft
