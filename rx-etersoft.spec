@@ -5,7 +5,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt15
+Release: alt16
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -168,6 +168,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Mon Feb 18 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt16
+- use _libexecdir instead _prefix/lib
+
 * Wed Jan 23 2013 Denis Baranov <baraka@altlinux.ru> 1.1.2-alt15
 - add parametr ENABLE_CUPS_DIALOG for disable
 
