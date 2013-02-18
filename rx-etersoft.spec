@@ -1,7 +1,7 @@
-# since rpm-build-intro 1.
+# since rpm-build-intro 1.7.24
 %define _sudoersdir %_sysconfdir/sudoers.d
 
-%define cups_root %_prefix/lib
+%define cups_root %_libexecdir
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
@@ -37,7 +37,7 @@ Requires: zenity
 Requires: cups cifs-utils
 Requires: foomatic-db foomatic-db-engine
 
-# for /usr/lib/cups/backend/smb
+# for %_libexecdir/cups/backend/smb
 # Requires: samba-client
 
 %if %_vendor == "alt"
