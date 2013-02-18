@@ -1059,23 +1059,34 @@ if [ "$CUPS_PidFile" == "0" ] ; then
     CUPSPidFileString=""
 fi
 
-cat <<EOF > $USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf
+# if patched cups (fix for CVE-2012-5519б https://bugzilla.altlinux.org/show_bug.cgi?id=28572)
+if [ -r /etc/cups/cups-files.conf ] ; then
+	LOCALCUPSCONFFILES=$USER_FAKE_HOME/.nx/C-$sess_id/cups/cups-files.conf
+else
+	LOCALCUPSCONFFILES=$USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf
+fi
+touch $USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf
+
+cat <<EOF > $LOCALCUPSCONFFILES
 SystemGroup sys root $USER
 AccessLog log/access_log
 ErrorLog log/error_log
 PageLog log/page_log
-LogLevel $CUPSLogLevel
 TempDir $USER_FAKE_HOME/.nx/C-$sess_id/cups/spool/tmp
 RequestRoot $USER_FAKE_HOME/.nx/C-$sess_id/cups/spool
 ServerRoot $USER_FAKE_HOME/.nx/C-$sess_id/cups/
 StateDir $USER_FAKE_HOME/.nx/C-$sess_id/cups/
 CacheDir $USER_FAKE_HOME/.nx/C-$sess_id/cups/cache
+$CUPSPidFileString
+EOF
+
+cat <<EOF >> $USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf
+LogLevel $CUPSLogLevel
 
 Listen localhost:$NODE_CUPSD_PORT
 Listen $NODE_CUPSD_SOCKET
 Browsing Off
 ServerName localhost
-$CUPSPidFileString
 
 #JJK:  Restrict access to the server...
 <Location />
