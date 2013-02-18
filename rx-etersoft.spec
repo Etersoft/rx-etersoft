@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.2
-Release: alt16
+Release: alt17
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -165,6 +165,10 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Mon Feb 18 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt17
+- use introduced macro from rpm-build-intro 1.7.25
+- rename freenx-server to rx-etersoft dir
+
 * Mon Feb 18 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt16
 - use _libexecdir instead _prefix/lib
 
