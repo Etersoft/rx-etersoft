@@ -1,3 +1,6 @@
+# since rpm-build-intro 1.
+%define _sudoersdir %_sysconfdir/sudoers.d
+
 %define cups_root %_prefix/lib
 %define oname freenx-server
 Name: rx-etersoft
@@ -83,7 +86,7 @@ install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
 install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/nxserver/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/nxserver/Xsession
 install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/nxserver/Xkbmap
-install -Dp -m400 %SOURCE6 %buildroot%_sysconfdir/sudoers.d/nxserver
+install -Dp -m400 %SOURCE6 %buildroot%_sudoersdir/nxserver
 install -Dp -m700 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
 install -Dp -m644 conf/node.conf %buildroot%_sysconfdir/nxserver/node.conf
 install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
@@ -124,7 +127,7 @@ fi
 %config(noreplace) %_sysconfdir/nxserver/acls/*
 %attr (0755,root,root) %config(noreplace) %_sysconfdir/nxserver/commands/*
 %config(noreplace) %_sysconfdir/logrotate.d/%name
-%attr(0400,root,root) %config(noreplace) %_sysconfdir/sudoers.d/nxserver
+%attr(0400,root,root) %config(noreplace) %_sudoersdir/nxserver
 %config(noreplace) %_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
 %_sysconfdir/nxserver/fixkeyboard
