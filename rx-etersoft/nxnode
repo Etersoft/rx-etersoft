@@ -654,9 +654,6 @@ node_start_applications()
 		nxlog "$FUNCNAME ($$): Call 'node_terminate_agent \"$sess_id\"'" &
 		node_terminate_agent "$sess_id"
 	fi
-	# Kill wineserver
-	nxlog "Kill wineserver" &
-	killall wineserver 2>/dev/null
 	nxlog "$FUNCNAME ($$): end" &
 }
 
@@ -898,6 +895,10 @@ node_start_agent()
 	rm -f "$USER_FAKE_HOME/.nx/C-$sess_id/pids/agent"
 	nxlog "$FUNCNAME ($$): call 'node_terminate_session \"$sess_id\" \"$NODE_FAILED\"'" &
 	node_terminate_session "$sess_id" "$NODE_FAILED"
+	
+	# Kill wineserver
+	nxlog "Kill wineserver" &
+	killall wineserver 2>/dev/null
 	
 	# remove possible leftovers of nxagent
 	nxlog "$FUNCNAME ($$):remove /tmp/.X$display-lock" &
