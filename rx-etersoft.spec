@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
-Version: 1.1.2
-Release: alt17
+Version: 1.1.3
+Release: alt1
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -165,6 +165,10 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Tue Apr 23 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt1
+- change place of kill wineserver
+- add initial license checking (eterbug #9262)
+
 * Mon Feb 18 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.2-alt17
 - use introduced macro from rpm-build-intro 1.7.25
 - rename freenx-server to rx-etersoft dir
