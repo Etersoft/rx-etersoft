@@ -452,6 +452,19 @@ node_find_application()
 	nxlog "$FUNCNAME ($$): end" &
 }
 
+# check file
+check_license()
+{
+	local flic="$1"
+	show_message()
+	{
+		$PATH_BIN/nxdialog -dialog ok -caption "RX@Etersoft message" -message "$@\nДля получения лицензии приобретите продукт RX@Etersoft:\nhttp://sales.etersoft.ru"
+		return 1
+	}
+	test -r "$flic" || show_message "Не найден файл лицензии $flic." || return
+	grep "RX@Etersoft" $flic || show_message "Некорректный файл лицензии $flic." || return
+}
+
 #
 # node_start_applications
 #
@@ -509,6 +522,10 @@ node_start_applications()
 	#
 
 	NODE_APPLICATION=$(node_find_application "$type")
+
+	if ! check_license /etc/nxserver/rx-etersoft.lic ; then
+		nxlog "$FUNCNAME ($$): License file is missed in /etc/nxserver/rx-etersoft.lic"
+	fi
 	
 	# For rdesktop/VNC, there is no application to start
 	if [ -n "$NODE_APPLICATION" ] ; then
