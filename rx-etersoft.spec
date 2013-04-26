@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.3
-Release: alt2
+Release: alt3
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -84,7 +84,7 @@ install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/nxserver/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/nxserver/Xsession
 install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/nxserver/Xkbmap
 install -Dp -m400 %SOURCE6 %buildroot%_sudoersdir/nxserver
-install -Dp -m700 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
+install -Dp -m755 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
 install -Dp -m644 conf/node.conf %buildroot%_sysconfdir/nxserver/node.conf
 install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
 install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls/
@@ -108,6 +108,7 @@ EOF
 %useradd -g nx -G utmp -d /var/lib/nxserver/home/ -s %_bindir/nxserver \
         -c "NX System User" nx 2>/dev/null ||:
 
+# Obsoleted (moved to conf.d/07-misc.conf)
 # rename config if updated
 if [ -r %_sysconfdir/sysconfig/%oname ] && [ ! -r %_sysconfdir/sysconfig/%name ] ; then
     mv -vf %_sysconfdir/sysconfig/%oname %_sysconfdir/sysconfig/%name
@@ -165,6 +166,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Fri Apr 26 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt3
+- nx-terminate-suspend: now use config variables from conf.d/07-misc.conf
+
 * Tue Apr 23 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt2
 - nxnode: fix license message (eterbug #9262)
 
