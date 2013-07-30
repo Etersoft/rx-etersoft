@@ -378,11 +378,8 @@ esac
 
 NUMLOCKX_STATUS="system"
 case "$NUMLOCK_METHOD" in
-	on)
-	    NUMLOCKX_STATUS="on"
-	;;
-	off)
-	    NUMLOCKX_STATUS="off"
+	on|off|client)
+	    NUMLOCKX_STATUS="$NUMLOCK_METHOD"
 	;;
 	*)
 	    NUMLOCKX_STATUS="system"

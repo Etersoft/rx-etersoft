@@ -512,6 +512,10 @@ node_start_applications()
 	done
 
 	#numlockx
+	if [ "$NUMLOCK_STATUS" = "client" ] ; then
+		$NUMLOCKX_STATUS = "$numlock"
+	fi
+	
 	if [ "$NUMLOCKX_STATUS" != "system" ] ; then
 	    nxlog "$FUNCNAME ($$): Run \"$NUMLOCKX $NUMLOCKX_STATUS\"" &
 	    "$NUMLOCKX" "$NUMLOCKX_STATUS"
@@ -1634,6 +1638,7 @@ startsession()
 	agent_domain=$(getparam agent_domain)
 	screeninfo=$(getparam screeninfo)
 	nodelay=$(getparam nodelay)
+	numlock=$(getparam numlock)
 	
 	sess_id="$SERVER_NAME-$display-$uniqueid"
 	NXSESSION_DIRECTORY="$USER_FAKE_HOME/.nx/C-$sess_id"
