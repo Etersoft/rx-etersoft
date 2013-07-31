@@ -459,9 +459,9 @@ check_license()
 	show_message()
 	{
 		$PATH_BIN/nxdialog -dialog ok -caption "RX@Etersoft message" -message "$@
-Для получения лицензии приобретите продукт RX@Etersoft:
-http://sales.etersoft.ru"
-		return 1
+Вы подключаетесь к терминальному серверу с использованием бесплатной версии RX@Etersoft.
+Обращаем ваше внимание, что техническая поддержка оказывается только для коммерческих версий RX@Etersoft.
+По вопросам приобретения обращайтесь по адресу: sales@etersoft.ru"
 	}
 	test -r "$flic" || show_message "Не найден файл лицензии $flic." || return
 	grep -q "RX@Etersoft" $flic || show_message "Некорректный файл лицензии $flic." || return
