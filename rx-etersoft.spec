@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.3
-Release: alt3
+Release: alt4
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -166,6 +166,11 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Wed Jul 31 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt4
+- add logic for numlockx status "client"
+- edit message about license, drop exit if no license (eterbug #9262)
+- nx-terminate-suspend now executes in /bin/bash
+
 * Fri Apr 26 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt3
 - nx-terminate-suspend: now use config variables from conf.d/07-misc.conf
 
