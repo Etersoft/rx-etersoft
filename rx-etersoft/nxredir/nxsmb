@@ -12,7 +12,6 @@
 # Read the config file
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --
 
-NXREDIR_LIBRARY="$PATH_LIB/rx-etersoft/libnxredir.so.0"
 COMMAND_SMB="$CUPS_BACKEND/smb"
 
 PORT=$(echo $DEVICE_URI | cut -d/ -f3 | cut -d@ -f2 | cut -d: -f2)

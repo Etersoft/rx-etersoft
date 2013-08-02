@@ -17,7 +17,5 @@ then
 	exit 0
 fi
 
-export LD_PRELOAD="$NXREDIR_LIBRARY${LD_PRELOAD:+:$LD_PRELOAD}"
-
 # invoke the program with the args given
-exec "$@"
+LD_PRELOAD="$NXREDIR_LIBRARY${LD_PRELOAD:+:$LD_PRELOAD}" exec "$@"
