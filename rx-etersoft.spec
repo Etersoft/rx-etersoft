@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.3
-Release: alt4
+Release: alt5
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -166,6 +166,10 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Mon Aug 05 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt5
+- nxredir: fix preloading
+- nxnode: do not exit if license if missed (eterbug #9262)
+
 * Wed Jul 31 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt4
 - add logic for numlockx status "client"
 - edit message about license, drop exit if no license (eterbug #9262)
