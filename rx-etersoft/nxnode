@@ -1990,7 +1990,10 @@ cmd_node_smbmount()
 	    return 1; }
 	
 	smbport=""; smbport=$(cat "$sess_dir/scripts/smbport" 2>/dev/null)
-	IDS_OPTS="uid=$USER,gid=$EGROUP,";
+
+	USERID=$(id -u "$USER")
+	EGROUPID=$(id -g "$USER")
+	IDS_OPTS="uid=$USERID,gid=$EGROUPID,";
 
 	if [ "$smbport" = "445" ] ; then # cifs
 	    TRY_USER=$(usermount_enable)
