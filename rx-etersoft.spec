@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.3
-Release: alt5
+Release: alt6
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -166,6 +166,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Tue Oct 01 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt6
+- workaround for uid/gid issues with broken mount.cifs (eter bug #9542)
+
 * Mon Aug 05 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt5
 - nxredir: fix preloading
 - nxnode: do not exit if license if missed (eterbug #9262)
