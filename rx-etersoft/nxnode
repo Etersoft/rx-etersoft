@@ -1079,12 +1079,7 @@ node_cupsd_setup()
 #JJK:        authentication
 #JJK:   - Note for more detailed logging set: LogLevel debug
 
-CUPSPidFileString="PidFile $USER_FAKE_HOME/.nx/C-$sess_id/pids/cupsd"
-if [ "$CUPS_PidFile" == "0" ] ; then
-    CUPSPidFileString=""
-fi
-
-# if patched cups (fix for CVE-2012-5519б https://bugzilla.altlinux.org/show_bug.cgi?id=28572)
+# if patched cups (fix for CVE-2012-5519, https://bugzilla.altlinux.org/show_bug.cgi?id=28572)
 if [ -r /etc/cups/cups-files.conf ] ; then
 	LOCALCUPSCONFFILES=$USER_FAKE_HOME/.nx/C-$sess_id/cups/cups-files.conf
 else
@@ -1102,7 +1097,6 @@ RequestRoot $USER_FAKE_HOME/.nx/C-$sess_id/cups/spool
 ServerRoot $USER_FAKE_HOME/.nx/C-$sess_id/cups/
 StateDir $USER_FAKE_HOME/.nx/C-$sess_id/cups/
 CacheDir $USER_FAKE_HOME/.nx/C-$sess_id/cups/cache
-$CUPSPidFileString
 EOF
 
 cat <<EOF >> $USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf
