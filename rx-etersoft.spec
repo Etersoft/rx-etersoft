@@ -152,6 +152,7 @@ fi
 %_bindir/nxpasswd
 %_bindir/nxprint
 %_bindir/nxredir
+%_bindir/cupsredir
 %_bindir/nxserver
 %_bindir/nxserver-helper
 %_bindir/nxserver-suid
@@ -161,6 +162,7 @@ fi
 %_bindir/rxsetup
 %dir %_libdir/%name/
 %attr(755,root,root) %_libdir/%name/libnxredir.so.0
+%attr(755,root,root) %_libdir/%name/libcupsredir.so.0
 %_cupslibdir/backend/nx*
 %attr(2750,nx,nx) %_var/lib/nxserver/home/
 %attr(2750,root,nx) %_var/lib/nxserver/db/
