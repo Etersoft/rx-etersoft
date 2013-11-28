@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Read the config file
+. $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --
+
+CUPSREDIR_LIBRARY="$PATH_LIB/rx-etersoft/libcupsredir.so.0"
+
+
+# invoke the program with the args given
+LD_PRELOAD="$CUPSREDIR_LIBRARY${LD_PRELOAD:+:$LD_PRELOAD}" exec "$@"
+

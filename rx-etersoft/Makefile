@@ -2,7 +2,7 @@
 
 SHELL = /bin/bash
 
-SUBDIRS=nxredir nxviewer-passwd nxserver-helper nxserver-suid nx-session-launcher
+SUBDIRS=nxredir cupsredir nxviewer-passwd nxserver-helper nxserver-suid nx-session-launcher
 PROGRAMS=nxacl.sample nxacl.app nxcheckload nxcups-gethost nxdesktop_helper nxdialog nxkeygen nxloadconfig nxnode nxnode-login nxprint nxserver nxserver-helper/nxserver-helper nxsetup nxviewer_helper nxviewer-passwd/nxpasswd/nxpasswd nx-session-launcher/nx-session-launcher nx-session-launcher/nx-session-launcher-suid nxserver-usermode nxserver-suid/nxserver-suid
 
 all:
