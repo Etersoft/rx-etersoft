@@ -26,7 +26,7 @@ int open64(const char *pathname, int flags, mode_t mode)
     if( strstr(pathname,"cupsd.pid")!=NULL )
     {
       fprintf(stderr,"cupsd.pid\n\n");
-      const char *newpath = "/tmp/cupsd.pid";
+      const char *newpath = getenv("CUPS_PID_PATH");
       return origin_open64(newpath,flags,mode);
     }
     return origin_open64(pathname,flags,mode);
@@ -40,7 +40,7 @@ int open(const char *pathname, int flags, mode_t mode)
     if( strstr(pathname,"cupsd.pid")!=NULL )
     {
       fprintf(stderr,"cupsd.pid\n\n");
-      const char *newpath = "/tmp/cupsd.pid";
+      const char *newpath = getenv("CUPS_PID_PATH");
       return origin_open(newpath,flags,mode);
     }
     return origin_open(pathname,flags,mode);

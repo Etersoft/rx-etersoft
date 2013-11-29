@@ -1173,10 +1173,9 @@ EOF
 #JJK: recording the pid is a Debianism. Instead, we will use the non-daemon
 #JJK: form of cupsd and capture the pid directly
 #JJK:	$COMMAND_CUPSD -c "$USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf" &>/dev/null </dev/null
-	$PATH_BIN/cupsredir $COMMAND_CUPSD  -c "$USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf" &>/dev/null </dev/null &
-	NODE_CUPSD_PID=$!
-	echo $NODE_CUPSD_PID >"$USER_FAKE_HOME/.nx/C-$sess_id/pids/cupsd"
-
+	export CUPS_PID_PATH="$USER_FAKE_HOME/.nx/C-$sess_id/pids/cupsd"
+	$PATH_BIN/cupsredir $COMMAND_CUPSD  -c "$USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf" &>/dev/null </dev/null
+	
 	# setup KDE
 	if [ "$ENABLE_KDE_CUPS" = "1" -a -e "$KDE_PRINTRC" ]
 	then
