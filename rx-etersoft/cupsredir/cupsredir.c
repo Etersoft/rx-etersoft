@@ -16,6 +16,7 @@
 #include <stdlib.h>
 
 static int (*origin_open64)(const char *pathname, int flags, mode_t mode)=NULL;
+static int (*origin_open)(const char *pathname, int flags, mode_t mode)=NULL;
 
 int open64(const char *pathname, int flags, mode_t mode)
 {
@@ -25,8 +26,22 @@ int open64(const char *pathname, int flags, mode_t mode)
     if( strstr(pathname,"cupsd.pid")!=NULL )
     {
       fprintf(stderr,"cupsd.pid\n\n");
-      const char *newpath = "/dev/null";
+      const char *newpath = "/tmp/cupsd.pid";
       return origin_open64(newpath,flags,mode);
     }
     return origin_open64(pathname,flags,mode);
+}
+
+int open(const char *pathname, int flags, mode_t mode)
+{
+    fprintf(stderr,"open=%s\n\n",pathname);
+    if(origin_open == NULL)
+      origin_open = dlsym(RTLD_NEXT,"open");
+    if( strstr(pathname,"cupsd.pid")!=NULL )
+    {
+      fprintf(stderr,"cupsd.pid\n\n");
+      const char *newpath = "/tmp/cupsd.pid";
+      return origin_open(newpath,flags,mode);
+    }
+    return origin_open(pathname,flags,mode);
 }
