@@ -1080,12 +1080,19 @@ node_cupsd_setup()
 #JJK:        authentication
 #JJK:   - Note for more detailed logging set: LogLevel debug
 
-# if patched cups (fix for CVE-2012-5519, https://bugzilla.altlinux.org/show_bug.cgi?id=28572)
-if [ -r /etc/cups/cups-files.conf ] ; then
+# LAV: if use patched cups (fix for CVE-2012-5519, https://bugzilla.altlinux.org/show_bug.cgi?id=28572)
+# LAV: we will need read permissions to /etc/cups dir
+if [ -e /etc/cups/cups-files.conf ] ; then
 	LOCALCUPSCONFFILES=$USER_FAKE_HOME/.nx/C-$sess_id/cups/cups-files.conf
 else
 	LOCALCUPSCONFFILES=$USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf
 fi
+
+# LAV: check for access permission to cupsd.conf
+if [ ! -e /etc/cups/cupsd.conf ] ; then
+	nxlog "$FUNCNAME ($$): we have no read permissions to /etc/cups files" &
+fi
+
 touch $USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf
 
 cat <<EOF > $LOCALCUPSCONFFILES
