@@ -30,6 +30,7 @@ nxenv_install:
 	done
 	#install -m644 node.conf.sample $(DESTDIR)/$$NX_ETC_DIR/
 	$(MAKE) -C nxredir install
+	$(MAKE) -C cupsredir install
 	# uncomment the following line to make
 	# nxserver-suid suid nx
 	#$(MAKE) suid_install

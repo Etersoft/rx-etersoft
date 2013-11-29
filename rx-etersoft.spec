@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.3
-Release: alt7
+Release: alt8
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -168,6 +168,10 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Fri Nov 29 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt8
+- changed the way cupsd is launched (eterbug #9555)
+- nxnode: fix check cups-files.conf presence
+
 * Thu Oct 03 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt7
 - remove PidFile for CUPS (eterbug #9490)
 
