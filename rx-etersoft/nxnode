@@ -491,6 +491,9 @@ node_start_applications()
 	#
 	
 	export DISPLAY=:$display
+	if [ "$pcscd" != 0 ] ; then
+		export PCSCLITE_CSOCK_NAME=~/.pcscd.comm
+	fi
 
 	if [ "$ENABLE_SOURCE_PROFILE" = "1" ] ; then
 	    nxlog "$FUNCNAME ($$): source profile" &
@@ -1606,7 +1609,7 @@ node_start_monitor()
 startsession()
 {
 
-	# user=knoppix&userip=192.168.1.66&uniqueid=6A8269CC467264EAEF6349D062689755&display=1000&session=lappi%5ffull&type=unix%2dkde&cache=8M&images=32M&cookie=84765070afee043cf83f85d21130145f&link=lan&render=1&backingstore=when_requested&imagecompressionmethod=0&geometry=fullscreen&keyboard=fr&media=0&samba=1&agent_server=&agent_user=&agent_password=
+	# user=knoppix&userip=192.168.1.66&uniqueid=6A8269CC467264EAEF6349D062689755&display=1000&session=lappi%5ffull&type=unix%2dkde&cache=8M&images=32M&cookie=84765070afee043cf83f85d21130145f&link=lan&render=1&backingstore=when_requested&imagecompressionmethod=0&geometry=fullscreen&keyboard=fr&media=0&pcscd=1&samba=1&agent_server=&agent_user=&agent_password=
 
 	user=$(getparam user)
 	userip=$(getparam userip)
@@ -1629,6 +1632,7 @@ startsession()
 	keyboard=$(getparam keyboard)
 	kbtype=$(getparam kbtype)
 	media=$(getparam media)
+	pcscd=$(getparam pcscd)
 	mediahelper=$(getparam mediahelper)
 	sync=$(getparam sync)
 	samba=$(getparam samba)
@@ -1792,6 +1796,7 @@ startsession()
 	# write options file
 	[ -z "$samba" ] && samba=0
 	[ -z "$media" ] && media=0
+	[ -z "$pcscd" ] && pcscd=0
 	[ -z "$nodelay" ] && nodelay=1
 
 	clipboard="$ENABLE_CLIPBOARD"
@@ -1821,12 +1826,12 @@ fi
 
 	nxlog "$FUNCNAME ($$): generate \"$USER_FAKE_HOME/.nx/C-$sess_id/options\"" &
 cat << EOF > "$USER_FAKE_HOME/.nx/C-$sess_id/options"
-nx/nx,${keyboard:+keyboard=$keyboard,}${kbtype:+kbtype=$kbtype,}${kbload:+kbload=$kbload,}${keymap:+keymap=$keymap,}${geometry:+geometry=$geometry,}${client:+client=$client,}${resize:+resize=$resize,}${CACHE}${IMAGES}${PACK}link=$link,nodelay=$nodelay,type=$realtype${clipboard:+,clipboard=$clipboard}${composite:+composite=$composite},cleanup=10,product=LFE/None/LFEN/None,shmem=1,${backingstore:+backingstore=$backingstore,}shpix=1,${ACCEPT}cookie=$proxy_cookie,id=$sess_id,samba=$samba,media=$media${sync:+,sync=$sync}${cups:+,cups=$cups}${keybd:+,keybd=$keybd}${aux:+,aux=$aux}${http:+,http=$http}${rdpcolors:+,rdpcolors=$rdpcolors}${rdpcache:+,rdpcache=$rdpcache}${fullscreen:+,fullscreen=1}${menu:+,menu=$menu}:$display
+nx/nx,${keyboard:+keyboard=$keyboard,}${kbtype:+kbtype=$kbtype,}${kbload:+kbload=$kbload,}${keymap:+keymap=$keymap,}${geometry:+geometry=$geometry,}${client:+client=$client,}${resize:+resize=$resize,}${CACHE}${IMAGES}${PACK}link=$link,nodelay=$nodelay,type=$realtype${clipboard:+,clipboard=$clipboard}${composite:+composite=$composite},cleanup=10,product=LFE/None/LFEN/None,shmem=1,${backingstore:+backingstore=$backingstore,}shpix=1,${ACCEPT}cookie=$proxy_cookie,id=$sess_id,samba=$samba,pcscd=$pcscd,media=$media${sync:+,sync=$sync}${cups:+,cups=$cups}${keybd:+,keybd=$keybd}${aux:+,aux=$aux}${http:+,http=$http}${rdpcolors:+,rdpcolors=$rdpcolors}${rdpcache:+,rdpcache=$rdpcache}${fullscreen:+,fullscreen=1}${menu:+,menu=$menu}:$display
 EOF
 	umask $OLD_UMASK
 #samba=$samba,
 	#cache=$cache,images=$images,pack=nopack,link=$link,type=$type,cleanup=0,accept=$userip,cookie=$proxy_cookie,id=$sess_id
-#samba=$samba,media=$media,render=$render:$display
+#samba=$samba,media=$media,pcscd=$pcscd,render=$render:$display
 
 	# write xauth script file
 	nxlog "$FUNCNAME ($$): write xauth script file" &
