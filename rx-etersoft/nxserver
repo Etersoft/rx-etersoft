@@ -780,6 +780,14 @@ do
 			PROTO=$(echo $CMD | sed 's/.*Version \(.*\)/\1/g')
 			echo_x "NX> 134 Accepted protocol: $PROTO"
 		;;
+		sshsharing*|SSHSHARING*)
+			server_get_params $CMD
+			PARAMS=$SERVER_PARAMS
+			CMDLINE=$PARAMS
+			export PCSCD_ENABLE=$(getparam pcscd)
+			[ "$PCSCD_ENABLE" = "1" ] && COMMAND_SSH="nxssh-login.ext.sh"
+			echo_x "sshsharing: $CMD"
+		;;
 		"set auth_mode*"|"SET AUTH_MODE*")
 			if [ "$CMD" = "set auth_mode password" -o "$CMD" = "SET AUTH_MODE PASSWORD" ]
 			then
