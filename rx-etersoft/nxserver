@@ -662,6 +662,22 @@ nxnode_login_register_reader()
 	NXNODE_READER="1"
 }
 
+#
+# call it with: server_get_params $CMD # no ""!
+#
+
+server_get_params()
+{
+	SERVER_PARAMS=$(echo "$@" | sed "s/^$1/\"/g; s/\" --/\&/g; s/\"//g; s/%20/ /g")
+	if [ "$SERVER_PARAMS" = "" ]
+	then
+		echo_x -n "NX> 106 Parameters: "
+		read SERVER_PARAMS2
+		SERVER_PARAMS=$(echo $SERVER_PARAMS2 | sed 's/%2B/+/g; s/%20/ /g')
+		echo_x
+	fi
+}
+
 # Start!
 [ "$NX_LOG_LEVEL" -ge "1" ] && touch "$NX_LOGFILE" >/dev/null 2>&1
 log 3 "-- NX SERVER START: $@ - ORIG_COMMAND=$SSH_ORIGINAL_COMMAND"
@@ -897,21 +913,6 @@ echo_x "NX> 103 Welcome to: $SERVER_NAME user: $USER"
 # remove old session infos from history
 session_cleanup
 
-#
-# call it with: server_get_params $CMD # no ""!
-#
-
-server_get_params()
-{
-	SERVER_PARAMS=$(echo "$@" | sed "s/^$1/\"/g; s/\" --/\&/g; s/\"//g; s/%20/ /g")
-	if [ "$SERVER_PARAMS" = "" ]
-	then
-		echo_x -n "NX> 106 Parameters: "
-		read SERVER_PARAMS2
-		SERVER_PARAMS=$(echo $SERVER_PARAMS2 | sed 's/%2B/+/g; s/%20/ /g')
-		echo_x
-	fi
-}
 
 nxnode_start()
 {
