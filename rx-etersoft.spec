@@ -1,16 +1,16 @@
 %define oname freenx-server
 Name: rx-etersoft
-Version: 1.1.3
-Release: alt8
+Version: 1.1.4
+Release: alt1
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
 License: GPLv2
 Url: http://wiki.etersoft.ru/RX
 
-Packager: Denis Baranov <baraka@etersoft.ru>
+Packager: Vitaly Lipatov <lav@etersoft.ru>
 
-Source: ftp://updates.etersoft.ru/pub/Etersoft/RX@Etersoft/%version/source/tarball/%name-%version.tar
+Source: /var/ftp/pvt/Etersoft/RX@Etersoft/%version/source/tarball/%name-%version.tar
 Source1: %name.init
 Source2: %name.outformat
 Source6: sudoers.conf
@@ -50,8 +50,8 @@ BuildRequires: expect sudo
 AutoReq: yes, nopython
 
 %description
-RX@Etersoft (formely freenx-server) is an application/thin-client server based on nx technology.
-NoMachine nx is the next-generation X compression and roundtrip suppression
+RX@Etersoft (formely freenx-server) is an application/thin-client server based on NX technology.
+NoMachine NX is the next-generation X compression and roundtrip suppression
 scheme. It can operate remote X11 sessions over 56k modem dialup links
 or anything better. This package contains a free (GPL) implementation
 of the nxserver component.
@@ -168,6 +168,11 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Sat Dec 24 2016 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt1
+- add environment variable PCSCLITE_CSOCK_NAME
+- nxserver: move up server_get_params
+- add pcscd sharing functionality
+
 * Fri Nov 29 2013 Vitaly Lipatov <lav@altlinux.ru> 1.1.3-alt8
 - changed the way cupsd is launched (eterbug #9555)
 - nxnode: fix check cups-files.conf presence
