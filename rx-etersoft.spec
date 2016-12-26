@@ -1,14 +1,14 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2
+Release: alt3
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
 License: GPLv2
 Url: http://wiki.etersoft.ru/RX
 
-Packager: Vitaly Lipatov <lav@etersoft.ru>
+Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 Source: /var/ftp/pvt/Etersoft/RX@Etersoft/%version/source/tarball/%name-%version.tar
 Source1: %name.init
@@ -168,6 +168,11 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Mon Dec 26 2016 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt3
+- nxprint: skip hangup on empty list, fix linked dirs
+- nxdialog: fix spaces strings comparing
+- nxdialog: drop NXCLIENT
+
 * Mon Dec 26 2016 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2
 - add LXDE/MATE support
 - add rsa and ed25519 keys
