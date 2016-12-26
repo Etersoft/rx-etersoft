@@ -76,13 +76,6 @@ export DISPLAY
 # This is now fixed in NXClient 3.0.0, but still people sometimes use
 # older clients.
 
-[ -x "/usr/bin/nxclient" ] && NXCLIENT="/usr/bin/nxclient"
-[ -x "/usr/NX/bin/nxclient" ] && NXCLIENT="/usr/NX/bin/nxclient"
-[ -z "$NXCLIENT" ] && NXCLIENT="/usr/NX/bin/nxclient"
-
-[ -x "$NXCLIENT" ] \
-	&& exec ${NXCLIENT} "${PARAMS[@]}"
-
 if [ -x "/usr/bin/xvt" ] ; then
     xterm_command="/usr/bin/xvt"
 else
