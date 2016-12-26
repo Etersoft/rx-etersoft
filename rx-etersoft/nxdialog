@@ -176,14 +176,14 @@ utility_printer()
 			$UTILITY_NXPRINT -d | awk -F'|' '{ print $2 }' | uniq | tr '\n' '|'
 		;;
 		getdrvlist)
-			$UTILITY_NXPRINT -d | awk -F'|' '($2=="'$2'") { print $4}' | tr '\n' '|'
+			$UTILITY_NXPRINT -d | awk -F'|' '($2=="'"$2"'") { print $4}' | tr '\n' '|'
 		;;
 		getextdrvlist)
-			$UTILITY_NXPRINT -d | awk -F'|' '($2=="'$2'") { print $4 "|" $3 }'
+			$UTILITY_NXPRINT -d | awk -F'|' '($2=="'"$2"'") { print $4 "|" $3 }'
 		;;
 
 		getdesc)
-			$UTILITY_NXPRINT -d | awk -F'|' '($4=="'$2'") { print $3}'
+			$UTILITY_NXPRINT -d | awk -F'|' '($4=="'"$2"'") { print $3}'
 		;;
 		getlist)
 			$UTILITY_NXPRINT -d
