@@ -48,7 +48,7 @@ then
 	#JJK: *SLOW* when using 1500+ foomatic drivers
 	#JJK: Note cache is reloaded after 60 minutes (or if empty)
 
-	if [ -z "$(find $UTILITY_DRIVERS_CACHE.all -mmin -60 2> /dev/null)" ]
+	if [ ! -s $UTILITY_DRIVERS_CACHE.all ] || [ -z "$(find $UTILITY_DRIVERS_CACHE.all -mmin -60 2> /dev/null)" ]
 	then
 		{ 
 		cd $PPD_DIR
@@ -57,7 +57,7 @@ then
 			    END { 
 			       for (i in a) 
 				  print "driver|" (a[i]=="ESP"?substr(b[i],0,index(b[i]," ")-1):a[i]) "|"b[i]"|"i"|en"
-			    }' $(find -name "*.ppd")
+			    }' /dev/null $(find -L -name "*.ppd")
 
 		if [ "$ENABLE_FOOMATIC" = "1" ]
 		then
