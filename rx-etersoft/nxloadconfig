@@ -210,12 +210,15 @@ then
 	COMMAND_GDM_X_SESSION=$DEFAULT_X_SESSION
 fi
 
-COMMAND_START_XFCE="`which startxfce4 2>/dev/null || which startlxde 2>/dev/null`"
-COMMAND_START_KDE="`which startkde4 2>/dev/null || env PATH=/usr/lib/kde4/bin:/usr/lib64/kde4/bin:$PATH which startkde 2>/dev/null || echo $COMMAND_START_XFCE`"
-COMMAND_START_GNOME="`which gnome-session 2>/dev/null || which startgnome2 2>/dev/null || echo $COMMAND_START_XFCE`"
-COMMAND_START_CDE="`which cdwm 2>/dev/null || echo $COMMAND_START_XFCE`"
+COMMAND_START_DEFAULT_DE="`which startxfce4 2>/dev/null || which startlxde 2>/dev/null || which startmate 2>/dev/null || which startkde4 2>/dev/null || which gnome-session 2>/dev/null`"
+COMMAND_START_XFCE="`which startxfce4 2>/dev/null || echo $COMMAND_START_DEFAULT_DE`"
+COMMAND_START_KDE="`which startkde4 2>/dev/null || env PATH=/usr/lib/kde4/bin:/usr/lib64/kde4/bin:$PATH which startkde 2>/dev/null || echo $COMMAND_START_DEFAULT_DE`"
+COMMAND_START_GNOME="`which gnome-session 2>/dev/null || which startgnome2 2>/dev/null || echo $COMMAND_START_DEFAULT_DE`"
+COMMAND_START_CDE="`which cdwm 2>/dev/null || echo $COMMAND_START_DEFAULT_DE`"
+COMMAND_START_LXDE="`which startlxde 2>/dev/null || echo $COMMAND_START_DEFAULT_DE`"
+COMMAND_START_MATE="`which startmate 2>/dev/null || echo $COMMAND_START_DEFAULT_DE`"
 
-COMMAND_XTERM="`which Terminal 2>/dev/null || which xterm 2>/dev/null`"
+COMMAND_XTERM="`which xfce4-terminal 2>/dev/null || which lxterminal 2>/dev/null || which xterm 2>/dev/null`"
 COMMAND_XAUTH=/usr/bin/xauth
 COMMAND_SMBMOUNT_CIFS=/sbin/mount.cifs
 COMMAND_SMBUMOUNT_CIFS="`which /sbin/umount.cifs 2>/dev/null || which umount`"
