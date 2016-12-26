@@ -401,6 +401,12 @@ node_find_application()
 		unix-cde)
 			NODE_STARTX=$COMMAND_START_CDE
 		;;
+		unix-lxde)
+			NODE_STARTX=$COMMAND_START_LXDE
+		;;
+		unix-mate)
+			NODE_STARTX=$COMMAND_START_MATE
+		;;
 		unix-xfce)
 			NODE_STARTX=$COMMAND_START_XFCE
 		;;
