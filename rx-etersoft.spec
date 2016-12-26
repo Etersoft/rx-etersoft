@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt1
+Release: alt2
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -168,6 +168,11 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Mon Dec 26 2016 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2
+- add LXDE/MATE support
+- add rsa and ed25519 keys
+- fix -pi using: -i not for pipe
+
 * Sat Dec 24 2016 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt1
 - add environment variable PCSCLITE_CSOCK_NAME
 - nxserver: move up server_get_params
