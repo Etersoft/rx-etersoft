@@ -465,8 +465,7 @@ check_license()
 	show_message()
 	{
 		$PATH_BIN/nxdialog -dialog ok -caption "RX@Etersoft message" -message "$@
-Вы подключаетесь к терминальному серверу с использованием бесплатной версии RX@Etersoft.
-Обращаем ваше внимание, что техническая поддержка оказывается только для коммерческих версий RX@Etersoft.
+Вы подключаетесь к терминальному серверу RX@Etersoft, не имея лицензии в файле $flic.
 По вопросам приобретения обращайтесь по адресу: sales@etersoft.ru"
 		return 1
 	}
