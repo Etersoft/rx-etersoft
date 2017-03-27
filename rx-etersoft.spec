@@ -8,7 +8,7 @@ Group: Networking/Remote access
 License: GPLv2
 Url: http://wiki.etersoft.ru/RX
 
-Packager: Vitaly Lipatov <lav@etersoft.ru>
+Packager: Vitaly Lipatov <lav@altlinux.ru>
 
 Source: /var/ftp/pvt/Etersoft/RX@Etersoft/%version/source/tarball/%name-%version.tar
 Source1: %name.init
