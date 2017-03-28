@@ -1,7 +1,9 @@
+# This spec is backported to ALTLinux c7 automatically by rpmbph script from etersoft-build-utils.
+#
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt3
+Release: alt2.M70C.3
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -30,7 +32,7 @@ Requires: openssl openssh-server openssh-clients
 Requires: netcat expect sudo xauth
 Requires: zenity
 
-Requires: cups cifs-utils
+Requires: cups samba-client
 Requires: foomatic-db foomatic-db-engine
 
 # for %_libexecdir/cups/backend/smb
@@ -48,6 +50,8 @@ BuildRequires: imake xorg-cf-files gccmakedep
 BuildRequires: expect sudo
 
 AutoReq: yes, nopython
+
+BuildRequires: rpm-build-compat >= 1.7.25
 
 %description
 RX@Etersoft (formely freenx-server) is an application/thin-client server based on NX technology.
@@ -168,6 +172,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Tue Mar 28 2017 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.3
+- backport to ALTLinux c7 (by rpmbph script)
+
 * Mon Dec 26 2016 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt3
 - nxprint: skip hangup on empty list, fix linked dirs
 - nxdialog: fix spaces strings comparing
