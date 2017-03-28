@@ -164,6 +164,7 @@ fi
 %attr(755,root,root) %_libdir/%name/libnxredir.so.0
 %attr(755,root,root) %_libdir/%name/libcupsredir.so.0
 %_cupslibdir/backend/nx*
+%dir %_var/lib/nxserver/
 %attr(2750,nx,nx) %_var/lib/nxserver/home/
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
