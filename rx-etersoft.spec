@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.3
+Release: alt2.M70C.4
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -32,8 +32,10 @@ Requires: openssl openssh-server openssh-clients
 Requires: netcat expect sudo xauth
 Requires: zenity
 
-Requires: cups samba-client
-Requires: foomatic-db foomatic-db-engine
+Requires: cups cifs-utils
+
+# See eterbug #12003
+# Requires: foomatic-db foomatic-db-engine
 
 # for %_libexecdir/cups/backend/smb
 # Requires: samba-client
@@ -59,6 +61,8 @@ NoMachine NX is the next-generation X compression and roundtrip suppression
 scheme. It can operate remote X11 sessions over 56k modem dialup links
 or anything better. This package contains a free (GPL) implementation
 of the nxserver component.
+
+Recommended Requires: foomatic-db foomatic-db-engine
 
 %prep
 %setup
@@ -173,6 +177,10 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Mon Oct 16 2017 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.4
+- drop foomatic requires (eterbug #12003), still recommended
+- pack missed /var/lib/nxserver
+
 * Tue Mar 28 2017 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.3
 - backport to ALTLinux c7 (by rpmbph script)
 
