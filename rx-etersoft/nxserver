@@ -585,6 +585,8 @@ nxnode_login()
 	PASS="$1"
 	shift
 
+	log 3 "AUTH MODE: $2"
+
 	if [ "$NXNODE_LOGIN_SLAVE_ENABLED" != "1" ]
 	then
 		NXNODE_TOSEND="$NXNODE_TOSEND" echo $PASS | $PATH_BIN/nxnode-login "$@"
@@ -698,6 +700,7 @@ PREFERRED_HOST=$(echo $SSH_ORIGINAL_COMMAND | tr '&' '\n' | grep "^host=" | cut 
 
 NXNODE_LOGIN_SLAVE_ENABLED="0"
 NXNODE_LOGIN_SLAVE=""
+AUTH_MODE="password"
 
 # slave mode does not work with load balancing
 if [ -n "$LOAD_BALANCE_SERVERS" -a "$ENABLE_SLAVE_MODE" = "1" ]
@@ -780,10 +783,24 @@ do
 			PROTO=$(echo $CMD | sed 's/.*Version \(.*\)/\1/g')
 			echo_x "NX> 134 Accepted protocol: $PROTO"
 		;;
+
 		"set auth_mode*"|"SET AUTH_MODE*")
 			if [ "$CMD" = "set auth_mode password" -o "$CMD" = "SET AUTH_MODE PASSWORD" ]
 			then
 				echo_x "Set auth_mode: password"
+				AUTH_MODE="password"
+			elif [ "$CMD" = "set auth_mode sshkey" -o "$CMD" = "SET AUTH_MODE SSHKEY" ]
+			then
+				echo_x "Set auth_mode: sshkey"
+				AUTH_MODE="sshkey"
+			elif [ "$CMD" = "set auth_mode pcsc" -o "$CMD" = "SET AUTH_MODE PCSC" ]
+			then
+				echo_x "Set auth_mode: pcsc"
+				AUTH_MODE="pcsc"
+			elif [ "$CMD" = "set auth_mode kerberos" -o "$CMD" = "SET AUTH_MODE KERBEROS" ]
+			then
+				echo_x "Set auth_mode: kerberos"
+				AUTH_MODE="kerberos"
 			else
 				echo_x "NX> 500 ERROR: unknown auth mode ''"
 			fi
@@ -795,12 +812,15 @@ do
 			read USER2
 			echo_x $USER2
 			
-			echo_x -n "NX> 102 Password: "
-			old_ifs="$IFS"
-			export IFS=$'\n'
-			read -r -s PASS
-			export IFS="$old_ifs"
-			echo_x ""
+			if [ "$AUTH_MODE" = "password" ]
+			then
+			    echo_x -n "NX> 102 Password: "
+			    old_ifs="$IFS"
+			    export IFS=$'\n'
+			    read -r -s PASS
+			    export IFS="$old_ifs"
+			    echo_x ""
+			fi
 			log 6 -n "Info: Auth method: "
 			
 			# USER already logged in?
@@ -857,7 +877,7 @@ do
 			then
 				log 6 -n "ssh "
 				export COMMAND_SSH			
-				nxnode_login "$PASS" -- ssh "$USER" "$SSHD_PORT" "$PATH_BIN/nxnode" --check 2>&1 >/dev/null
+				nxnode_login "$PASS" -- "ssh.$AUTH_MODE" "$USER" "$SSHD_PORT" "$PATH_BIN/nxnode" --check 2>&1 >/dev/null
 				if [ $? -eq 0 ]
 				then
 					LOGIN_SUCCESS="1"
