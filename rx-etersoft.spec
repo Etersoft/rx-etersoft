@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.2.0
-Release: alt1
+Release: alt2
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -22,8 +22,8 @@ Provides: freenx = %version
 Obsoletes: %oname
 Provides: %oname = %version
 
-%define NXVERSION 3.5.1.1
-Requires: nx >= %NXVERSION
+%define NXVERSION 3.5.1
+Requires: nx >= 3.5.1.1
 Requires: nxssh
 
 Requires: setxkbmap
@@ -174,6 +174,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Nov 09 2017 Pavel Vainerman <pv@altlinux.ru> 1.2.0-alt2
+- fixed NXVERSION for nxloadconfig
+
 * Wed Nov 08 2017 Pavel Vainerman <pv@altlinux.ru> 1.2.0-alt1
 - new release (nx + nxssh)
 
