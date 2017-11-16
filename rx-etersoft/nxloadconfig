@@ -379,13 +379,13 @@ case "$CUPS_LogLevel" in
 	;;
 esac
 
-NUMLOCKX_STATUS="system"
+NUMLOCKX_STATUS="client"
 case "$NUMLOCK_METHOD" in
-	on|off|client)
+	on|off|system)
 	    NUMLOCKX_STATUS="$NUMLOCK_METHOD"
 	;;
 	*)
-	    NUMLOCKX_STATUS="system"
+	    NUMLOCKX_STATUS="client"
 	;;
 esac
 #########################################################################
