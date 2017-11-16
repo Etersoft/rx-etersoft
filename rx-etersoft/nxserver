@@ -590,6 +590,8 @@ nxnode_login()
 	if [ "$NXNODE_LOGIN_SLAVE_ENABLED" != "1" ]
 	then
 		NXNODE_TOSEND="$NXNODE_TOSEND" echo $PASS | $PATH_BIN/nxnode-login "$@"
+		# https://bugs.etersoft.ru/show_bug.cgi?id=12243
+		sleep 0.5
 	else
 		if [ -z "$NXNODE_LOGIN_SLAVE" -a -z "$NX_TRUSTED_USER" ]
 		then
