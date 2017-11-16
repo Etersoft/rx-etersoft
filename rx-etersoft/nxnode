@@ -519,7 +519,7 @@ node_start_applications()
 
 	#numlockx
 	if [ "$NUMLOCKX_STATUS" = "client" ] ; then
-		$NUMLOCKX_STATUS = "$numlock"
+		NUMLOCKX_STATUS="$numlock"
 	fi
 	
 	if [ "$NUMLOCKX_STATUS" != "system" ] ; then
