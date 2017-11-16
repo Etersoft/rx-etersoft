@@ -972,7 +972,7 @@ server_nxnode_start()
         elif [ "$LOGIN_METHOD" = "SSH" ]
 	then
 	    export COMMAND_SSH
-	    NXNODE_TOSEND="$@" nxnode_login "$PASS" -- ssh "$USER" "$SSHD_PORT" "$PATH_BIN/nxnode" "$CMD" 2>&1 | log_tee
+	    NXNODE_TOSEND="$@" nxnode_login "$PASS" -- "ssh.$AUTH_MODE" "$USER" "$SSHD_PORT" "$PATH_BIN/nxnode" "$CMD" 2>&1 | log_tee
 	elif [ "$LOGIN_METHOD" = "SU" ]
 	then
 	    NXNODE_TOSEND="$@" nxnode_login "$PASS" -- su "$USER" "" "$PATH_BIN/nxnode" "$CMD" 2>&1 | log_tee
