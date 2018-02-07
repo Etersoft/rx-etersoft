@@ -1752,9 +1752,14 @@ do
 			( server_nxnode_start --smbmount "$USER" "$PARAMS" >/dev/null 2>&1 ) &
 		;;
 		addprinter*)
-			server_get_params $CMD
-			PARAMS=$SERVER_PARAMS
-			( server_nxnode_start --addprinter "$USER" "$PARAMS" >/dev/null 2>&1 ) &
+			if [ "$ENABLE_PRINTING" = "1" ]
+			then
+				server_get_params $CMD
+				PARAMS=$SERVER_PARAMS
+				( server_nxnode_start --addprinter "$USER" "$PARAMS" >/dev/null 2>&1 ) &
+			else
+				echo_x "Printing is disabled by server configuration"
+			fi
 		;;
 		*)
 			# disabled for 1.4.0-5 snapshot client
