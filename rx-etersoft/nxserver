@@ -1747,9 +1747,14 @@ do
 			fi
 		;;
 		addmount*)
-			server_get_params $CMD
-			PARAMS=$SERVER_PARAMS
-			( server_nxnode_start --smbmount "$USER" "$PARAMS" >/dev/null 2>&1 ) &
+			if [ "$ENABLE_SHARING" = "1" ]
+			then
+				server_get_params $CMD
+				PARAMS=$SERVER_PARAMS
+				( server_nxnode_start --smbmount "$USER" "$PARAMS" >/dev/null 2>&1 ) &
+			else
+				echo_x "Sharing is disabled by server configuration"
+			fi
 		;;
 		addprinter*)
 			if [ "$ENABLE_PRINTING" = "1" ]
