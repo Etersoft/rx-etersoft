@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.2.0
-Release: alt3
+Release: alt4
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -173,6 +173,18 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Feb 08 2018 Pavel Vainerman <pv@altlinux.ru> 1.2.0-alt4
+- implement smartcard authorization command for rx-etersoft (eterbug #12027)
+- add $AUTH_MODE into nxnode-login command line
+- add pause for non-slave mode
+- fix NUMLOCKX_STATUS setting
+- set numlock status 'client' as default
+- add restriction parameters for user's resources
+- implement ENABLE_PRINTING restriction
+- implement ENABLE_SHARING restriction
+- implement ENABLE_SMARTCARD restriction
+- added .gitlab-ci.yml
+
 * Mon Nov 13 2017 Pavel Vainerman <pv@altlinux.ru> 1.2.0-alt3
 - remove require for nxssh
 
