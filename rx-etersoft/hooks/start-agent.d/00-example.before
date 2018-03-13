@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# run before 'starting agent'.
+
+. nxloadconfig --userconf
+. ${NXSERVER_CONF_DIR}/functions.common

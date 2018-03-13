@@ -1,0 +1,46 @@
+#!/bin/sh
+
+stringinstring()
+{
+    case "$2" in
+	*$1*)
+	    return 0
+	;;
+    esac
+    
+    return 1
+}
+
+getparam()
+{
+    stringinstring "&$1=" "$NX_SESSION_CMDLINE" || return 1
+    echo "$NX_SESSION_CMDLINE" |  tr "&" "\n" | egrep "^"$1"=" | awk -F= '{ VAL=$2 } END { print VAL }' | sed 's|%24|$|'
+    return 0
+}
+
+
+nxlog() {
+if [ "$NX_LOG_LEVEL" -ge 6 ] ; then
+    [ -n "$password" ] || password=$(getparam password)
+    [ -n "$sessionid" ] || sessionid=$(getparam sessionid)
+    [ -n "$sessionid" ] || sessionid=$(getparam session_id)
+    [ -n "$sessionid" ] || sessionid=$sess_id
+    if [ "$USER" = "nx" ] ; then
+	#guest
+	echo "$(date "+%d.%m %X"): $@" | $COMMAND_PERL -p -e 's/--cookie=".+?"/--cookie="******"/g;  s/agent_password=.+?&/agent_password=******&/g; s/password=.+?&/password=******&/g;' >> "/var/log/nx/nxnode.log"
+    else
+	mkdir -p "$USER_FAKE_HOME/.nx"
+	if [ -n "$sessionid" ] ; then
+	    sessionid="$(echo "$sessionid" |  awk 'BEGIN {FS="-"} {i=NF; print $i}')"
+	    if [ -n "$password" ] ; then
+	        echo "$(date "+%d.%m %X"): $@" | $COMMAND_PERL -p -e 's/--cookie=".+?"/--cookie="******"/g;  s/agent_password=.+?&/agent_password=******&/g; s/'$password'/****/g' >> "$USER_FAKE_HOME/.nx/nxnode-$sessionid.log"
+	    else
+	        echo "$(date "+%d.%m %X"): $@" | $COMMAND_PERL -p -e 's/--cookie=".+?"/--cookie="******"/g;  s/agent_password=.+?&/agent_password=******&/g; s/password=.+?&/password=******&/g;' >> "$USER_FAKE_HOME/.nx/nxnode-$sessionid.log"
+	    fi
+	else
+	    echo "$(date "+%d.%m %X"): $@" | $COMMAND_PERL -p -e 's/--cookie=".+?"/--cookie="******"/g;  s/agent_password=.+?&/agent_password=******&/g; s/password=.+?&/password=******&/g;' >> "$USER_FAKE_HOME/.nx/nxnode.log"
+	fi
+    fi
+fi
+return 0
+}

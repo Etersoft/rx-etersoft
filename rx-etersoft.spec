@@ -1,7 +1,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.2.0
-Release: alt4
+Release: alt8
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -22,8 +22,8 @@ Provides: freenx = %version
 Obsoletes: %oname
 Provides: %oname = %version
 
-%define NXVERSION 3.5.1
-Requires: nx >= 3.5.1.1
+%define NXVERSION 3.5.2
+Requires: nx >= 3.5.2
 
 Requires: setxkbmap
 Requires: openssl openssh-server openssh-clients
@@ -94,6 +94,9 @@ install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
 install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls/
 install -m755 commands/* %buildroot%_sysconfdir/nxserver/commands/
 
+mkdir -p -m755 %buildroot%_sysconfdir/nxserver
+cp -r hooks %buildroot%_sysconfdir/nxserver
+
 %if %_vendor != "alt"
 install -m755 %SOURCE2 %buildroot%_datadir/misc/
 %endif
@@ -134,6 +137,8 @@ fi
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
+%dir %_sysconfdir/nxserver/hooks/ 
+%_sysconfdir/nxserver/hooks/*
 %attr(0400,root,root) %config(noreplace) %_sysconfdir/cron.d/%name
 %_sbindir/nx-terminate-suspend
 %_initddir/%name
@@ -173,6 +178,29 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Mon Mar 19 2018 Etersoft Builder <builder@etersoft.ru> 1.2.0-alt8
+- (usbip): added support options 'usbip','usbipdev', attach/detach usbip devices
+- (gitlab-ci): move "build for p7" to main build task
+
+* Fri Mar 16 2018 Etersoft Builder <builder@etersoft.ru> 1.2.0-alt7
+- SET VERSION 3.5.2
+- (pcsc): excluded parasitic dependence on the script 'nx-pcsc-helper.sh'
+
+* Tue Mar 13 2018 Etersoft Builder <builder@etersoft.ru> 1.2.0-alt6
+- (pcsc): added check directory for socket and script
+
+* Tue Mar 13 2018 Etersoft Builder <builder@etersoft.ru> 1.2.0-alt5
+- fix NUMLOCKX_STATUS setting
+- set numlock status 'client' as default
+- add restriction parameters for user's resources
+- implement ENABLE_PRINTING restriction
+- implement ENABLE_SHARING restriction
+- implement ENABLE_SMARTCARD restriction
+- added .gitlab-ci.yml
+- 1.2.0-alt4
+- added support for pcscd forwarding
+- (gitlab-ci): enable for master branch
+
 * Thu Feb 08 2018 Pavel Vainerman <pv@altlinux.ru> 1.2.0-alt4
 - implement smartcard authorization command for rx-etersoft (eterbug #12027)
 - add $AUTH_MODE into nxnode-login command line

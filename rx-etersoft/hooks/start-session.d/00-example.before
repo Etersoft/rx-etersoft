@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# run before 'starting session'
+# available NX_SESSION_CMDLINE 
+# RETURN: options if needed
+
+. nxloadconfig --userconf
+. ${NXSERVER_CONF_DIR}/functions.common
+
+
+# return options
+# echo "myoption=$val,myoption2=$val2,..."

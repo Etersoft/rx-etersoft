@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# run after 'starting session'
+# available NX_SESSION_CMDLINE 
+
+. nxloadconfig --userconf
+. ${NXSERVER_CONF_DIR}/functions.common

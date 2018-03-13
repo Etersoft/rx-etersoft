@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# run after 'starting agent'
+# available: NX_NODE_AGENT_PID
+
+. nxloadconfig --userconf
+. ${NXSERVER_CONF_DIR}/functions.common

@@ -20,6 +20,9 @@
 # Read the config file
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --userconf
 
+# directory for hooks
+[ -z "$NX_HOOKS_DIR" ] && NX_HOOKS_DIR="/etc/nxserver/hooks"
+
 #
 # -----------------------------------------------------------------------------
 # Startup of nxnode
@@ -114,6 +117,53 @@ if [ -n "$CMDLINE" ] ; then
 else
 	nxlog "$0 ($$): run nxnode with \"$@\"" &
 fi
+
+do_export_for_plugins() 
+{
+    export NXSESSION_DIRECTORY NX_HOOKS_DIR NX_LOG_LEVEL COMMAND_PERL USER_FAKE_HOME
+    export NX_SESSION_CMDLINE="$CMDLINE"
+}
+
+do_run_before_hooks()
+{
+    hook="$1"
+    [ -z "$hook" ] && {
+      nxlog "$FUNCNAME ($$): WARNING: unknown hook" &
+      return 1
+    }
+    
+    ! [ -d "${NX_HOOKS_DIR}/$hook" ] && return
+  
+    do_export_for_plugins
+    nxlog "$FUNCNAME ($$): starting hooks/$hook/*.before" &
+
+    plugins=$(echo ${NX_HOOKS_DIR}/$hook/*.before)
+    for p in ${plugins}; do
+      nxlog "$FUNCNAME ($$): starting $p" &
+      ${p}
+    done
+}
+
+do_run_after_hooks()
+{
+    hook="$1"
+    [ -z "$hook" ] && {
+      nxlog "$FUNCNAME ($$): WARNING: unknown hook" &
+      return 1
+    }
+    
+    ! [ -d "${NX_HOOKS_DIR}/$hook" ] && return
+
+    do_export_for_plugins
+    nxlog "$FUNCNAME ($$): starting hooks/$hook/*.after" &
+    
+    plugins=$(find ${NX_HOOKS_DIR}/$hook -name '*.after' -or -not -name '*.before' -type f)
+    for p in ${plugins}; do
+      nxlog "$FUNCNAME ($$): starting $p" &
+      ${p}
+    done
+}
+
 
 #
 # -----------------------------------------------------------------------------
@@ -387,6 +437,7 @@ node_find_application()
 {
 	nxlog "$FUNCNAME ($$): starting with args \"$@\"" &
 	NODE_STARTX=""
+	SESS_TYPE="$1"
 
 	case $1 in
 		shadow|windows|vnc)
@@ -449,7 +500,7 @@ node_find_application()
 
 	# last check for command existance
 	if ! which ${NODE_STARTX/ */} >/dev/null 2>&1 ; then
-		nxlog "$FUNCNAME ($$): command \"$NODE_STARTX\" does not exists, change it to stub" &
+		nxlog "$FUNCNAME ($$): command \"$NODE_STARTX\" for session type '$SESS_TYPE' does not exists, change it to stub" &
 		NODE_STARTX="$NX_ETC_DIR/commands/rx-missed-command $NODE_STARTX"
 	fi
 
@@ -616,6 +667,9 @@ node_start_applications()
 		nxlog "$FUNCNAME ($$): NODE_WM_PID=\"$NODE_WM_PID\"" &
 	fi
 
+	# RUN HOOKS
+	do_run_before_hooks "start-applications.d"
+	
 	#
 	# Use Xsession to execute the Desktop session
 	#
@@ -654,7 +708,13 @@ node_start_applications()
 	mkdir -p "$USER_FAKE_HOME/.nx/C-$sess_id/pids/"
 	echo "$NODE_APP_PID" >"$USER_FAKE_HOME/.nx/C-$sess_id/pids/apps/$NODE_APP_PID"
 	nxlog "$FUNCNAME ($$): Waiting for NODE_APP_PID" &
+	
+	# RUN HOOKS
+	export NX_NODE_APP_PID="$NODE_APP_PID"
+	do_run_after_hooks "start-applications.d"
+	
 	wait $NODE_APP_PID
+	
 	nxlog "$FUNCNAME ($$): NODE_APP_PID finished" &
 
 	#
@@ -802,6 +862,9 @@ node_start_agent()
 	
 	[ "$geometry" = "fullscreen" -a "$type" = "windows" ] && G="-geometry `echo $screeninfo | cut -d"x" -f1,2`"
 
+	# RUN HOOKS
+	do_run_before_hooks "start-agent.d"
+	
 	#
 	# Start the wanted nxagent
 	#
@@ -899,6 +962,11 @@ node_start_agent()
 	NODE_AGENT_PID=$!
 	mkdir -p "$USER_FAKE_HOME/.nx/C-$sess_id/pids/"
 	echo "$NODE_AGENT_PID" >"$USER_FAKE_HOME/.nx/C-$sess_id/pids/agent"
+	
+	# RUN HOOKS
+	export NX_NODE_AGENT_PID="$NODE_AGENT_PID"
+	do_run_after_hooks "start-agent.d"
+	
 	nxlog "$FUNCNAME ($$): Wait for NODE_AGENT_PID ($NODE_AGENT_PID)" &
 	wait $NODE_AGENT_PID
 
@@ -1810,6 +1878,17 @@ startsession()
 	ACCEPT="accept=$userip,"
 	[ "$userip" = "*" ] && ACCEPT=""
 
+	do_export_for_plugins
+	nxlog "$FUNCNAME ($$): starting hooks/start-session.d/*.before" &
+	plugins_options=''
+	plugins=$(find ${NX_HOOKS_DIR}/start-session.d -name '*.before')
+	for p in ${plugins}; do
+	   nxlog "$FUNCNAME ($$): starting $p" &
+	   opt=$( ${p} )
+	   [ -n "$opt" ] && plugins_options="${plugins_options},${opt}"
+	done
+	
+
 if [ "$1" = "application" ]
 then
 	# This needs to be set, else nxagent is terminated
@@ -1826,7 +1905,7 @@ fi
 
 	nxlog "$FUNCNAME ($$): generate \"$USER_FAKE_HOME/.nx/C-$sess_id/options\"" &
 cat << EOF > "$USER_FAKE_HOME/.nx/C-$sess_id/options"
-nx/nx,${keyboard:+keyboard=$keyboard,}${kbtype:+kbtype=$kbtype,}${kbload:+kbload=$kbload,}${keymap:+keymap=$keymap,}${geometry:+geometry=$geometry,}${client:+client=$client,}${resize:+resize=$resize,}${CACHE}${IMAGES}${PACK}link=$link,nodelay=$nodelay,type=$realtype${clipboard:+,clipboard=$clipboard}${composite:+composite=$composite},cleanup=10,product=LFE/None/LFEN/None,shmem=1,${backingstore:+backingstore=$backingstore,}shpix=1,${ACCEPT}cookie=$proxy_cookie,id=$sess_id,samba=$samba,media=$media${sync:+,sync=$sync}${cups:+,cups=$cups}${keybd:+,keybd=$keybd}${aux:+,aux=$aux}${http:+,http=$http}${rdpcolors:+,rdpcolors=$rdpcolors}${rdpcache:+,rdpcache=$rdpcache}${fullscreen:+,fullscreen=1}${menu:+,menu=$menu}:$display
+nx/nx,${keyboard:+keyboard=$keyboard,}${kbtype:+kbtype=$kbtype,}${kbload:+kbload=$kbload,}${keymap:+keymap=$keymap,}${geometry:+geometry=$geometry,}${client:+client=$client,}${resize:+resize=$resize,}${CACHE}${IMAGES}${PACK}link=$link,nodelay=$nodelay,type=$realtype${clipboard:+,clipboard=$clipboard}${composite:+composite=$composite},cleanup=10,product=LFE/None/LFEN/None,shmem=1,${backingstore:+backingstore=$backingstore,}shpix=1,${ACCEPT}cookie=$proxy_cookie,id=$sess_id,samba=$samba,media=$media${sync:+,sync=$sync}${cups:+,cups=$cups}${keybd:+,keybd=$keybd}${aux:+,aux=$aux}${http:+,http=$http}${rdpcolors:+,rdpcolors=$rdpcolors}${rdpcache:+,rdpcache=$rdpcache}${fullscreen:+,fullscreen=1}${menu:+,menu=$menu}${plugins_options}:$display
 EOF
 	umask $OLD_UMASK
 #samba=$samba,
@@ -1923,6 +2002,9 @@ then
 	echo "NX> 709 File-sharing port: $smbport"
 	echo "$smbport" >"$USER_FAKE_HOME/.nx/C-$sess_id/scripts/smbport"
 fi
+
+# RUN HOOKS
+do_run_after_hooks "start-session.d"
 
 # collection ...
 

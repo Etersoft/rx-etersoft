@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# run after application start
+# available NX_NODE_APP_PID
+
+. nxloadconfig --userconf
+. ${NX_HOOKS_DIR}/hooks.common
