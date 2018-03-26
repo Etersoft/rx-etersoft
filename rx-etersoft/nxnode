@@ -20,8 +20,9 @@
 # Read the config file
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --userconf
 
-# directory for hooks
-[ -z "$NX_HOOKS_DIR" ] && NX_HOOKS_DIR="/etc/nxserver/hooks"
+# directory for hooks (order is important)
+[ -z "$NX_HOOKS_DIRS" ] && NX_HOOKS_DIRS="/etc/nxserver/hooks /usr/lib/nxserver/hooks /usr/lib64/nxserver/hooks"
+[ -z "$NX_HOOKS_CONFDIR" ] && NX_HOOKS_CONFDIR="/etc/nxserver/hooks"
 
 #
 # -----------------------------------------------------------------------------
@@ -120,8 +121,17 @@ fi
 
 do_export_for_plugins() 
 {
-    export NXSESSION_DIRECTORY NX_HOOKS_DIR NX_LOG_LEVEL COMMAND_PERL USER_FAKE_HOME
+    export NXSESSION_DIRECTORY NX_HOOKS_CONFDIR NX_LOG_LEVEL COMMAND_PERL USER_FAKE_HOME
     export NX_SESSION_CMDLINE="$CMDLINE"
+}
+
+do_check_hooks()
+{
+    for hdir in ${NX_HOOKS_DIRS}; do
+        [ -d "${hdir}/$hook" ] && return 0
+    done
+    
+    return 1
 }
 
 do_run_before_hooks()
@@ -132,15 +142,18 @@ do_run_before_hooks()
       return 1
     }
     
-    ! [ -d "${NX_HOOKS_DIR}/$hook" ] && return
+    do_check_hooks $hook || return
   
     do_export_for_plugins
     nxlog "$FUNCNAME ($$): starting hooks/$hook/*.before" &
 
-    plugins=$(echo ${NX_HOOKS_DIR}/$hook/*.before)
-    for p in ${plugins}; do
-      nxlog "$FUNCNAME ($$): starting $p" &
-      ${p}
+    for hdir in ${NX_HOOKS_DIRS}; do
+	[ -d "${hdir}/$hook" ] || continue
+	plugins=$(echo ${hdir}/$hook/*.before)
+	for p in ${plugins}; do
+	  nxlog "$FUNCNAME ($$): starting $p" &
+	  ${p}
+	done
     done
 }
 
@@ -152,15 +165,18 @@ do_run_after_hooks()
       return 1
     }
     
-    ! [ -d "${NX_HOOKS_DIR}/$hook" ] && return
+    do_check_hooks $hook || return
 
     do_export_for_plugins
     nxlog "$FUNCNAME ($$): starting hooks/$hook/*.after" &
     
-    plugins=$(find ${NX_HOOKS_DIR}/$hook -name '*.after' -or -not -name '*.before' -type f)
-    for p in ${plugins}; do
-      nxlog "$FUNCNAME ($$): starting $p" &
-      ${p}
+    for hdir in ${NX_HOOKS_DIRS}; do
+	[ -d "${hdir}/$hook" ] || continue
+	plugins=$(find ${hdir}/$hook -name '*.after' -or -not -name '*.before' -type f)
+	for p in ${plugins}; do
+	  nxlog "$FUNCNAME ($$): starting $p" &
+	  ${p}
+	done
     done
 }
 
@@ -1881,11 +1897,14 @@ startsession()
 	do_export_for_plugins
 	nxlog "$FUNCNAME ($$): starting hooks/start-session.d/*.before" &
 	plugins_options=''
-	plugins=$(find ${NX_HOOKS_DIR}/start-session.d -name '*.before')
-	for p in ${plugins}; do
-	   nxlog "$FUNCNAME ($$): starting $p" &
-	   opt=$( ${p} )
-	   [ -n "$opt" ] && plugins_options="${plugins_options},${opt}"
+	for hdir in ${NX_HOOKS_DIRS}; do
+	    [ -d "${hdir}/start-session.d" ] || continue
+	    plugins=$(find ${hdir}/start-session.d -name '*.before')
+	    for p in ${plugins}; do
+	      nxlog "$FUNCNAME ($$): starting $p" &
+	      opt=$( ${p} )
+	      [ -n "$opt" ] && plugins_options="${plugins_options},${opt}"
+	    done
 	done
 	
 

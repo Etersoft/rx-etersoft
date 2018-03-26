@@ -4,4 +4,4 @@
 # available NX_NODE_APP_PID
 
 . nxloadconfig --userconf
-. ${NX_HOOKS_DIR}/hooks.common
+. ${NX_HOOKS_CONFDIR}/hooks.common

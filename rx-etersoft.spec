@@ -1,4 +1,5 @@
 %define oname freenx-server
+%define hooksroot nxserver
 Name: rx-etersoft
 Version: 1.2.0
 Release: alt9
@@ -94,8 +95,11 @@ install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
 install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls/
 install -m755 commands/* %buildroot%_sysconfdir/nxserver/commands/
 
-mkdir -p -m755 %buildroot%_sysconfdir/nxserver
-cp -r hooks %buildroot%_sysconfdir/nxserver
+mkdir -p -m755 %buildroot%_sysconfdir/%hooksroot
+cp -r hooks %buildroot%_sysconfdir/%hooksroot
+
+mkdir -p -m755 %buildroot%_libdir/%hooksroot
+cp -r hooks %buildroot%_libdir/%hooksroot
 
 %if %_vendor != "alt"
 install -m755 %SOURCE2 %buildroot%_datadir/misc/
@@ -137,8 +141,10 @@ fi
 %config(noreplace) %_sysconfdir/nxserver/Xkbmap
 %_sysconfdir/nxserver/fixkeyboard
 %_sysconfdir/nxserver/Xsession
-%dir %_sysconfdir/nxserver/hooks/ 
-%_sysconfdir/nxserver/hooks/*
+%dir %_sysconfdir/%hooksroot/hooks/ 
+%_sysconfdir/%hooksroot/hooks/*
+%dir %_libdir/%hooksroot/hooks/ 
+%_libdir/%hooksroot/hooks/*
 %attr(0400,root,root) %config(noreplace) %_sysconfdir/cron.d/%name
 %_sbindir/nx-terminate-suspend
 %_initddir/%name

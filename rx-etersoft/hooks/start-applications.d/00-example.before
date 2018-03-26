@@ -3,4 +3,4 @@
 # run before application start
 
 . nxloadconfig --userconf
-. ${NX_HOOKS_DIR}/hooks.common
+. ${NX_HOOKS_CONFDIR}/hooks.common

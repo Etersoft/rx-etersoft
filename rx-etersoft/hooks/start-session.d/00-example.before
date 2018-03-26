@@ -5,7 +5,7 @@
 # RETURN: options if needed
 
 . nxloadconfig --userconf
-. ${NXSERVER_CONF_DIR}/functions.common
+. ${NX_HOOKS_CONFDIR}/hooks.common
 
 
 # return options

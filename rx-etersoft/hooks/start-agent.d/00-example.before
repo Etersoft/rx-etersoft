@@ -3,4 +3,4 @@
 # run before 'starting agent'.
 
 . nxloadconfig --userconf
-. ${NXSERVER_CONF_DIR}/functions.common
+. ${NX_HOOKS_CONFDIR}/hooks.common
