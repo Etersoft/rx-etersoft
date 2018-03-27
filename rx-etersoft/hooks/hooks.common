@@ -44,3 +44,8 @@ if [ "$NX_LOG_LEVEL" -ge 6 ] ; then
 fi
 return 0
 }
+
+export2session()
+{
+    [ -n "$NX_HOOKS_EXPORT_FILE" ] && [ -n "$1" ] && echo "$1" >> ${NX_HOOKS_EXPORT_FILE}
+}

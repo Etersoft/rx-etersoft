@@ -121,7 +121,7 @@ fi
 
 do_export_for_plugins() 
 {
-    export NXSESSION_DIRECTORY NX_HOOKS_CONFDIR NX_LOG_LEVEL COMMAND_PERL USER_FAKE_HOME
+    export NXSESSION_DIRECTORY NX_HOOKS_CONFDIR NX_LOG_LEVEL COMMAND_PERL USER_FAKE_HOME NX_HOOKS_EXPORT_FILE
     export NX_SESSION_CMDLINE="$CMDLINE"
 }
 
@@ -144,17 +144,23 @@ do_run_before_hooks()
     
     do_check_hooks $hook || return
   
+    NX_HOOKS_EXPORT_FILE="$NXSESSION_DIRECTORY/hooks_before_export"
+    [ -n "$2" ] && NX_HOOKS_EXPORT_FILE="$NXSESSION_DIRECTORY/${2}_before_export"
+    
     do_export_for_plugins
     nxlog "$FUNCNAME ($$): starting hooks/$hook/*.before" &
 
     for hdir in ${NX_HOOKS_DIRS}; do
 	[ -d "${hdir}/$hook" ] || continue
-	plugins=$(echo ${hdir}/$hook/*.before)
+	plugins=$(find ${hdir}/$hook -name '*.before' -type f)
 	for p in ${plugins}; do
 	  nxlog "$FUNCNAME ($$): starting $p" &
 	  ${p}
 	done
     done
+    
+    [ -r "$NX_HOOKS_EXPORT_FILE" ] && . ${NX_HOOKS_EXPORT_FILE}
+    # rm -f ${NX_HOOKS_EXPORT_FILE}
 }
 
 do_run_after_hooks()
@@ -166,6 +172,9 @@ do_run_after_hooks()
     }
     
     do_check_hooks $hook || return
+    
+    NX_HOOKS_EXPORT_FILE="$NXSESSION_DIRECTORY/hooks_after_export"
+    [ -n "$2" ] && NX_HOOKS_EXPORT_FILE="$NXSESSION_DIRECTORY/${2}_after_export"
 
     do_export_for_plugins
     nxlog "$FUNCNAME ($$): starting hooks/$hook/*.after" &
@@ -178,6 +187,9 @@ do_run_after_hooks()
 	  ${p}
 	done
     done
+    
+    [ -r "$NX_HOOKS_EXPORT_FILE" ] && . ${NX_HOOKS_EXPORT_FILE}
+    # rm -f ${NX_HOOKS_EXPORT_FILE}
 }
 
 
@@ -684,7 +696,7 @@ node_start_applications()
 	fi
 
 	# RUN HOOKS
-	do_run_before_hooks "start-applications.d"
+	do_run_before_hooks "start-applications.d" "start_app"
 	
 	#
 	# Use Xsession to execute the Desktop session
@@ -727,7 +739,7 @@ node_start_applications()
 	
 	# RUN HOOKS
 	export NX_NODE_APP_PID="$NODE_APP_PID"
-	do_run_after_hooks "start-applications.d"
+	do_run_after_hooks "start-applications.d" "start-app"
 	
 	wait $NODE_APP_PID
 	
@@ -879,7 +891,7 @@ node_start_agent()
 	[ "$geometry" = "fullscreen" -a "$type" = "windows" ] && G="-geometry `echo $screeninfo | cut -d"x" -f1,2`"
 
 	# RUN HOOKS
-	do_run_before_hooks "start-agent.d"
+	do_run_before_hooks "start-agent.d" "start_agent"
 	
 	#
 	# Start the wanted nxagent
@@ -981,7 +993,7 @@ node_start_agent()
 	
 	# RUN HOOKS
 	export NX_NODE_AGENT_PID="$NODE_AGENT_PID"
-	do_run_after_hooks "start-agent.d"
+	do_run_after_hooks "start-agent.d" "start_agent"
 	
 	nxlog "$FUNCNAME ($$): Wait for NODE_AGENT_PID ($NODE_AGENT_PID)" &
 	wait $NODE_AGENT_PID
@@ -1894,6 +1906,7 @@ startsession()
 	ACCEPT="accept=$userip,"
 	[ "$userip" = "*" ] && ACCEPT=""
 
+	NX_HOOKS_EXPORT_FILE="$NXSESSION_DIRECTORY/start_session_before_export"
 	do_export_for_plugins
 	nxlog "$FUNCNAME ($$): starting hooks/start-session.d/*.before" &
 	plugins_options=''
@@ -1906,6 +1919,8 @@ startsession()
 	      [ -n "$opt" ] && plugins_options="${plugins_options},${opt}"
 	    done
 	done
+	[ -r "$NX_HOOKS_EXPORT_FILE" ] && . $NX_HOOKS_EXPORT_FILE
+	# rm -f $NX_HOOKS_EXPORT_FILE
 	
 
 if [ "$1" = "application" ]
@@ -2023,7 +2038,7 @@ then
 fi
 
 # RUN HOOKS
-do_run_after_hooks "start-session.d"
+do_run_after_hooks "start-session.d" "start_session"
 
 # collection ...
 
