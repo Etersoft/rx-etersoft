@@ -2,7 +2,7 @@
 %define hooksroot nxserver
 Name: rx-etersoft
 Version: 1.2.0
-Release: alt10
+Release: alt11
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -184,6 +184,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Wed Apr 04 2018 Pavel Vainerman <pv@altlinux.ru> 1.2.0-alt11
+- up version (test build)
+
 * Wed Apr 04 2018 Pavel Vainerman <pv@altlinux.ru> 1.2.0-alt10
 - nxserver: move up server_get_params
 - new build 1.1.4-alt1 (with rpmlog script)
@@ -213,13 +216,13 @@ fi
 - implement ENABLE_SHARING restriction
 - added .gitlab-ci.yml
 - 1.2.0-alt4
-- - (gitlab-ci): enable for master branch - (gitlab-ci): move "build for p7" to main build task - fix NUMLOCKX_STATUS setting - set numlock status 'client' as default - add restriction parameters for user's resources - implement ENABLE_PRINTING restriction - implement ENABLE_SHARING restriction - implement ENABLE_SMARTCARD restriction - added .gitlab-ci.yml - SET VERSION 3.5.2 (sync with nx) - added support hooks for plugins
+- (gitlab-ci): enable for master branch - (gitlab-ci): move "build for p7" to main build task - fix NUMLOCKX_STATUS setting - set numlock status 'client' as default - add restriction parameters for user's resources - implement ENABLE_PRINTING restriction - implement ENABLE_SHARING restriction - implement ENABLE_SMARTCARD restriction - added .gitlab-ci.yml - SET VERSION 3.5.2 (sync with nx) - added support hooks for plugins
 - 1.2.0-alt9
 - NX_HOOKS_DIR --> NX_HOOKS_DIRS (use /usr/lib/.../hooks, /etc/nxserver/hooks/)
 - added 'export2session' function (for modules)
 
 * Mon Mar 26 2018 Etersoft Builder <builder@etersoft.ru> 1.2.0-alt9
-- - (gitlab-ci): enable for master branch - (gitlab-ci): move "build for p7" to main build task - fix NUMLOCKX_STATUS setting - set numlock status 'client' as default - add restriction parameters for user's resources - implement ENABLE_PRINTING restriction - implement ENABLE_SHARING restriction - implement ENABLE_SMARTCARD restriction - added .gitlab-ci.yml - SET VERSION 3.5.2 (sync with nx) - added support hooks for plugins
+- (gitlab-ci): enable for master branch - (gitlab-ci): move "build for p7" to main build task - fix NUMLOCKX_STATUS setting - set numlock status 'client' as default - add restriction parameters for user's resources - implement ENABLE_PRINTING restriction - implement ENABLE_SHARING restriction - implement ENABLE_SMARTCARD restriction - added .gitlab-ci.yml - SET VERSION 3.5.2 (sync with nx) - added support hooks for plugins
 
 * Mon Mar 19 2018 Etersoft Builder <builder@etersoft.ru> 1.2.0-alt8
 - (usbip): added support options 'usbip','usbipdev', attach/detach usbip devices
