@@ -2,7 +2,7 @@
 %define hooksroot nxserver
 Name: rx-etersoft
 Version: 1.2.0
-Release: alt9
+Release: alt10
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -184,6 +184,40 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Wed Apr 04 2018 Pavel Vainerman <pv@altlinux.ru> 1.2.0-alt10
+- nxserver: move up server_get_params
+- new build 1.1.4-alt1 (with rpmlog script)
+- add LXDE/MATE support
+- add rsa and ed25519 keys
+- fix -pi using: -i not for pipe
+- fix license message
+- new build 1.1.4-alt2 (with rpmlog script)
+- nxprint: skip hangup on empty list, fix linked dirs
+- nxdialog: fix spaces strings comparing
+- nxdialog: drop NXCLIENT
+- 1.1.4-alt3
+- spec: pack missed /var/lib/nxserver
+- 1.1.4-alt4
+- turn off no-agent-forwarding option
+- new release (1.2.0)
+- fixed bug in NXVERSION for nxloadconfig
+- remove require for nxssh
+- add auth_mode support
+- implement smartcard authorization command for rx-etersoft (eterbug #12027)
+- add $AUTH_MODE into nxnode-login command line
+- add pause for non-slave mode
+- fix NUMLOCKX_STATUS setting
+- set numlock status 'client' as default
+- add restriction parameters for user's resources
+- implement ENABLE_PRINTING restriction
+- implement ENABLE_SHARING restriction
+- added .gitlab-ci.yml
+- 1.2.0-alt4
+- - (gitlab-ci): enable for master branch - (gitlab-ci): move "build for p7" to main build task - fix NUMLOCKX_STATUS setting - set numlock status 'client' as default - add restriction parameters for user's resources - implement ENABLE_PRINTING restriction - implement ENABLE_SHARING restriction - implement ENABLE_SMARTCARD restriction - added .gitlab-ci.yml - SET VERSION 3.5.2 (sync with nx) - added support hooks for plugins
+- 1.2.0-alt9
+- NX_HOOKS_DIR --> NX_HOOKS_DIRS (use /usr/lib/.../hooks, /etc/nxserver/hooks/)
+- added 'export2session' function (for modules)
+
 * Mon Mar 26 2018 Etersoft Builder <builder@etersoft.ru> 1.2.0-alt9
 - - (gitlab-ci): enable for master branch - (gitlab-ci): move "build for p7" to main build task - fix NUMLOCKX_STATUS setting - set numlock status 'client' as default - add restriction parameters for user's resources - implement ENABLE_PRINTING restriction - implement ENABLE_SHARING restriction - implement ENABLE_SMARTCARD restriction - added .gitlab-ci.yml - SET VERSION 3.5.2 (sync with nx) - added support hooks for plugins
 
