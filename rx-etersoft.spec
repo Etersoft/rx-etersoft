@@ -2,7 +2,7 @@
 %define hooksroot nxserver
 Name: rx-etersoft
 Version: 1.3.0
-Release: alt1
+Release: alt2
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -184,6 +184,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Apr 05 2018 Etersoft Builder <builder@etersoft.ru> 1.3.0-alt2
+- release 1.3.0
+
 * Thu Apr 05 2018 Pavel Vainerman <pv@altlinux.ru> 1.3.0-alt1
 - release 
 
