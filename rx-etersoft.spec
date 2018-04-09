@@ -1,8 +1,8 @@
 %define oname freenx-server
 %define hooksroot nxserver
 Name: rx-etersoft
-Version: 1.3.0
-Release: alt2
+Version: 1.4.0
+Release: alt1
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -24,7 +24,7 @@ Obsoletes: %oname
 Provides: %oname = %version
 
 %define NXVERSION 3.5.2
-Requires: nx >= 3.5.2
+Requires: nx-libs >= 3.5.2
 
 Requires: setxkbmap
 Requires: openssl openssh-server openssh-clients
