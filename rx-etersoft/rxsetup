@@ -96,14 +96,14 @@ start_freenx_server()
 clean_known_hosts()
 {
 	item "Clean known_hosts..."
-	docmd rm -fr /var/lib/nxserver/home/.ssh/known_hosts
+	docmd rm -fr /var/lib/rx-etersoft/home/.ssh/known_hosts
 }
 
 selinux_tune()
 {
 	item "Check SELinux..."
 	RESTORECON=$(which restorecon 2>/dev/null)
-	test -n "$RESTORECON" && docmd $RESTORECON -Rv /var/lib/nxserver
+	test -n "$RESTORECON" && docmd $RESTORECON -Rv /var/lib/rx-etersoft
 }
 
 # already run in nxsetup --install

@@ -8,5 +8,5 @@ If you are not using a packed version, correct the problem by following this ste
  - Execute $ chmod 4755 /usr/bin/nx-session-launcher-suid
  - Copy ConsoleKit-NX.conf to /etc/dbus-1/system.d/
  - Reload dbus by issuing /etc/init.d/dbus reload
- - Edit /etc/nxserver/node.conf and change '#COMMAND_START_GNOME=gnome-session'
+ - Edit /etc/rx-etersoft/node.conf and change '#COMMAND_START_GNOME=gnome-session'
      to 'COMMAND_START_GNOME=/usr/bin/nx-session-launcher-suid gnome-session'

@@ -189,7 +189,7 @@ done
 
 unset f
 
-RunIfExecutable /etc/nxserver/fixkeyboard
+RunIfExecutable /etc/rx-etersoft/fixkeyboard
 
 RunIfExecutable /etc/X11/xinit/xrandrrc
 RunIfExecutable /etc/X11/xinit/fixkeyboard
@@ -214,5 +214,5 @@ else
 
 	# Try default from runwm.
 	ExecIfExecutable runwm default
-	/etc/nxserver/commands/rx-missed-command runwm
+	/etc/rx-etersoft/commands/rx-missed-command runwm
 fi

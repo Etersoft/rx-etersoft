@@ -22,7 +22,7 @@ SourceIfNotEmpty /etc/sysconfig/rx-etersoft
 
 [ -n "$SESSION_TTL" ] || exit
 
-nxdir="/var/lib/nxserver/db/running"
+nxdir="/var/lib/rx-etersoft/db/running"
 nxserver="/usr/bin/nxserver"
 
 if [ -d "$nxdir" -a "$SESSION_TTL" -gt 0 ] ; then

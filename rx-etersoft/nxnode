@@ -21,8 +21,8 @@
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --userconf
 
 # directory for hooks (order is important)
-[ -z "$NX_HOOKS_DIRS" ] && NX_HOOKS_DIRS="/etc/nxserver/hooks /usr/lib/nxserver/hooks /usr/lib64/nxserver/hooks"
-[ -z "$NX_HOOKS_CONFDIR" ] && NX_HOOKS_CONFDIR="/etc/nxserver/hooks"
+[ -z "$NX_HOOKS_DIRS" ] && NX_HOOKS_DIRS="/etc/rx-etersoft/hooks /usr/lib/rx-etersoft/hooks /usr/lib64/rx-etersoft/hooks"
+[ -z "$NX_HOOKS_CONFDIR" ] && NX_HOOKS_CONFDIR="/etc/rx-etersoft/hooks"
 
 #
 # -----------------------------------------------------------------------------
@@ -614,8 +614,8 @@ node_start_applications()
 
 	NODE_APPLICATION=$(node_find_application "$type")
 
-	if ! check_license /etc/nxserver/rx-etersoft.lic ; then
-		nxlog "$FUNCNAME ($$): License file is missed in /etc/nxserver/rx-etersoft.lic" &
+	if ! check_license /etc/rx-etersoft/rx-etersoft.lic ; then
+		nxlog "$FUNCNAME ($$): License file is missed in /etc/rx-etersoft/rx-etersoft.lic" &
 	fi
 	
 	# For rdesktop/VNC, there is no application to start
@@ -728,8 +728,8 @@ node_start_applications()
 	#
 	# Startup the application
 	#
-	nxlog "$FUNCNAME ($$): Starting NODE_APPLICATION with /etc/nxserver/Xsession" &
-	DISPLAY=:$display /etc/nxserver/Xsession $NODE_APPLICATION >>"$USER_FAKE_HOME/.nx/C-$sess_id/session" 2>&1 &
+	nxlog "$FUNCNAME ($$): Starting NODE_APPLICATION with /etc/rx-etersoft/Xsession" &
+	DISPLAY=:$display /etc/rx-etersoft/Xsession $NODE_APPLICATION >>"$USER_FAKE_HOME/.nx/C-$sess_id/session" 2>&1 &
 	NODE_APP_PID=$!
 	nxlog "$FUNCNAME ($$): Start successful. NODE_APP_PID=$NODE_APP_PID" &
 	
@@ -1381,12 +1381,12 @@ sudomount_enable()
     ret=1; logstr0="$FUNCNAME ($$):"
     ostr="$(/usr/bin/sudo $COMMAND_SMBMOUNT_CIFS -V 2>&1)"; RC=$?
     [ $RC -ne 0 ] && { ret=0
-        nxlog "$logstr0 Mounting with sudo is disabled due $ostr. To enable, you must to change /etc/sudo.d/nxserver or /etc/sudoers file." &
+        nxlog "$logstr0 Mounting with sudo is disabled due $ostr. To enable, you must to change /etc/sudo.d/rxetersoft or /etc/sudoers file." &
     }
 
     ostr="$(/usr/bin/sudo $COMMAND_SMBUMOUNT_CIFS -V 2>&1)"; RC=$?
     [ $RC -ne 0 ] && { ret=0
-        nxlog "$logstr0 Umounting with sudo is disabled due $ostr. To enable, you must to change /etc/sudo.d/nxserver or /etc/sudoers file." &
+        nxlog "$logstr0 Umounting with sudo is disabled due $ostr. To enable, you must to change /etc/sudo.d/rxetersoft or /etc/sudoers file." &
     }
     echo $ret; return $RC
 }

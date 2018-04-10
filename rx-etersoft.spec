@@ -1,5 +1,5 @@
 %define oname freenx-server
-%define hooksroot nxserver
+%define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
 Release: alt1
@@ -74,26 +74,26 @@ Recommended Requires: foomatic-db foomatic-db-engine
 %install
 %makeinstall_std
 mkdir -p %buildroot%_bindir/
-mkdir -p %buildroot%_var/lib/nxserver/home/
-mkdir -p %buildroot%_var/lib/nxserver/db/
-mkdir -p %buildroot%_sysconfdir/nxserver/node.conf.d/
-mkdir -p %buildroot%_sysconfdir/nxserver/commands/
-mkdir -p %buildroot%_sysconfdir/nxserver/acls/
+mkdir -p %buildroot%_var/lib/%name/home/
+mkdir -p %buildroot%_var/lib/%name/db/
+mkdir -p %buildroot%_sysconfdir/%name/node.conf.d/
+mkdir -p %buildroot%_sysconfdir/%name/commands/
+mkdir -p %buildroot%_sysconfdir/%name/acls/
 mkdir -p %buildroot%_sysconfdir/cron.d/
 mkdir -p %buildroot%_datadir/misc/
 
 
 install -m755 rxsetup %buildroot%_bindir/
 install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
-install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/nxserver/fixkeyboard
-install -Dp -m755 data/Xsession %buildroot%_sysconfdir/nxserver/Xsession
-install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/nxserver/Xkbmap
-install -Dp -m400 %SOURCE6 %buildroot%_sudoersdir/nxserver
+install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/%name/fixkeyboard
+install -Dp -m755 data/Xsession %buildroot%_sysconfdir/%name/Xsession
+install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/%name/Xkbmap
+install -Dp -m400 %SOURCE6 %buildroot%_sudoersdir/rxetersoft
 install -Dp -m755 %SOURCE8 %buildroot%_sbindir/nx-terminate-suspend
-install -Dp -m644 conf/node.conf %buildroot%_sysconfdir/nxserver/node.conf
-install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/nxserver/node.conf.d/
-install -m644 conf/acls/* %buildroot%_sysconfdir/nxserver/acls/
-install -m755 commands/* %buildroot%_sysconfdir/nxserver/commands/
+install -Dp -m644 conf/node.conf %buildroot%_sysconfdir/%name/node.conf
+install -m644 conf/conf.d/*.conf %buildroot%_sysconfdir/%name/node.conf.d/
+install -m644 conf/acls/* %buildroot%_sysconfdir/%name/acls/
+install -m755 commands/* %buildroot%_sysconfdir/%name/commands/
 
 mkdir -p -m755 %buildroot%_sysconfdir/%hooksroot
 cp -r hooks %buildroot%_sysconfdir/%hooksroot
@@ -116,7 +116,7 @@ EOF
 
 %pre
 %groupadd nx 2>/dev/null ||:
-%useradd -g nx -G utmp -d /var/lib/nxserver/home/ -s %_bindir/nxserver \
+%useradd -g nx -G utmp -d /var/lib/%name/home/ -s %_bindir/nxserver \
         -c "NX System User" nx 2>/dev/null ||:
 
 # Obsoleted (moved to conf.d/07-misc.conf)
@@ -127,20 +127,20 @@ fi
 
 %files
 %doc AUTHORS CONTRIB nx-session-launcher/README.suid
-%dir %_sysconfdir/nxserver/
-%dir %_sysconfdir/nxserver/node.conf.d/
-%dir %_sysconfdir/nxserver/acls/
-%dir %_sysconfdir/nxserver/commands/
-%config(noreplace) %_sysconfdir/nxserver/node.conf
-%config(noreplace) %_sysconfdir/nxserver/node.conf.d/*
-%config(noreplace) %_sysconfdir/nxserver/acls/*
-%attr (0755,root,root) %config(noreplace) %_sysconfdir/nxserver/commands/*
+%dir %_sysconfdir/%name/
+%dir %_sysconfdir/%name/node.conf.d/
+%dir %_sysconfdir/%name/acls/
+%dir %_sysconfdir/%name/commands/
+%config(noreplace) %_sysconfdir/%name/node.conf
+%config(noreplace) %_sysconfdir/%name/node.conf.d/*
+%config(noreplace) %_sysconfdir/%name/acls/*
+%attr (0755,root,root) %config(noreplace) %_sysconfdir/%name/commands/*
 %config(noreplace) %_sysconfdir/logrotate.d/%name
-%attr(0400,root,root) %config(noreplace) %_sudoersdir/nxserver
+%attr(0400,root,root) %config(noreplace) %_sudoersdir/rxetersoft
 %config(noreplace) %_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
-%config(noreplace) %_sysconfdir/nxserver/Xkbmap
-%_sysconfdir/nxserver/fixkeyboard
-%_sysconfdir/nxserver/Xsession
+%config(noreplace) %_sysconfdir/%name/Xkbmap
+%_sysconfdir/%name/fixkeyboard
+%_sysconfdir/%name/Xsession
 %dir %_sysconfdir/%hooksroot/hooks/ 
 %_sysconfdir/%hooksroot/hooks/*
 %dir %_libdir/%hooksroot/hooks/ 
@@ -179,9 +179,9 @@ fi
 %attr(755,root,root) %_libdir/%name/libnxredir.so.0
 %attr(755,root,root) %_libdir/%name/libcupsredir.so.0
 %_cupslibdir/backend/nx*
-%dir %_var/lib/nxserver/
-%attr(2750,nx,nx) %_var/lib/nxserver/home/
-%attr(2750,root,nx) %_var/lib/nxserver/db/
+%dir %_var/lib/%name/
+%attr(2750,nx,nx) %_var/lib/%name/home/
+%attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
 * Thu Apr 05 2018 Etersoft Builder <builder@etersoft.ru> 1.3.0-alt2
@@ -501,7 +501,7 @@ fi
 - do not source /etc/X11/profile.d/* in freenx Xsession
 
 * Sun Feb 14 2010 Boris Savelev <boris@altlinux.org> 0.7.4-alt21
-- move default config set to %_datadir/%name/node.conf.d.
+- move default config set to %_datadir/nxserver/node.conf.d.
   All values must be override from /etc/nxserver/node.conf
   and /etc/nxserver/node.conf.d
 
