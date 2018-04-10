@@ -596,16 +596,6 @@ node_start_applications()
 		echo "sleep while get a valid DISPLAY"
 	done
 
-	#numlockx
-	if [ "$NUMLOCKX_STATUS" = "client" ] ; then
-		NUMLOCKX_STATUS="$numlock"
-	fi
-	
-	if [ "$NUMLOCKX_STATUS" != "system" ] ; then
-	    nxlog "$FUNCNAME ($$): Run \"$NUMLOCKX $NUMLOCKX_STATUS\"" &
-	    "$NUMLOCKX" "$NUMLOCKX_STATUS"
-	fi
-
 	mkdir -p "$USER_FAKE_HOME/.nx/C-$sess_id/pids/apps/"
 
 	#
@@ -736,6 +726,16 @@ node_start_applications()
 	mkdir -p "$USER_FAKE_HOME/.nx/C-$sess_id/pids/"
 	echo "$NODE_APP_PID" >"$USER_FAKE_HOME/.nx/C-$sess_id/pids/apps/$NODE_APP_PID"
 	nxlog "$FUNCNAME ($$): Waiting for NODE_APP_PID" &
+	
+	#numlockx
+	if [ "$NUMLOCKX_STATUS" = "client" ] ; then
+		NUMLOCKX_STATUS="$numlock"
+	fi
+	
+	if [ "$NUMLOCKX_STATUS" != "system" ] ; then
+	    nxlog "$FUNCNAME ($$): Run \"$NUMLOCKX $NUMLOCKX_STATUS\"" &
+	    sleep 5 && DISPLAY=:$display "$NUMLOCKX" "$NUMLOCKX_STATUS" &
+	fi
 	
 	# RUN HOOKS
 	export NX_NODE_APP_PID="$NODE_APP_PID"
