@@ -186,6 +186,11 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Apr 12 2018 Pavel Vainerman <pv@altlinux.ru> 1.4.0-alt1
+- update requires
+- rename "xxx/nxserver" --> "xxx/rx-etersoft" (eterbug #12785)
+- fixed bug with set numlock (eterbug #9384) 
+
 * Thu Apr 05 2018 Etersoft Builder <builder@etersoft.ru> 1.3.0-alt2
 - release 1.3.0
 
