@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt1
+Release: alt2
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -186,6 +186,9 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Apr 12 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt2
+- added changelog
+
 * Thu Apr 12 2018 Pavel Vainerman <pv@altlinux.ru> 1.4.0-alt1
 - update requires
 - rename "xxx/nxserver" --> "xxx/rx-etersoft" (eterbug #12785)
