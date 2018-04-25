@@ -864,12 +864,18 @@ do
 			if [ "$ENABLE_SSH_AUTHENTICATION" = "1" -a "$LOGIN_SUCCESS" = "0" ]
 			then
 				log 6 -n "ssh "
-				export COMMAND_SSH			
-				nxnode_login "$PASS" -- ssh "$USER" "$SSHD_PORT" "$PATH_BIN/nxnode" --check 2>&1 >/dev/null
-				if [ $? -eq 0 ]
+				if [ -z $USERLOCKFILEPATH ] || [ ! -f $USERLOCKFILEPATH ] || [ `cat $USERLOCKFILEPATH` = "$USER" ]
 				then
-					LOGIN_SUCCESS="1"
-					LOGIN_METHOD="SSH"
+					export COMMAND_SSH
+					nxnode_login "$PASS" -- ssh "$USER" "$SSHD_PORT" "$PATH_BIN/nxnode" --check 2>&1 >/dev/null
+					if [ $? -eq 0 ]
+					then
+						LOGIN_SUCCESS="1"
+						LOGIN_METHOD="SSH"
+						[ ! -z "$USERLOCKFILEPATH" ] &&  echo "$USER" > $USERLOCKFILEPATH
+					fi
+				else
+					log -6 "locking user - cancel authentication"
 				fi
 			fi
 			
