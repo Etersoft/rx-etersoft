@@ -1659,6 +1659,18 @@ do
 		
 			status=$(getparam status)
 
+			# eterbug #12849
+			if [ $ENABLE_TAKEOVER_SESSIONS = 0 ]
+			then
+				status=`echo $status | sed -e "s/[Rr]unning//g" -e "s/^,//" -e "s/,$//"`
+
+				# empty status means all sessions, but we must hide "running"
+				if [ -z $status ]
+				then
+					status="Suspended"
+				fi
+			fi
+
 			if [ "$status" = "Suspended" -a -n "$(getparam screeninfo)" ]
 			then
 				session_list_user_suspended "$USER" "Suspended" "$(getparam screeninfo)" "$(getparam type)"
