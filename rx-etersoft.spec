@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt2
+Release: alt3
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -186,6 +186,9 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Apr 27 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt3
+- implement taking over control (eterbug #12849)
+
 * Thu Apr 12 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt2
 - added changelog
 
