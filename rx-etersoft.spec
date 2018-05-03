@@ -25,6 +25,7 @@ Provides: %oname = %version
 
 %define NXVERSION 3.5.2
 Requires: nx-libs >= 3.5.2
+Requires: nxagent
 
 Requires: setxkbmap
 Requires: numlockx
