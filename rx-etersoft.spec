@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.5
+Release: alt2.M70C.6
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -177,6 +177,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Fri May 18 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.6
+- fixed bug with set numlock (eterbug #9384)
+
 * Fri May 18 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.5
 - hack for locking first user (eterbug #12850)
 - implement taking over control (eterbug #12849)
