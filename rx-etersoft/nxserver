@@ -491,7 +491,7 @@ session_close()
 	$COMMAND_PERL -pi -e "s/startTime=\(.*\)/startTime=\1\nendTime=$(date +%s)/" $NX_SESS_DIR/running/sessionId'{'$1'}'
 	session_status $1 "Finished"
 	[ "$SESSION_HISTORY" = "0" ] && rm -f $NX_SESS_DIR/running/sessionId'{'$1'}'
-	[ "$SESSION_HISTORY" = "0" ] || mv -f $NX_SESS_DIR/running/sessionId'{'$1'}' $NX_SESS_DIR/closed/sessionId'{'$1'}'
+	[ "$SESSION_HISTORY" = "0" ] || mv -f $NX_SESS_DIR/running/sessionId'{'$1'}' $NX_SESS_DIR/closed/sessionId'{'$1'}' 2>/dev/null
 }
 
 session_fail()
