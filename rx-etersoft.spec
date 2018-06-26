@@ -33,6 +33,7 @@ Requires: sessreg
 Requires: openssl openssh-server openssh-clients
 Requires: netcat expect sudo xauth
 Requires: zenity
+Requires: iconv
 
 Requires: cups cifs-utils
 

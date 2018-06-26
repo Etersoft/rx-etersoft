@@ -2383,6 +2383,9 @@ cmd_node_addprinter()
 		MODEL="$USER_FAKE_HOME/.nx/config/ppd/$printer.ppd"
 	fi
 	
+	# hack for fix https://bugs.etersoft.ru/show_bug.cgi?id=12972
+	sleep 5
+	
 	if [ ! -r "$MODEL" ]
 	then
 		# Foomatic and co
