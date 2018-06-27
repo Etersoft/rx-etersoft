@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt4
+Release: alt5
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -187,6 +187,10 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Wed Jun 27 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt5
+- fix session cleanup error (eterbug #12933)
+- (CI): added README.CI.md
+
 * Thu May 03 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt4
 - added require for nxagent (eterbug #12860)
 
