@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt6
+Release: alt7
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -188,6 +188,9 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Jun 28 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt7
+- (CI): minor fixes in pipeline
+
 * Wed Jun 27 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt6
 - fix "add printer" bug (eterbug #12972)
 - (CI): added test build stage
