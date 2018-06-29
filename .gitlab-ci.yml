@@ -75,7 +75,7 @@ test build:
     - export TMPDIR=/tmp/.private/${USER}; export TMP=${TMPDIR}
     - export RPMDIR=${DEV_RPMDIR}/$CI_BUILD_ID
     - mkdir -p $RPMDIR/sources
-    - eterremove remove --days $DEV_EXPIRE_IN dirs ${DEV_RPMDIR} || echo "ignore remove error.."
+    - eterremove remove --days $DEV_EXPIRE_IN dirs ${DEV_RPMDIR} --notest || echo "ignore remove error.."
     - /usr/bin/rpmlog -q -r -l
     - korinf -f rx-etersoft.spec x86_64/ALTLinux/p8 ${RPMDIR}
     - korinf -f rx-etersoft.spec x86_64/ALTLinux/Sisyphus ${RPMDIR}
