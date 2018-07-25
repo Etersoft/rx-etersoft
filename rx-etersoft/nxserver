@@ -875,6 +875,7 @@ do
 						[ ! -z "$USERLOCKFILEPATH" ] &&  echo "$USER" > $USERLOCKFILEPATH
 					fi
 				else
+					echo_x "NX> 500 ERROR: Access denied. User '$USER' can not be connected to the server RX@Etersoft"
 					log -6 "locking user - cancel authentication"
 				fi
 			fi
