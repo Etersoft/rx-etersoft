@@ -16,6 +16,7 @@ test build:
     - eterremove remove --days $DEV_EXPIRE_IN dirs ${DEV_RPMDIR} || echo "ignore remove error.."
     - /usr/bin/rpmlog -q -r -l
     - korinf -f rx-etersoft.spec x86_64/ALTLinux/p8 ${RPMDIR}
+    - korinf -f rx-etersoft.spec x86_64/ALTLinux/c7 ${RPMDIR}
   only:
     - /^c7-ci-.*/
 
