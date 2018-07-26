@@ -861,6 +861,7 @@ do
 			fi
 
 			# SSH based auth
+			local SKIP_WRONG_AUTH_MESSAGE=''
 			if [ "$ENABLE_SSH_AUTHENTICATION" = "1" -a "$LOGIN_SUCCESS" = "0" ]
 			then
 				log 6 -n "ssh "
@@ -875,6 +876,7 @@ do
 						[ ! -z "$USERLOCKFILEPATH" ] &&  echo "$USER" > $USERLOCKFILEPATH
 					fi
 				else
+					SKIP_WRONG_AUTH_MESSAGE=1
 					echo_x "NX> 500 ERROR: Access denied. User '$USER' can not be connected to the server RX@Etersoft"
 					log -6 "locking user - cancel authentication"
 				fi
@@ -906,7 +908,9 @@ do
 				. $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --userconf
 				break
 			else
-				echo_x "NX> 404 ERROR: wrong password or login"
+				if [ -z "$SKIP_WRONG_AUTH_MESSAGE" ]; then
+					echo_x "NX> 404 ERROR: wrong password or login"
+				fi
 				echo_x "NX> 999 Bye"
 				if [ "$ENABLE_LOG_FAILED_LOGINS" = "1" ]
 				then
