@@ -1,0 +1,34 @@
+version: 0.3
+
+project:
+ name: "rx-etersoft"
+ apt:
+   sources:
+     - "rpm ftp://server/pub ALTLinux/p8/branch/x86_64 classic"
+     - "rpm ftp://server/pub ALTLinux/p8/branch/noarch classic"
+     - "rpm ftp://server/pub/Etersoft/LINUX@Etersoft/p8 branch/x86_64 addon"
+     - "rpm ftp://server/pub/Etersoft/LINUX@Etersoft/p8 branch/noarch addon"
+
+ groups:
+   rx:
+     nodes:
+       rx-etersoft:
+         context: "rx-etersoft-$BUILD_ID"
+         skip_compose: yes
+         image: x64.p8-rx-etersoft
+         start_command: start-rx.sh
+         hostname: "rx-etersoft-$BUILD_ID"
+         environment:
+           - "SERVICE_NAME=$SERVICE_NAME"
+           - "SERVICE_TAGS=rx-etersoft,build-$BUILD_ID"
+         ports:
+           - "$CI_BUILD_ID:22"
+         copy:
+           - "rx-test.list:/etc/apt/sources.list.d/"
+           - "03-logging.conf:/tmp/"
+
+         before_command:
+           - useradd guest && usermod -a -G users guest && usermod -a -G lp guest && echo 'guest:123' | chpasswd
+           - epm repolist && epm update
+           - epm i --auto rx-etersoft
+           - cp -f /tmp/03-logging.conf /etc/rx-etersoft/node.conf.d/
