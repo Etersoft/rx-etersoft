@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt5.M70C
+Release: alt2.M70C.12
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -177,13 +177,16 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
-* Wed Aug 15 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt5.M70C
+* Thu Aug 16 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.12
+- new build
+
+* Wed Aug 15 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt2.M70C.11
 - added option "cups: set default driver for all printers" eterbug #13062
 
-* Fri Aug 10 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt4.M70C
+* Fri Aug 10 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt2.M70C.10
 - (CI): (c7): use rx-daas-templates project
 
-* Wed Aug 08 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt3.M70C
+* Wed Aug 08 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt2.M70C.9
 - fix session cleanup error (eterbug #12933)
 - fix "add printer" bug (eterbug #12972)
 - added error message for 'userock' mode (access denied)
@@ -191,6 +194,12 @@ fi
 - added build for 'c7'
 - added 'skip basic wrong auth message'
 - (CI): added special build for c7
+
+* Mon Jul 30 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.8
+- fix session cleanup error (eterbug #12933)
+- fix "add printer" bug (eterbug #12972)
+- added error message for 'userlock' mode (access denied)
+- added 'skip basic wrong auth message'
 
 * Fri May 18 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.6
 - fixed bug with set numlock (eterbug #9384)
