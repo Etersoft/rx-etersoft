@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt7
+Release: alt8
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -188,6 +188,11 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Aug 02 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt8
+- fix terminate error (eterbug #12933)
+- (CI): added real remove old builds
+- (gitlab-ci): added tests with docker
+
 * Thu Jun 28 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt7
 - (CI): minor fixes in pipeline
 
