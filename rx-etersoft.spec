@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.6
+Release: alt3.M70C
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -177,6 +177,15 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Wed Aug 08 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt3.M70C
+- fix session cleanup error (eterbug #12933)
+- fix "add printer" bug (eterbug #12972)
+- added error message for 'userock' mode (access denied)
+- added gitlab-ci.yml for "c7"  (test build)
+- added build for 'c7'
+- added 'skip basic wrong auth message'
+- (CI): added special build for c7
+
 * Fri May 18 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.6
 - fixed bug with set numlock (eterbug #9384)
 
