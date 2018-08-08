@@ -7,6 +7,31 @@ variables:
 stages:
   - build
 
+build and public:
+  stage: build
+  script:
+    - export TMPDIR=/tmp/.private/${USER}; export TMP=${TMPDIR}
+    - git remote | grep -q gitlab || git remote add gitlab git@gitlab.eterfund.ru:rx-etersoft/rx-etersoft.git
+    - /usr/bin/rpmlog -q -r -l
+    - korinf -f rx-etersoft.spec x86_64/ALTLinux/c7 /var/ftp/pvt/Etersoft/RX@Etersoft/c7
+    - git push -f --tags gitlab HEAD:c7
+  
+  after_script:
+    - mkdir -p RPM/log; cp -rf ${HOME}/RPM/log/*rx-etersoft*.log RPM/log/
+    - mkdir -p korinf-log; cp -rf ${HOME}/RPM/tmp/korinf-log/* korinf-log/
+
+  artifacts:
+    paths:
+    - RPM/log
+    - korinf-log
+    expire_in: 10 days
+
+  only:
+    - c7
+
+  tags:
+    - rx-build
+
 test build:
   stage: build
   script:
