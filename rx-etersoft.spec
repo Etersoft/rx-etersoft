@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt3.M70C
+Release: alt4.M70C
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -177,6 +177,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Fri Aug 10 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt4.M70C
+- (CI): (c7): use rx-daas-templates project
+
 * Wed Aug 08 2018 Etersoft Builder <builder@etersoft.ru> 1.1.4-alt3.M70C
 - fix session cleanup error (eterbug #12933)
 - fix "add printer" bug (eterbug #12972)
