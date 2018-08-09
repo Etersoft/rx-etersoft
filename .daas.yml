@@ -17,7 +17,7 @@ project:
          skip_compose: yes
          image: x64.p8-rx-etersoft
          start_command: start-rx.sh
-         hostname: "rx-etersoft-$BUILD_ID"
+         hostname: "rx-server-$BUILD_ID"
          environment:
            - "SERVICE_NAME=$SERVICE_NAME"
            - "SERVICE_TAGS=rx-etersoft,build-$BUILD_ID"
@@ -26,9 +26,10 @@ project:
          copy:
            - "rx-test.list:/etc/apt/sources.list.d/"
            - "03-logging.conf:/tmp/"
+           - "[0400]guest.sudo:/etc/sudoers.d/guest"
 
          before_command:
-           - useradd guest && usermod -a -G users guest && usermod -a -G lp guest && echo 'guest:123' | chpasswd
            - epm repolist && epm update
            - epm i --auto rx-etersoft
            - cp -f /tmp/03-logging.conf /etc/rx-etersoft/node.conf.d/
+           - chown root:root /etc/sudoers.d/guest

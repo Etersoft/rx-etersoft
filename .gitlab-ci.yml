@@ -100,10 +100,16 @@ Testing:
   stage: test
   #when: manual
   before_script:
+    - export DAAS_TEMPLATES_DIR="$HOME/.daas/templates"
+    - export DAAS_ADDONS_DIR="$HOME/.daas/addons"
     - export DAAS_OUTDIR="$CI_PROJECT_DIR/daas-rx-etersoft"
     - export DAAS_IMAGE_POSTFIX="-$CI_COMMIT_REF_NAME-build$BUILD_ID"
     - export "SERVICE_NAME=rx-etersoft-$BUILD_ID"
-    - subst "s|{{BUILD_ID}}|$BUILD_ID|g" $CI_PROJECT_DIR/.daas/addons/rx-test.list
+    - |
+      mkdir -p $CI_PROJECT_DIR/.daas/addons/
+      cp $DAAS_ADDONS_DIR/rx-test.list $CI_PROJECT_DIR/.daas/addons/
+      subst "s|{{BUILD_ID}}|$BUILD_ID|g" $CI_PROJECT_DIR/.daas/addons/rx-test.list
+      subst "s|Sisyphus|p8|g" $CI_PROJECT_DIR/.daas/addons/rx-test.list
   script:
     - daas gen
     - cd $DAAS_OUTDIR/rx-etersoft-$BUILD_ID/
@@ -111,14 +117,17 @@ Testing:
     - $HOME/bin/start-rxclient-tester.sh
     - docker-compose up -d
     - export RX_SERVER_IP=$(curl -s http://localhost:8500/v1/catalog/service/$SERVICE_NAME | jq '.[].ServiceAddress' | sed 's|"||g')
-    - cat $CI_PROJECT_DIR/.daas/templates/rx-etersoft.nxs.tpl | sed "s|RX_SERVER_IP|${RX_SERVER_IP}|g" > $HOME/$RXCLIENT_CONFDIR/rx-etersoft-$BUILD_ID.nxs
-    - chmod a+rw $HOME/$RXCLIENT_CONFDIR/rx-etersoft-$BUILD_ID.nxs || echo "ignore chmod error.."
+    - |
+      mkdir -p $CI_PROJECT_DIR/.daas/templates/
+      cp $DAAS_TEMPLATES_DIR/rx-server.nxs.tpl $CI_PROJECT_DIR/.daas/templates/
+      cat $CI_PROJECT_DIR/.daas/templates/rx-server.nxs.tpl | sed "s|RX_SERVER_IP|${RX_SERVER_IP}|g" > $HOME/$RXCLIENT_CONFDIR/rx-server-$BUILD_ID.nxs
+      chmod a+rw $HOME/$RXCLIENT_CONFDIR/rx-server-$BUILD_ID.nxs || echo "ignore chmod error.."
     # удаляем старые файлы конфигурации
     - find $HOME/$RXCLIENT_CONFDIR/ -mindepth 1 -mtime +$DEV_EXPIRE_IN -print -delete || echo "ignore delete old configs error"
     - |
-      echo "             SERVER IP: $RX_SERVER_IP"
-      echo "       RXCLIENT CONFIG: rx-etersoft-$BUILD_ID"
-      echo "REMOTE CONNECT COMMAND: ssh -p $CI_BUILD_ID guest@$(hostname -s)"
+      echo "                 SERVER IP: $RX_SERVER_IP"
+      echo "           RXCLIENT CONFIG: rx-etersoft-$BUILD_ID"
+      echo "REMOTE CONNECT to RXSERVER: ssh -p $CI_BUILD_ID guest@$(hostname -s)"
 
   only:
     - /^docker-ci-.*/
@@ -130,6 +139,8 @@ Cleanup:
   stage: cleanup
   when: manual
   before_script:
+    - export DAAS_TEMPLATES_DIR="$HOME/.daas/templates"
+    - export DAAS_ADDONS_DIR="$HOME/.daas/addons"
     - export DAAS_OUTDIR="$CI_PROJECT_DIR/rx-etersoft"
     - export "SERVICE_NAME=rx-etersoft-$BUILD_ID"
   script:
