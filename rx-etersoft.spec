@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt8
+Release: alt9
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -188,6 +188,9 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Aug 10 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt9
+- (CI): use 'rx-daas-templates' project
+
 * Thu Aug 02 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt8
 - fix terminate error (eterbug #12933)
 - (CI): added real remove old builds
