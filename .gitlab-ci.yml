@@ -83,11 +83,11 @@ test build:
     - /usr/bin/rpmlog -q -r -l
     - korinf -f rx-etersoft.spec x86_64/ALTLinux/p8 ${RPMDIR}
     - korinf -f rx-etersoft.spec x86_64/ALTLinux/Sisyphus ${RPMDIR}
-    - korinf -f rx-etersoft.spec x86_64/ALTLinux/p7 ${RPMDIR}
+    #- korinf -f rx-etersoft.spec x86_64/ALTLinux/p7 ${RPMDIR}
     # 32 bit
-    - korinf -f rx-etersoft.spec ALTLinux/p8 ${RPMDIR}
-    - korinf -f rx-etersoft.spec ALTLinux/Sisyphus ${RPMDIR}
-    - korinf -f rx-etersoft.spec ALTLinux/p7 ${RPMDIR}
+    #- korinf -f rx-etersoft.spec ALTLinux/p8 ${RPMDIR}
+    #- korinf -f rx-etersoft.spec ALTLinux/Sisyphus ${RPMDIR}
+    #- korinf -f rx-etersoft.spec ALTLinux/p7 ${RPMDIR}
   only:
     - /^ci-.*/
     - /^docker-ci-.*/
