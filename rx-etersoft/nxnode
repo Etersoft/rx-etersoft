@@ -2222,6 +2222,23 @@ cmd_node_addprinter()
 	    nxlog "$FUNCNAME ($$): set NAME = $NAME; DEVICE_URI=$DEVICE_URI" &
 	fi
 
+	# Setup default driver for all user printers (https://bugs.etersoft.ru/show_bug.cgi?id=13062)
+	if [ -n "$CUPS_DEFAULT_DRIVER" ]; then
+		nxlog "$FUNCNAME ($$): set default driver '$CUPS_DEFAULT_DRIVER' for $printer" &
+		DRVDIR="$USER_FAKE_HOME/.nx/config"
+		DRVCACHE="$DRVDIR/drivers.cache"
+		if test -f "$DRVCACHE" ; then
+			if ! grep -q "$printer" $DRVCACHE; then
+				# write in the child process!
+				( echo "driver|$printer|$CUPS_DEFAULT_DRIVER|" >> $DRVCACHE )
+			fi
+		else
+			mkdir -p $DRVDIR 2>&1
+			# write in the child process!
+			( echo "driver|$printer|$CUPS_DEFAULT_DRIVER|" > $DRVCACHE )
+		fi
+	fi
+
 #JJK: I like to also allow 'guest' so you can do things like print
 #JJK: testpages from the CUPS web interface. Note this is required
 #JJK: even for the original user to print test pages
