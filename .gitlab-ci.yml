@@ -12,8 +12,9 @@ stages:
   - test
   - cleanup
 
-build and public:
+Release:
   stage: build
+  when: manual
   script:
     - export TMPDIR=/tmp/.private/${USER}; export TMP=${TMPDIR}
     - git remote | grep -q gitlab || git remote add gitlab git@gitlab.eterfund.ru:rx-etersoft/rx-etersoft.git
