@@ -6,17 +6,17 @@ project:
    sources:
      - "rpm ftp://server/pub ALTLinux/p8/branch/x86_64 classic"
      - "rpm ftp://server/pub ALTLinux/p8/branch/noarch classic"
-     - "rpm ftp://server/pub/Etersoft/LINUX@Etersoft/p8 branch/x86_64 addon"
-     - "rpm ftp://server/pub/Etersoft/LINUX@Etersoft/p8 branch/noarch addon"
+     #- "rpm ftp://server/pvt/Etersoft/RX@Etersoft/c7 x86_64/ALTLinux/c7 main"
 
+ project_compose_template: 'docker-compose-systemd.yml.tpl'
+ node_compose_template: 'docker-compose-systemd-simple.yml.tpl'
  groups:
    rx:
      nodes:
        rx-etersoft:
          context: "rx-etersoft-$BUILD_ID"
          skip_compose: yes
-         image: x64.p8-rx-etersoft
-         start_command: start-rx.sh
+         image: x64.c7-rx-etersoft
          hostname: "rx-server-$BUILD_ID"
          environment:
            - "SERVICE_NAME=$SERVICE_NAME"
