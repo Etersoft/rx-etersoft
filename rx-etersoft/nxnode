@@ -2260,13 +2260,13 @@ cmd_node_addprinter()
 
 	# Setup default driver for all user printers (https://bugs.etersoft.ru/show_bug.cgi?id=13062)
 	if [ -n "$CUPS_DEFAULT_DRIVER" ]; then
-		nxlog "$FUNCNAME ($$): set default driver '$CUPS_DEFAULT_DRIVER' for $printer" &
+		nxlog "$FUNCNAME ($$): set default driver '$CUPS_DEFAULT_DRIVER' for $NAME" &
 		DRVDIR="$USER_FAKE_HOME/.nx/config"
 		DRVCACHE="$DRVDIR/drivers.cache"
 		if test -f "$DRVCACHE" ; then
-			if ! grep -q "$printer" $DRVCACHE; then
+			if ! grep -q "$NAME" $DRVCACHE; then
 				# write in the child process!
-				( echo "driver|$printer|$CUPS_DEFAULT_DRIVER|" >> $DRVCACHE )
+				( echo "driver|$NAME|$CUPS_DEFAULT_DRIVER|" >> $DRVCACHE )
 			fi
 		else
 			mkdir -p $DRVDIR 2>&1
