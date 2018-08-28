@@ -28,6 +28,7 @@ Provides: %oname = %version
 Requires: nx >= %NXVERSION
 
 Requires: setxkbmap
+Requires: numlockx
 Requires: openssl openssh-server openssh-clients
 Requires: netcat expect sudo xauth
 Requires: zenity
