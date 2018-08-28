@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.12
+Release: alt2.M70C.13
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -177,6 +177,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Tue Aug 28 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.13
+- (c7): fixed type=smb printer processing for CUPS_DEFAULT_DRIVER
+
 * Thu Aug 16 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.12
 - new build
 
