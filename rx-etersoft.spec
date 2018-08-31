@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt10
+Release: alt11
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -188,6 +188,9 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Aug 31 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt11
+- added rxreport script
+
 * Tue Aug 14 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt10
 - (CI): disable test build for i586.32 and p7
 - set the default driver for all user printers (eterbug #13062)
