@@ -58,7 +58,7 @@ copy_nx_user_data() {
 	if test -d "$NX_USER_HOME/.nx"; then
 		echo "Archiving the user directory '$NX_USER_HOME/.nx' ..."
 		mkdir -p "$ABS_REPORTDIR/.nx"
-		DLIST=$(find "$NX_USER_HOME/.nx" -type d -name 'C-*' -or -name 'S-*' -or -name 'T-*')
+		DLIST=$(find "$NX_USER_HOME/.nx" -type d -name 'C-*' -or -name 'F-*' -or -name 'T-*')
 		for d in ${DLIST}; do
 			if [ -n "$NX_SESS_FILTER" ]; then
 				if echo "$d" | grep -q "$NX_SESS_FILTER"; then
