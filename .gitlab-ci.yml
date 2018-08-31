@@ -28,7 +28,12 @@ build and public:
     - korinf -f rx-etersoft.spec x86_64/ALTLinux/p7 /var/ftp/pvt/Etersoft/RX@Etersoft/unstable
     - git push -f --tags gitlab HEAD:ci/latest-build
     - git push -f --tags gitlab HEAD:master
+    - |
+      echo "$CI_PROJECT_NAME ($CI_COMMIT_REF_NAME)" > last_changes.txt
+      rpmlog -q --last-changelog >> last_changes.txt
+      rx_bot_pub_file.py last_changes.txt || echo "ignore event bot error.."
 
+  after_script:
     # Приходится делать так, потому-что gitlab-runner не позволяет обращаться к ресурсам лежащим вне сборочного каталога
     - mkdir -p RPM/log; cp -rf ${HOME}/RPM/log/*rx-etersoft*.log RPM/log/
     - mkdir -p korinf-log; cp -rf ${HOME}/RPM/tmp/korinf-log/* korinf-log/
