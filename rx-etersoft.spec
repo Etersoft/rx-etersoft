@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt12
+Release: alt13
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -190,6 +190,9 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Sat Sep 01 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt13
+- added rxreport to package
+
 * Sat Sep 01 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt12
 - (CI): added event bot message
 - (rxreport): Fixed bug in prefix for session directory ('S-' --> 'F-')
