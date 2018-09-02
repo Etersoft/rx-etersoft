@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt13
+Release: alt14
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -190,6 +190,9 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Mon Sep 03 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt14
+- (rxsetup): added command logon/logoff
+
 * Sat Sep 01 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt13
 - added rxreport to package
 
