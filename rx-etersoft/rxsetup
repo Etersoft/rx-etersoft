@@ -3,11 +3,20 @@
 # 2010 (c) Devaev Maxim, <mdevaev@etersoft.ru>
 # 2010 (c) Baranov Denis, <baraka@etersoft.ru>
 # 2012 (c) Vitaly Lipatov, <lav@etersoft.ru>
+# 2018 (c) Pavel Vainerman, <pv@etersoft.ru>
 #
 # rxsetup - script for fast configuration of RX@Etersoft
 #
 #####
 
+usage()
+{
+        echo "Usage: rxsetup command [params]"
+        echo "Commands: "
+        echo "init    - configuring RX@Etersoft"
+        echo "logon   - enable logs (server)"
+        echo "logoff  - disable logs (server)"
+}
 # Print command line and run command line
 showcmd()
 {
@@ -130,15 +139,67 @@ rxsetup_stages()
 }
 
 
-##### Main #####
+rxsetup_init() 
+{
 LOG=/var/log/rxsetup.log
 echo "Configuring RX@Etersoft..."
 rxsetup_stages 2>&1 | tee $LOG
 if [ "$?" -ne 0 ]; then
         echo "There is some configuration error. All output saved to $LOG."
-        exit 1
+        return 1
 else
         echo "Complete. Now, you may use opennx for connection to this server."
         rm -f $LOG
 fi
+}
+
+rxserver_logon()
+{
+        sed -i -E 's|[#]{0,}SESSION_LOG_CLEAN=(.*)|SESSION_LOG_CLEAN=0|;s|[#]{0,}NX_LOG_LEVEL=(.*)|NX_LOG_LEVEL=7|' /etc/nxserver/node.conf.d/03-logging.conf
+        return $?
+}
+
+rxserver_logoff()
+{
+        sed -i -E 's|[#]{0,}SESSION_LOG_CLEAN=(.*)|#SESSION_LOG_CLEAN=1|;s|[#]{0,}NX_LOG_LEVEL=(.*)|#NX_LOG_LEVEL=0|' /etc/nxserver/node.conf.d/03-logging.conf
+        return $?
+}
+
+[ -z "$1" ] && usage && exit 1
+
+while [[ $# -gt 0 ]]; do
+
+	case $1 in
+	-h | --help)
+		usage
+		exit 0
+		;;
+
+	init | --init)
+		shift
+		rxsetup_init
+                exit $?
+		;;
+
+	logon | --logon)
+		shift
+                rxserver_logon
+                exit $?
+		;;
+	logoff | --logoff)
+		shift
+                rxserver_logoff
+                exit $?
+		;;
+	*) 
+                echo ""
+                echo "Unknown command: '$1'"
+                echo ""
+                usage
+                exit 1
+                ;;
+	esac
+
+	shift
+done
 
