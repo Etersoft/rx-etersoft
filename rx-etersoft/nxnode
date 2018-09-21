@@ -193,6 +193,7 @@ do_run_after_hooks()
 }
 
 
+
 #
 # -----------------------------------------------------------------------------
 # Node functions module
@@ -1322,6 +1323,13 @@ node_cupsd_get_socket()
         echo $NODE_CUPSD_SOCKET
 }
 
+node_cupsd_get_pidfile()
+{
+	[ "$ENABLE_CUPS_SERVER_MODE" = "1" ] && { echo "$(dirname "$CUPS_DEFAULT_SOCK")/cupsd.pid"; return; }
+
+	echo "$USER_FAKE_HOME/.nx/C-$sess_id/pids/cupsd"
+}
+
 create_mountpoint()
 {
     # creates directory and checks its attrs
@@ -2239,6 +2247,28 @@ cmd_node_addprinter()
 		fi
 	fi
 
+	# waiting for cupsd running
+	# https://bugs.etersoft.ru/show_bug.cgi?id=12972
+
+	CUPS_PIDFILE="$(node_cupsd_get_pidfile)"
+	if [ -z "$CUPS_PIDFILE" ]; then
+		nxlog "$FUNCNAME ($$): ERROR: Unknown PID file for cupsd.." &
+		# $PATH_BIN/nxdialog -dialog ok --message "ERROR: Unknown cupsd pidfile..?" -display :$display
+		return 1;
+	fi
+
+	WAIT_CUPS_TIMEOUT=10 # sec
+	while ! kill -0 $(cat $CUPS_PIDFILE 2>/dev/null) 2>/dev/null; do
+		sleep 1
+		WAIT_CUPS_TIMEOUT=$((WAIT_CUPS_TIMEOUT-1))
+		if [ "$WAIT_CUPS_TIMEOUT" -lt 0 ]; then
+			nxlog "$FUNCNAME ($$): ERROR: cupsd not running.." &
+			# $PATH_BIN/nxdialog -dialog ok --message "ERROR: cupsd not running!" -display :$display
+			return 1;
+		fi
+	done
+
+
 #JJK: I like to also allow 'guest' so you can do things like print
 #JJK: testpages from the CUPS web interface. Note this is required
 #JJK: even for the original user to print test pages
@@ -2399,9 +2429,6 @@ cmd_node_addprinter()
 		fi
 		MODEL="$USER_FAKE_HOME/.nx/config/ppd/$printer.ppd"
 	fi
-	
-	# hack for fix https://bugs.etersoft.ru/show_bug.cgi?id=12972
-	sleep 5
 	
 	if [ ! -r "$MODEL" ]
 	then
