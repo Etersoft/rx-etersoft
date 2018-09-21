@@ -193,6 +193,26 @@ do_run_after_hooks()
 }
 
 
+wait_event()
+# args:
+#  $1 - function for check condition
+#  $2 - timeout
+#  $3 - pause between checks. Default: 1 sec
+{
+	local check_func="$1"
+	local wait_timeout="$2"
+	local check_pause="$3"
+	[ -z "$check_pause" ] && check_pause=1
+
+	local elapsed_time=0
+	while ! $check_func; do
+		sleep $check_pause
+		elapsed_time=$((elapsed_time+1))
+		[ "$elapsed_time" -ge "$wait_timeout" ] && return 1
+	done
+
+	return 0
+}
 
 #
 # -----------------------------------------------------------------------------
@@ -1325,9 +1345,17 @@ node_cupsd_get_socket()
 
 node_cupsd_get_pidfile()
 {
-	[ "$ENABLE_CUPS_SERVER_MODE" = "1" ] && { echo "$(dirname "$CUPS_DEFAULT_SOCK")/cupsd.pid"; return; }
+	if [ "$ENABLE_CUPS_SERVER_MODE" = "1" ]; then
+		echo "$(dirname "$CUPS_DEFAULT_SOCK")/cupsd.pid"
+		return 0;
+	fi
 
 	echo "$USER_FAKE_HOME/.nx/C-$sess_id/pids/cupsd"
+}
+
+node_cupsd_is_running()
+{
+	[ -n "$CUPS_SERVER" ] && LANG=C /usr/bin/lpstat -r 2>/dev/null | grep -q 'is running' || return 1
 }
 
 create_mountpoint()
@@ -2249,25 +2277,11 @@ cmd_node_addprinter()
 
 	# waiting for cupsd running
 	# https://bugs.etersoft.ru/show_bug.cgi?id=12972
-
-	CUPS_PIDFILE="$(node_cupsd_get_pidfile)"
-	if [ -z "$CUPS_PIDFILE" ]; then
-		nxlog "$FUNCNAME ($$): ERROR: Unknown PID file for cupsd.." &
-		# $PATH_BIN/nxdialog -dialog ok --message "ERROR: Unknown cupsd pidfile..?" -display :$display
+	if ! wait_event node_cupsd_is_running 15; then
+		nxlog "$FUNCNAME ($$): ERROR: cupsd not running.." &
+		# $PATH_BIN/nxdialog -dialog ok --message "ERROR: cupsd not running!" -display :$display
 		return 1;
-	fi
-
-	WAIT_CUPS_TIMEOUT=10 # sec
-	while ! kill -0 $(cat $CUPS_PIDFILE 2>/dev/null) 2>/dev/null; do
-		sleep 1
-		WAIT_CUPS_TIMEOUT=$((WAIT_CUPS_TIMEOUT-1))
-		if [ "$WAIT_CUPS_TIMEOUT" -lt 0 ]; then
-			nxlog "$FUNCNAME ($$): ERROR: cupsd not running.." &
-			# $PATH_BIN/nxdialog -dialog ok --message "ERROR: cupsd not running!" -display :$display
-			return 1;
-		fi
-	done
-
+	fi 
 
 #JJK: I like to also allow 'guest' so you can do things like print
 #JJK: testpages from the CUPS web interface. Note this is required
