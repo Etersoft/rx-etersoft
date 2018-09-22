@@ -115,6 +115,27 @@ else
 	nxlog "$0 ($$): run nxnode with \"$@\"" &
 fi
 
+wait_event()
+# args:
+#  $1 - function for check condition
+#  $2 - timeout
+#  $3 - pause between checks. Default: 1 sec
+{
+	local check_func="$1"
+	local wait_timeout="$2"
+	local check_pause="$3"
+	[ -z "$check_pause" ] && check_pause=1
+
+	local elapsed_time=0
+	while ! $check_func; do
+		sleep $check_pause
+		elapsed_time=$((elapsed_time+1))
+		[ "$elapsed_time" -ge "$wait_timeout" ] && return 1
+	done
+
+	return 0
+}
+
 #
 # -----------------------------------------------------------------------------
 # Node functions module
@@ -1231,6 +1252,20 @@ node_cupsd_get_socket()
         echo $NODE_CUPSD_SOCKET
 }
 
+node_cupsd_get_pidfile()
+{
+	if [ "$ENABLE_CUPS_SERVER_MODE" = "1" ]; then
+		echo "$(dirname "$CUPS_DEFAULT_SOCK")/cupsd.pid"
+		return 0;
+	fi
+
+	echo "$USER_FAKE_HOME/.nx/C-$sess_id/pids/cupsd"
+}
+
+node_cupsd_is_running()
+{
+	[ -n "$CUPS_SERVER" ] && LANG=C /usr/bin/lpstat -r 2>/dev/null | grep -q 'is running' || return 1
+}
 create_mountpoint()
 {
     # creates directory and checks its attrs
@@ -2130,6 +2165,14 @@ cmd_node_addprinter()
 		fi
 	fi
 
+	# waiting for cupsd running
+	# https://bugs.etersoft.ru/show_bug.cgi?id=12972
+	if ! wait_event node_cupsd_is_running 15; then
+		nxlog "$FUNCNAME ($$): ERROR: cupsd not running.." &
+		# $PATH_BIN/nxdialog -dialog ok --message "ERROR: cupsd not running!" -display :$display
+		return 1;
+	fi
+
 #JJK: I like to also allow 'guest' so you can do things like print
 #JJK: testpages from the CUPS web interface. Note this is required
 #JJK: even for the original user to print test pages
@@ -2291,8 +2334,6 @@ cmd_node_addprinter()
 		MODEL="$USER_FAKE_HOME/.nx/config/ppd/$printer.ppd"
 	fi
 
-	# hack for fix https://bugs.etersoft.ru/show_bug.cgi?id=12972
-	sleep 5
 	
 	if [ ! -r "$MODEL" ]
 	then
