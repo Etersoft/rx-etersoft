@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.0
-Release: alt15
+Release: alt16
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -190,6 +190,10 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Sat Sep 22 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt16
+- (nxnode): added waiting for cupsd to start eterbug #12972
+- (nxnode): refactoring: added 'wait_event' function
+
 * Thu Sep 13 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt15
 - rxreport minor fixes
 
