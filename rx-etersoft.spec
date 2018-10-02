@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.13
+Release: alt2.M70C.14
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -180,6 +180,13 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Tue Oct 02 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.14
+- (c7): added require for numlockx
+- (c7): added rxreport util
+- (c7): rxsetup: added logon/logoff commands
+- added nx-usbip-helper to sudoers.conf (eterbug #12841)
+- (c7): (nxnode): added waiting for cupsd to start eterbug #12972
+
 * Tue Aug 28 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.13
 - (c7): fixed type=smb printer processing for CUPS_DEFAULT_DRIVER
 
