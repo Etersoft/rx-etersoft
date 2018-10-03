@@ -887,7 +887,7 @@ do
 			fi
 
 			# SSH based auth
-			local SKIP_WRONG_AUTH_MESSAGE=''
+			SKIP_WRONG_AUTH_MESSAGE=''
 			if [ "$ENABLE_SSH_AUTHENTICATION" = "1" -a "$LOGIN_SUCCESS" = "0" ]
 			then
 				log 6 -n "ssh "
