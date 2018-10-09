@@ -248,6 +248,32 @@ session_get_user_suspended()
 	done
 }
 
+# Check session exist  <uniqId>
+
+session_exist()
+{
+	[ -f "$NX_SESS_DIR/running/sessionId$1" ] && return 0 || return 1
+}
+
+
+# Force terminate session if exist
+# <uniqueid> <log> <message>
+
+session_terminate_if_not_resume()
+{
+	sessID="$1"
+	NLOG="$2"
+	[ -n "$3" ] && LOG_MSG="$3" || LOG_MSG="Warning: Session startup failed. Terminate session: $sessID"
+
+	if [ "$TERMINATE_SESSION_IF_NOT_RESUME" = "1" ]; then
+		if session_exist $sessID; then
+			[ -n "$NLOG" ] && log $NLOG $LOG_MSG
+			# nxserver --force-terminate $sessID
+			cmd_terminate_or_send --force-terminate $sessID
+		fi
+	fi
+}
+
 # Count all sessions of a user
 # and save it in SESSION_COUNT and SESSION_COUNT_USER
 
@@ -1094,6 +1120,7 @@ server_nxnode_start_wait()
 				session_fail $uniqueid
 				server_nxnode_echo "NX> 596 Session startup failed."
 				log 4 "NX> 596 Session startup failed."
+				session_terminate_if_not_resume $uniqueid 4 "Warning: Session startup failed. Force terminate session $uniqueid"
 			;;
 		esac
 
@@ -1159,6 +1186,7 @@ server_nxnode_start_wait()
 				
 				server_nxnode_echo "NX> 596 Session startup failed."
 				log 4 "NX> 596 Session startup failed."
+				session_terminate_if_not_resume $uniqueid 4 "Warning: Session startup failed. Force terminate session $uniqueid"
 				break;
 			;;
 		esac
@@ -1598,7 +1626,7 @@ server_startrestore_session()
 		echo_x "NX> 1004 Error: Session did not start."
 		echo_x "NX> 596 Session $ACTION failed."
 		echo_x "NX> 999 Bye"
-		# FIXME: Send node signal to terminate
+		session_terminate_if_not_resume $uniqueid 2 "Warning: session did not start. Force terminate session $uniqueid"
 		exit 1
 	fi
 	
