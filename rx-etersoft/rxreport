@@ -85,6 +85,9 @@ copy_nx_user_data() {
 		echo "Archiving the user config '.opennx' ..."
 		cp -af "$NX_USER_HOME/.opennx" "$ABS_REPORTDIR/"
 	fi
+
+	echo "Archiving the user xsession-errors..."
+	cp -af $NX_USER_HOME/.xsession-errors* "$ABS_REPORTDIR/" 2>/dev/null
 }
 
 while [[ $# -gt 0 ]]; do
