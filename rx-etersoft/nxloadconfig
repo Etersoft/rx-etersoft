@@ -190,6 +190,7 @@ CUPS_BACKEND="/usr/lib/cups/backend"
 CUPS_IPP_BACKEND="$CUPS_BACKEND/ipp"
 CUPS_DEFAULT_SOCK="/var/run/cups/cups.sock"
 CUPS_DEFAULT_SYSTEM_GROUP="sys root"
+CUPS_START_TIMEOUT=15
 
 CUPS_ETC="/etc/cups"
 [ -r "$CUPS_ETC/mime.types" ] || CUPS_ETC="/usr/share/cups/mime"
