@@ -1191,7 +1191,7 @@ node_cupsd_setup()
 	mkdir -p "$USER_FAKE_HOME/.nx/C-$sess_id/cups/log" #JJK cups log file home
 
 #JJK: Modifications to cupsd.conf
-#JJK:   - Added SystemGroup line in order to add $USER to SystemGroup
+#JJK:   - Added SystemGroup line in order to add "user main group" to SystemGroup
 #JJK:   - Moved all the log files to log/<log>
 #JJK:   - Set AccessLog to: log/access_log (was /dev/null)
 #JJK:   - Added listening on $NODE_CUPSD_PORT
@@ -1220,7 +1220,7 @@ fi
 touch $USER_FAKE_HOME/.nx/C-$sess_id/cups/cupsd.conf
 
 cat <<EOF > $LOCALCUPSCONFFILES
-SystemGroup sys root $USER
+SystemGroup $CUPS_DEFAULT_SYSTEM_GROUP $(id -gn $USER)
 AccessLog log/access_log
 ErrorLog log/error_log
 PageLog log/page_log
