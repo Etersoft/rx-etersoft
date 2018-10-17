@@ -13,8 +13,9 @@ stages:
   - test
   - cleanup
 
-build and public:
+RELEASE:
   stage: build
+  when: manual
   script:
     # /tmp/.private/.. нужен для hasher, т.к. он не позволяет собирать с другим каталогом, а по умолчанию
     # у gitlab-runner выставляется /tmp
@@ -52,6 +53,7 @@ build and public:
 
 rx-server update:
   stage: update-server
+  when: manual
   script:
     - epm --auto Install rx-etersoft
 
@@ -63,6 +65,7 @@ rx-server update:
 
 testsuite:
   stage: test
+  when: manual
   script:
     - epm --auto Install rx-etersoft
     - git clone git@gitlab.eterfund.ru:rx-etersoft/rx-testsuite.git
@@ -130,6 +133,7 @@ Testing:
     # удаляем старые файлы конфигурации
     - find $HOME/$RXCLIENT_CONFDIR/ -mindepth 1 -mtime +$DEV_EXPIRE_IN -print -delete || echo "ignore delete old configs error"
     - |
+      echo "                 PACKAGES: ${DEV_RPMDIR}/$CI_PIPELINE_ID"
       echo "                 SERVER IP: $RX_SERVER_IP"
       echo "           RXCLIENT CONFIG: rx-etersoft-$BUILD_ID"
       echo "REMOTE CONNECT to RXSERVER: ssh -p $CI_BUILD_ID guest@$(hostname -s)"
