@@ -78,6 +78,8 @@ getparam_sessionid()
 	sessionid=$(getparam sessionid)
 	
 	[ -n "$sessionid" ] || sessionid=$(getparam session_id)
+	[ -n "$sessionid" ] || sessionid=$sess_id
+
 	if [ -z "$sessionid" ]
 	then
 		echo "NX> 500 Error: Fatal - Missing parameter session id." 1>&2
