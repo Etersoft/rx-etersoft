@@ -706,6 +706,7 @@ server_get_params()
 
 # Start!
 [ "$NX_LOG_LEVEL" -ge "1" ] && touch "$NX_LOGFILE" >/dev/null 2>&1
+log 3 "-- $(date +'%Y-%m-%d %H:%M') --"
 log 3 "-- NX SERVER START: $@ - ORIG_COMMAND=$SSH_ORIGINAL_COMMAND"
 
 if [ "$ENABLE_SERVER_FORWARD" = "1" -a -n "$SERVER_FORWARD_HOST" ]
