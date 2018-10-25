@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.14
+Release: alt2.M70C.15
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -180,6 +180,13 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Oct 25 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.15
+- (c7): terminate session if session not resume  (eterbug #13261)
+- (c7):(rxreport): added .xsession-errors files
+- added 'sess_id' variable processing in getparam_sessionid
+- (c7): fix warning about local bash variable
+- logged date and time for new connection
+
 * Tue Oct 02 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.14
 - (c7): added require for numlockx
 - (c7): added rxreport util
