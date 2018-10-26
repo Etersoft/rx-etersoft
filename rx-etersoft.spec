@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.15
+Release: alt2.M70C.16
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -180,6 +180,11 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Fri Oct 26 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.16
+- (c7): use user main group for SystemGroup for cupsd (eterbug #13290)
+- (c7): added timeout for cupsd start (eterbug #12972)
+- (CI): minor fixes for telegram event "title"
+
 * Thu Oct 25 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.15
 - (c7): terminate session if session not resume  (eterbug #13261)
 - (c7):(rxreport): added .xsession-errors files
