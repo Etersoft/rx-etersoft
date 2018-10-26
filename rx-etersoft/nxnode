@@ -2168,7 +2168,7 @@ cmd_node_addprinter()
 
 	# waiting for cupsd running
 	# https://bugs.etersoft.ru/show_bug.cgi?id=12972
-	if ! wait_event node_cupsd_is_running 15; then
+	if ! wait_event node_cupsd_is_running $CUPS_START_TIMEOUT; then
 		nxlog "$FUNCNAME ($$): ERROR: cupsd not running.." &
 		# $PATH_BIN/nxdialog -dialog ok --message "ERROR: cupsd not running!" -display :$display
 		return 1;
