@@ -64,6 +64,9 @@ NX_ETC_DIR=/etc/nxserver
 NX_SESS_DIR=/var/lib/nxserver/db
 NX_HOME_DIR=/var/lib/nxserver/home
 
+# init RANDOM generator (eterbug #13309)
+RANDOM=$$
+
 # Advanced users ONLY
 AGENT_LIBRARY_PATH="" #Calculated
 PROXY_LIBRARY_PATH="" #Calculated
