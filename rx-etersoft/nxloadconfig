@@ -65,7 +65,7 @@ NX_SESS_DIR=/var/lib/nxserver/db
 NX_HOME_DIR=/var/lib/nxserver/home
 
 # init RANDOM generator (eterbug #13309)
-RANDOM=$$
+RANDOM=$( head -1 /dev/urandom | od -N 1 | awk '{ print $2 }' )
 
 # Advanced users ONLY
 AGENT_LIBRARY_PATH="" #Calculated
