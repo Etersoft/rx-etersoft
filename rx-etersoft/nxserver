@@ -49,14 +49,16 @@ getparam(){
 
 log()
 {
-	[ "$NX_LOG_LEVEL" -ge "$1" -a -w "$NX_LOGFILE" ] && shift && echo "$@" >> "$NX_LOGFILE"
+	# 'echo date > logfile && echo > logfile'
+	# is used because some logs can be output with the call "log -n 'some text..'"
+	[ "$NX_LOG_LEVEL" -ge "$1" -a -w "$NX_LOGFILE" ] && shift && echo -n "$(date "+%d.%m %X"): " >> "$NX_LOGFILE"  && echo "$@" >> "$NX_LOGFILE"
 }
 
 # Log in a way that is secure for passwords / cookies / ...
 
 echo_secure()
 {
-	echo "$@ " | $COMMAND_PERL -p -e 's/--cookie=".+?"/--cookie="******"/g; s/--agent_password=".+?"/agent_password="******"/g; s/--password=".+?"/password="******"/g; s/cookie=.+?&/cookie=******&/g; s/agent_password=.+?&/agent_password=******&/g; s/password=.+?&/password=******&/g;'
+	echo "$(date "+%d.%m %X"): " && echo "$@ " | $COMMAND_PERL -p -e 's/--cookie=".+?"/--cookie="******"/g; s/--agent_password=".+?"/agent_password="******"/g; s/--password=".+?"/password="******"/g; s/cookie=.+?&/cookie=******&/g; s/agent_password=.+?&/agent_password=******&/g; s/password=.+?&/password=******&/g;'
 }
 
 log_secure()
