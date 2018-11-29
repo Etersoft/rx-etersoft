@@ -124,6 +124,7 @@ Testing:
     - docker-compose build --force-rm
     - $HOME/bin/start-rxclient-tester.sh
     - docker-compose up -d
+    - sleep 5
     - export RX_SERVER_IP=$(curl -s http://localhost:8500/v1/catalog/service/$SERVICE_NAME | jq '.[].ServiceAddress' | sed 's|"||g')
     - |
       mkdir -p $CI_PROJECT_DIR/.daas/templates/
