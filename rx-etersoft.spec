@@ -1,8 +1,8 @@
 %define oname freenx-server
 %define hooksroot rx-etersoft
 Name: rx-etersoft
-Version: 1.4.0
-Release: alt18
+Version: 1.4.1
+Release: alt1
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -190,6 +190,13 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Nov 30 2018 Vitaly Lipatov <lav@altlinux.ru> 1.4.1-alt1
+- (rxreport): added .xsession-errors files
+- added 'sess_id' variable processing in getparam_sessionid
+- added CUPS_DEFAULT_SYSTEM_GROUP ("sys root") and user main group for SystemGroup for cupsd. (eterbug #13290)
+- (config): added timeout for cupsd start
+- added timestamp for logs (eterbug #13312)
+
 * Mon Sep 24 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt18
 - fixed type=smb printer processing for CUPS_DEFAULT_DRIVER
 - (CI): monitor fixes in service name
@@ -236,9 +243,8 @@ fi
 - fix "add printer" bug (eterbug #12972)
 - (CI): added test build stage
 
-* Wed Jun 27 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt5
+* Fri Jun 22 2018 Vitaly Lipatov <lav@altlinux.ru> 1.4.0-alt5
 - fix session cleanup error (eterbug #12933)
-- (CI): added README.CI.md
 
 * Thu May 03 2018 Etersoft Builder <builder@etersoft.ru> 1.4.0-alt4
 - added require for nxagent (eterbug #12860)
