@@ -659,6 +659,10 @@ node_start_applications()
 		;;
 	esac
 
+	# dump limits to logs
+	ulimit -a >"$USER_FAKE_HOME/.nx/C-$sess_id/ulimit.startup.log" 2>&1 &
+	free >"$USER_FAKE_HOME/.nx/C-$sess_id/memfree.startup.log" 2>&1 &
+
 	#
 	# Startup the application
 	#
@@ -683,6 +687,10 @@ node_start_applications()
 	
 	wait $NODE_APP_PID
 	nxlog "$FUNCNAME ($$): NODE_APP_PID finished" &
+
+	# dump limits to logs
+	ulimit -a >"$USER_FAKE_HOME/.nx/C-$sess_id/ulimit.finished.log" 2>&1 &
+	free >"$USER_FAKE_HOME/.nx/C-$sess_id/memfree.finished.log" 2>&1 &
 
 	#
 	# Kill or wait for the started window manager
