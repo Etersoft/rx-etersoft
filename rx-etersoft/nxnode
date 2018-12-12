@@ -560,19 +560,9 @@ node_find_application()
 	nxlog "$FUNCNAME ($$): end" &
 }
 
-# check file
 check_license()
 {
-	local flic="$1"
-	show_message()
-	{
-		$PATH_BIN/nxdialog -dialog ok -caption "RX@Etersoft message" -message "$@
-Вы подключаетесь к терминальному серверу RX@Etersoft, не имея лицензии в файле $flic.
-По вопросам приобретения обращайтесь по адресу: sales@etersoft.ru"
-		return 1
-	}
-	test -r "$flic" || show_message "Не найден файл лицензии $flic." || return
-	grep -q "RX@Etersoft" $flic || show_message "Некорректный файл лицензии $flic." || return
+	return 0
 }
 
 #
