@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 Name: rx-etersoft
 Version: 1.4.1
-Release: alt2
+Release: alt3
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -190,6 +190,9 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Dec 28 2018 Etersoft Builder <builder@etersoft.ru> 1.4.1-alt3
+- (CI): disabled release build for p7
+
 * Wed Dec 12 2018 Vitaly Lipatov <lav@altlinux.ru> 1.4.1-alt2
 - remove license check from GPL code
 
