@@ -26,7 +26,7 @@ RELEASE:
     - /usr/bin/rpmlog -q -r -l
     - korinf -f rx-etersoft.spec x86_64/ALTLinux/p8 /var/ftp/pvt/Etersoft/RX@Etersoft/unstable
     - korinf -f rx-etersoft.spec x86_64/ALTLinux/Sisyphus /var/ftp/pvt/Etersoft/RX@Etersoft/unstable
-    - korinf -f rx-etersoft.spec x86_64/ALTLinux/p7 /var/ftp/pvt/Etersoft/RX@Etersoft/unstable
+    # - korinf -f rx-etersoft.spec x86_64/ALTLinux/p7 /var/ftp/pvt/Etersoft/RX@Etersoft/unstable
     - git push -f --tags gitlab HEAD:ci/latest-build
     - git push -f --tags gitlab HEAD:master
     - |
