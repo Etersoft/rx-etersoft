@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.16
+Release: alt2.M70C.17
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -180,6 +180,13 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Fri Mar 29 2019 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.17
+- init RANDOM generator (eterbug #13309)
+- init RANDOM from /dev/urandom (eterbug #13309)
+- (c7): Added timestamp for nxserver log (eterbug #13312)
+- (CI): added pause for check server ip
+- (logs): added 'ulimit -a' and 'free' when nxnagent starting and finished
+
 * Fri Oct 26 2018 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.16
 - (c7): use user main group for SystemGroup for cupsd (eterbug #13290)
 - (c7): added timeout for cupsd start (eterbug #12972)
