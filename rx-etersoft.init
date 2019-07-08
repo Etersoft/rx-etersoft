@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # chkconfig: 2345 95 15
-# description: Starts and stops the FreeNX service
+# description: Starts and stops the RX Etersoft service
 # processname: nxserver
 
 ### BEGIN INIT INFO
@@ -10,8 +10,8 @@
 # Required-Stop:     sshd
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: FreeNX Server
-# Description:       Cleanup FreeNX Server session database at boot time
+# Short-Description: RX Etersoft Server
+# Description:       Cleanup RX Etersoft Server session database at boot time
 ### END INIT INFO
 
 # Read the config file
