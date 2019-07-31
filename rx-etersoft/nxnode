@@ -2122,7 +2122,7 @@ cmd_node_addprinter()
 	computername=$(getparam computername)
 	public=$(getparam public)
 	model=$(getparam model)
-	defaultPrinter=$(getparam defaultPrinter)
+	defaultPrinter=$(getparam defaultprinter)
 	display=$(cd $USER_FAKE_HOME/.nx/; echo C-$SERVER_NAME-*-$sessionid | awk 'BEGIN {FS="-"} {i=NF-1; print $i}')
 	sess_id="$SERVER_NAME-$display-$sessionid"
 
