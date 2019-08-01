@@ -3,7 +3,7 @@
 %define oname freenx-server
 Name: rx-etersoft
 Version: 1.1.4
-Release: alt2.M70C.17
+Release: alt2.M70C.18
 
 Summary: Freenx application/thin-client server
 Group: Networking/Remote access
@@ -180,6 +180,9 @@ fi
 %attr(2750,root,nx) %_var/lib/nxserver/db/
 
 %changelog
+* Thu Aug 01 2019 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.18
+- fix parameter name for defaultPrinter (eterbug #14094)
+
 * Fri Mar 29 2019 Vitaly Lipatov <lav@altlinux.ru> 1.1.4-alt2.M70C.17
 - init RANDOM generator (eterbug #13309)
 - init RANDOM from /dev/urandom (eterbug #13309)
