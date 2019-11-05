@@ -490,8 +490,8 @@ session_running()
 
 session_close()
 {
-	test -f "$NX_SESS_DIR/running/sessionId'{'$1'}'" || return
-	
+	session_running $1 || return
+
 	$COMMAND_PERL -pi -e "s/startTime=\(.*\)/startTime=\1\nendTime=$(date +%s)/" $NX_SESS_DIR/running/sessionId'{'$1'}'
 	session_status $1 "Finished"
 	[ "$SESSION_HISTORY" = "0" ] && rm -f $NX_SESS_DIR/running/sessionId'{'$1'}'
@@ -500,6 +500,8 @@ session_close()
 
 session_fail()
 {
+	session_running $1 || return
+
 	$COMMAND_PERL -pi -e "s/startTime=\(.*\)/startTime=\1\nendTime=$(date +%s)/" $NX_SESS_DIR/running/sessionId'{'$1'}'
 	session_status $1 "Failed"
 	[ "$SESSION_HISTORY" = "0" ] && rm -f $NX_SESS_DIR/running/sessionId'{'$1'}'
