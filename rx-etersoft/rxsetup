@@ -18,6 +18,12 @@ usage()
         echo "logoff  - disable logs (server)"
 }
 
+fatal()
+{
+        echo "$*" >&2
+        exit 1
+}
+
 # Print command line and run command line
 showcmd()
 {
@@ -156,6 +162,9 @@ rxserver_logoff()
 }
 
 [ -z "$1" ] && usage && exit 1
+
+EFFUID=$(id -u)
+[ "$EFFUID" = "0" ] || fatal "Run me under root user"
 
 while [[ $# -gt 0 ]]; do
 
