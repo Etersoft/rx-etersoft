@@ -1,8 +1,8 @@
 #!/bin/bash
-# Etersoft, 2010, 2012
+# Etersoft, 2010, 2012, 2019
 # 2010 (c) Devaev Maxim, <mdevaev@etersoft.ru>
 # 2010 (c) Baranov Denis, <baraka@etersoft.ru>
-# 2012 (c) Vitaly Lipatov, <lav@etersoft.ru>
+# 2012, 2019 (c) Vitaly Lipatov, <lav@etersoft.ru>
 # 2018 (c) Pavel Vainerman, <pv@etersoft.ru>
 #
 # rxsetup - script for fast configuration of RX@Etersoft
@@ -49,29 +49,21 @@ unlock_nx_user()
         docmd passwd -u nx
 }
 
-do_chkconfig_on()
+get_ssh_name()
 {
-        CHKCONFIG=$(which chkconfig 2>/dev/null)
-        if [ -n "$CHKCONFIG" ] ; then
-            docmd $CHKCONFIG $1 on
-        else
-            docmd update-rc.d $1 defaults
-        fi
+        local DISTR="$(distr_info -d)"
+        case $DISTR in
+            Debian|Ubuntu)
+                echo "ssh"
+                ;;
+        esac
+        echo "sshd"
 }
-
 
 start_sshd()
 {
         item "Check and start OpenSSH server..."
-        # FIXME Lav: нужно воспользоваться distr_vendor для определения системы
-        for sshd in ssh sshd openssh opensshd; do
-                if [ -e /etc/init.d/$sshd ]; then
-                        docmd /etc/init.d/$sshd start
-                        RETVAL="$?"
-                        do_chkconfig_on $sshd
-                        return "$RETVAL"
-                fi
-        done
+        serv $(get_ssh_name) on && return
         echo "FIXME: cannot find ssh service name, TODO for systemd?"
         RETVAL=1
         return "$RETVAL"
@@ -94,13 +86,10 @@ nx_install()
         docmd nxsetup --setup-nomachine-key --install
 }
 
-start_freenx_server()
+start_rx_server()
 {
-        item "Enable server and run it"
-        SERVICECOMMAND="/etc/init.d/rx-etersoft"
-        do_chkconfig_on rx-etersoft
-        # Without direct dependency to /etc/init.d
-        $SERVICECOMMAND start
+        item "Enable RX@Etersoft service and run it"
+        serv rx-etersoft on
 }
 
 clean_known_hosts()
@@ -132,7 +121,7 @@ rxsetup_stages()
                     enable_cupsd \
                     nx_install \
                     clean_known_hosts \
-                    start_freenx_server \
+                    start_rx_server \
                     ; do
             $func || ER=$?
         done
