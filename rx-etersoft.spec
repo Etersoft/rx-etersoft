@@ -1,7 +1,7 @@
 %define oname freenx-server
 %define hooksroot rx-etersoft
 Name: rx-etersoft
-Version: 1.4.3
+Version: 1.4.4
 Release: alt1
 
 Summary: Freenx application/thin-client server
@@ -190,6 +190,11 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Nov 21 2019 Konstantin Kondratyuk <kondratyuk@altlinux.org> 1.4.4-alt1
+- rewrite rxsetup to use epm
+- rxsetup: run me under root user
+- nxloadconfig: fix mate detection, add support for mate-terminal (eterbug #14314)
+
 * Mon Nov 18 2019 Konstantin Kondratyuk <kondratyuk@altlinux.org> 1.4.3-alt1
 - fix session_close (eterbug #13765)
 
