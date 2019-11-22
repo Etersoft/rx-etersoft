@@ -1,3 +1,13 @@
 #!/bin/sh
 
+# start 1C Linux client
+START=/opt/1C/v8.2/x86_64/1cestart
+[ -x "$START" ] || START=/opt/1C/v8.2/i386/1cestart
+
+if [ -x "$START" ] ; then
+    $START "$@"
+    exit
+fi
+
+
 a= wine "C:\\Program Files\\1cv82\\common\\1cestart.exe" "$@"
