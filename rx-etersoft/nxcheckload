@@ -49,6 +49,8 @@ fi
 # Be sure to use C numeric for calculations
 export LC_NUMERIC=C
 
+# TODO: use distro_info
+
 # The 3 variables of load from uptime
 LOADXX=$(awk '{ printf("(100-%s)+(100-%s)+(100-%s)\n", $1, $2, $3); }' /proc/loadavg | bc -q)
 

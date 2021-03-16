@@ -146,9 +146,9 @@ fi
 %config(noreplace) %_sysconfdir/%name/Xkbmap
 %_sysconfdir/%name/fixkeyboard
 %_sysconfdir/%name/Xsession
-%dir %_sysconfdir/%hooksroot/hooks/ 
+%dir %_sysconfdir/%hooksroot/hooks/
 %_sysconfdir/%hooksroot/hooks/*
-%dir %_libdir/%hooksroot/hooks/ 
+%dir %_libdir/%hooksroot/hooks/
 %_libdir/%hooksroot/hooks/*
 %attr(0400,root,root) %config(noreplace) %_sysconfdir/cron.d/%name
 %_sbindir/nx-terminate-suspend

@@ -85,7 +85,7 @@ parse_cmdline()
 
 	if [ "$HELP" = "yes" ]
 	then
-		echo "nxsetup - Setup the RX@Etersoft server."
+		echo "nxsetup - low level setup the RX@Etersoft server."
 		echo "Syntax: nxsetup --help"
 		echo "        nxsetup --test [--ignore-errors]"
 		echo "        nxsetup --install [--setup-nomachine-key] [--uid <nummber>] [--clean [--purge]]"
@@ -125,10 +125,10 @@ parse_cmdline()
 
 	if [ "$INSTALL" = "yes" -a "$AUTOMATIC" = "no" -a "$SETUP_NOMACHINE_KEY" = "no" ]
 	then
-		echo "------> It is recommended that you use the NoMachine key for"
+		echo "------> It is recommended that you use the default key for"
 		echo "        easier setup. If you answer \"y\", RX@Etersoft creates a custom"
 		echo "        KeyPair and expects you to setup your clients manually. "
-		echo "        \"N\" is default and uses the NoMachine key for installation."
+		echo "        \"N\" is default and uses the default key for installation."
 		echo ""
 		echo -n " Do you want to use your own custom KeyPair? [y/N] "
 		read -n 1 CHOICE
@@ -326,7 +326,7 @@ test_nx()
 
 	if [ -z "$CONNECTION" ]
 	then
-		echo "Fatal error: Could not connect to NX Server."
+		echo "Fatal error: Could not connect to RX@Etersoft server."
 		echo 
 		echo "Please check your ssh setup:"
 		echo ""
@@ -352,7 +352,7 @@ test_nx()
 	echo ""
 }
 
-uninstall_nx() 
+uninstall_nx()
 {
 	if [ -e "$NX_SESS_DIR" ]
 	then
@@ -362,7 +362,7 @@ uninstall_nx()
 		echo "done"
 	fi
 	
-	if [ -e "$NX_LOGFILE" ] 
+	if [ -e "$NX_LOGFILE" ]
 	then
 		echo -n "Removing logfile ..."
 		rm -f "$NX_LOGFILE" 2>/dev/null

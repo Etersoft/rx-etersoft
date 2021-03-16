@@ -1821,10 +1821,10 @@ cmd_usage()
 		echo "--deluser <user>: Remove a user from nx" 1>&2
 		echo "--listuser: List enabled users" 1>&2
 		echo "" 1>&2
-		echo "--start: Start the nx server" 1>&2
-		echo "--stop: Stop the nx server" 1>&2
-		echo "--status: Show status of nx server" 1>&2
-		echo "--restart: Restart the nx server. (start,stop)" 1>&2
+		echo "--start: Start RX@Etersoft server" 1>&2
+		echo "--stop: Stop RX@Etersoft server" 1>&2
+		echo "--status: Show status of RX@Etersoft server" 1>&2
+		echo "--restart: Restart RX@Etersoft server. (start, stop)" 1>&2
 		echo "" 1>&2
 		echo "--list [ user | sessionid ]: List running sessions of user or sessionid " 1>&2
 		echo "--history [ user | sessionid | clear ]: Show history [ of user | sessionid ] or clear the history" 1>&2
