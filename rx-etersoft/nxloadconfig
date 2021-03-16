@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Copyright (c) 2005 by Fabian Franz <freenx@fabian-franz.de>
 #           (c) 2005 by Jon Severinsson <jonno@users.berlios.de>
@@ -289,46 +289,22 @@ NUMLOCKX="numlockx"
 NODE_APP_WAIT_TIMEOUT="5"
 ENABLE_CUPS_DIALOG="0"
 
-############################################################################
-# OS specific directives
-############################################################################
-
-OS="$( uname -sr )"
-
-case "$OS" in
-	"SunOS 5.10")
-		DEFAULT_X_WM=cdwm
-		DEFAULT_X_SESSION=/etc/X11/gdm/Xsession
-		COMMAND_XTERM=/usr/openwin/bin/xterm
-		COMMAND_XAUTH=/usr/openwin/bin/xauth
-		COMMAND_CUPSD=/opt/sfw/cups/sbin/cupsd
-		COMMAND_MD5SUM=gmd5sum
-		PATH=/usr/xpg4/bin:/usr/openwin/bin:$PATH
-		export PATH
-		;;
-esac
-
-# replace incompatible commands
-
-case "$OS" in
-       "SunOS 5.10")
-               function which()
-               {
-                       [ -e "$1" ] && echo $1 && return 0
-                       [ -z "$1" ] && return 1
-                       for i in  $(echo $PATH | tr ":" "\n"); do
-                               [ -e $i/$1 ] && echo $i/$1 && return 0
-                       done
-                       return 1
-               }
-       ;;
-esac
 
 #
 # Utility functions
 #
 
-function mywhich()
+initial_letter()
+{
+    echo "$1" | head -c1
+}
+
+skip_initial_letter()
+{
+    echo "$1" | cut -c2-
+}
+
+mywhich()
 {
 	which $(echo "$*" | cut -d" " -f1)
 }
@@ -537,16 +513,16 @@ then
 	if [ "$ENABLE_PERSISTENT_SESSION" != "all" ]
 	then
 		for USERNAME in $ENABLE_PERSISTENT_SESSION; do
-			[ "${USERNAME:0:1}" != "@" ] && [ -z $(getent passwd $USERNAME) ] && \
+			[ "$(initial_letter $USERNAME)" != "@" ] && [ -z $(getent passwd $USERNAME) ] && \
 				ERROR="yes" && echo "Error: Invalid value \"ENABLE_PERSISTENT_SESSION=$ENABLE_PERSISTENT_SESSION\"" && break ;
-			[ "${USERNAME:0:1}" = "@" ] && [ -z $(getent group ${USERNAME:1}) ] && \
+			[ "$(initial_letter $USERNAME)" = "@" ] && [ -z $(getent group $(skip_initial_letter $USERNAME)) ] && \
 				ERROR="yes" && echo "Error: Invalid value \"ENABLE_PERSISTENT_SESSION=$ENABLE_PERSISTENT_SESSION\"" && break ;
 		done
 	fi
 	for USERNAME in $DISABLE_PERSISTENT_SESSION; do
-		[ "${USERNAME:0:1}" != "@" ] && [ -z $(getent passwd $USERNAME) ] && \
+		[ "$(initial_letter $USERNAME)" != "@" ] && [ -z $(getent passwd $USERNAME) ] && \
 			ERROR="yes" && echo "Error: Invalid value \"DISABLE_PERSISTENT_SESSION=$DISABLE_PERSISTENT_SESSION\"" && break ;
-		[ "${USERNAME:0:1}" = "@" ] && [ -z $(getent group ${USERNAME:1}) ] && \
+		[ "$(initial_letter $USERNAME)" = "@" ] && [ -z $(getent group $(skip_initial_letter $USERNAME)) ] && \
 			ERROR="yes" && echo "Error: Invalid value \"DISABLE_PERSISTENT_SESSION=$DISABLE_PERSISTENT_SESSION\"" && break ;
 	done
 	IFS=$OLD_IFS

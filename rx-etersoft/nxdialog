@@ -15,7 +15,7 @@
 
 #JJK: borrowed from Aron Griffis
 
-function requote 
+requote
 {
 	declare arg
 
