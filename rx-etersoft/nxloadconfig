@@ -72,6 +72,8 @@ APPLICATION_LIBRARY_PRELOAD="" #Calculated
 
 # the name of the authorized keys file for ssh
 SSH_AUTHORIZED_KEYS="authorized_keys2"
+SSH_LOCAL_KEY="users.id_rsa"
+SSH_LOCAL_KEY_TYPE="rsa"
 
 # retest values like xauth, netcat and checks for nxdesktop/nxviewer availability
 # set to 0 if you are sure, you set the right values

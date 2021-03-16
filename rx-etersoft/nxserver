@@ -991,7 +991,7 @@ server_nxnode_start()
 	    unset SSH_CLIENT SSH_CLIENT2
 	    echo "$@" | $PATH_BIN/nxnode "$CMD" 2>&1 | log_tee
 	else
-	    echo "$@" | $COMMAND_SSH -l "$USER" "$NODE_HOSTNAME" -p $SSHD_PORT -x -2 -i $NX_ETC_DIR/users.id_dsa -o 'PubkeyAuthentication yes' -o 'RSAAuthentication yes' -o 'RhostsAuthentication no' -o 'PasswordAuthentication no' -o 'RhostsRSAAuthentication no' -o 'StrictHostKeyChecking no' $PATH_BIN/nxnode "$CMD" | log_tee
+	    echo "$@" | $COMMAND_SSH -l "$USER" "$NODE_HOSTNAME" -p $SSHD_PORT -x -2 -i $NX_ETC_DIR/$SSH_LOCAL_KEY -o 'PubkeyAuthentication yes' -o 'RSAAuthentication yes' -o 'RhostsAuthentication no' -o 'PasswordAuthentication no' -o 'RhostsRSAAuthentication no' -o 'StrictHostKeyChecking no' $PATH_BIN/nxnode "$CMD" | log_tee
 	fi
 }
 

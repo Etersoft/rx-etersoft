@@ -2485,9 +2485,9 @@ case "$1" in
 	;;
 	--setkey)
 		mkdir -m 700 -p $HOME/.ssh
-		if ! grep -q "$(cat $NX_ETC_DIR/users.id_dsa.pub)" $HOME/.ssh/$SSH_AUTHORIZED_KEYS 2>/dev/null
+		if ! grep -q "$(cat $NX_ETC_DIR/$SSH_LOCAL_KEY.pub)" $HOME/.ssh/$SSH_AUTHORIZED_KEYS 2>/dev/null
 		then
-			cat $NX_ETC_DIR/users.id_dsa.pub >> $HOME/.ssh/$SSH_AUTHORIZED_KEYS
+			cat $NX_ETC_DIR/$SSH_LOCAL_KEY.pub >> $HOME/.ssh/$SSH_AUTHORIZED_KEYS
 			chmod 600 $HOME/.ssh/$SSH_AUTHORIZED_KEYS
 			echo "NX> 716 Public key added to: $HOME/.ssh/$SSH_AUTHORIZED_KEYS"
 		else

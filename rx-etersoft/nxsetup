@@ -173,9 +173,9 @@ install_nx()
 	chmod 600 $NX_ETC_DIR/passwords $NX_ETC_DIR/passwords.orig
 	echo "done"
 	
-	if [ ! -f $NX_ETC_DIR/users.id_dsa ]
+	if [ ! -f $NX_ETC_DIR/$SSH_LOCAL_KEY ]
 	then
-		$COMMAND_SSH_KEYGEN -f $NX_ETC_DIR/users.id_dsa -t dsa -N ""
+		$COMMAND_SSH_KEYGEN -f $NX_ETC_DIR/$SSH_LOCAL_KEY -t $SSH_LOCAL_KEY_TYPE -N ""
 	fi
 	
 	echo -n "Setting up $NX_SESS_DIR ..."
@@ -381,7 +381,7 @@ uninstall_nx()
 	if [ "$PURGE" = "yes" -a -e "$NX_ETC_DIR" ]
 	then
 		echo -n "Removing configuration files ..."
-		rm -f "$NX_ETC_DIR/passwords" "$NX_ETC_DIR/passwords.orig" "$NX_ETC_DIR/users.id_dsa" "$NX_ETC_DIR/users.id_dsa.pub" 2>/dev/null
+		rm -f "$NX_ETC_DIR/passwords" "$NX_ETC_DIR/passwords.orig" "$NX_ETC_DIR/$SSH_LOCAL_KEY" "$NX_ETC_DIR/$SSH_LOCAL_KEY.pub" "$NX_ETC_DIR/client.id_dsa.key" 2>/dev/null
 		for i in `ls $NX_ETC_DIR/*.node.conf 2>/dev/null` ;
 		do
 			rm -f "$i" 2>/dev/null;
