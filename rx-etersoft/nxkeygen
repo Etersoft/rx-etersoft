@@ -20,14 +20,14 @@
 
 [ -z "$NX_KEY_DIR" ] && NX_KEY_DIR="$NX_HOME_DIR/.ssh"
 DATE="`date '+%Y%m%d-%H%M%S'`"
-NX_CLIENT_KEY="${NX_KEY_DIR}/client.id_dsa.key"
-NX_SERVER_KEY="${NX_KEY_DIR}/server.id_dsa.pub.key"
+NX_CLIENT_KEY="${NX_KEY_DIR}/client.id_rsa.key"
+NX_SERVER_KEY="${NX_KEY_DIR}/server.id_rsa.pub.key"
 
 main ()
 {
 	# create a new key
 	umask 177
-	$COMMAND_SSH_KEYGEN -q -t dsa -N '' -f ${NX_KEY_DIR}/local.id_dsa
+	$COMMAND_SSH_KEYGEN -q -t rsa -N '' -f ${NX_KEY_DIR}/local.id_rsa
 
 	# backup the existing keys
 	
@@ -43,8 +43,8 @@ main ()
 
 	# put the new keys in place
 
-	mv -f "${NX_KEY_DIR}/local.id_dsa" "${NX_CLIENT_KEY}"
-	mv -f "${NX_KEY_DIR}/local.id_dsa.pub" "${NX_SERVER_KEY}"
+	mv -f "${NX_KEY_DIR}/local.id_rsa" "${NX_CLIENT_KEY}"
+	mv -f "${NX_KEY_DIR}/local.id_rsa.pub" "${NX_SERVER_KEY}"
 
 	for x in ${NX_CLIENT_KEY} ${NX_SERVER_KEY} ; do
 		chmod 600 $x

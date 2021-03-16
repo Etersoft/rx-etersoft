@@ -207,21 +207,36 @@ no-port-forwarding,command="$PATH_BIN/nxserver" ssh-rsa AAAAB3NzaC1yc2EAAAADAQAB
 no-port-forwarding,command="$PATH_BIN/nxserver" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFqS0BMX6iwPXfqVoRYNXkLPHJ4NUSAhqCPCjmZw88qr rx@etersoft.ru
 EOF
 			chmod 600 $NX_HOME_DIR/.ssh/$SSH_AUTHORIZED_KEYS
-			cat << EOF >$NX_HOME_DIR/.ssh/client.id_dsa.key
------BEGIN DSA PRIVATE KEY-----
-MIIBuwIBAAKBgQCXv9AzQXjxvXWC1qu3CdEqskX9YomTfyG865gb4D02ZwWuRU/9
-C3I9/bEWLdaWgJYXIcFJsMCIkmWjjeSZyTmeoypI1iLifTHUxn3b7WNWi8AzKcVF
-aBsBGiljsop9NiD1mEpA0G+nHHrhvTXz7pUvYrsrXcdMyM6rxqn77nbbnwIVALCi
-xFdHZADw5KAVZI7r6QatEkqLAoGBAI4L1TQGFkq5xQ/nIIciW8setAAIyrcWdK/z
-5/ZPeELdq70KDJxoLf81NL/8uIc4PoNyTRJjtT3R4f8Az1TsZWeh2+ReCEJxDWgG
-fbk2YhRqoQTtXPFsI4qvzBWct42WonWqyyb1bPBHk+JmXFscJu5yFQ+JUVNsENpY
-+Gkz3HqTAoGANlgcCuA4wrC+3Cic9CFkqiwO/Rn1vk8dvGuEQqFJ6f6LVfPfRTfa
-QU7TGVLk2CzY4dasrwxJ1f6FsT8DHTNGnxELPKRuLstGrFY/PR7KeafeFZDf+fJ3
-mbX5nxrld3wi5titTnX+8s4IKv29HJguPvOK/SI7cjzA+SqNfD7qEo8CFDIm1xRf
-8xAPsSKs6yZ6j1FNklfu
------END DSA PRIVATE KEY-----
+			cat << EOF >$NX_HOME_DIR/.ssh/client.id_rsa.key
+-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAu45VkR3Lbo2JohT16r8Km89MEsi9dvXPZn0Y+JOYM/HolB5G
+K7Dflr3DZEwEHhCFdI8VGvBVQ2NQmSJXxqoJUJrex4cNJvpp15KEypSOYQlOcjxn
+aIx4I0ddonQk5MP1APZ5hk3DlgnxJ1K3LFTQvYs44xsggUjg3ZXUvVtP9PQBDRRb
+CZNAX7zQpzYwAYYo9qnhddI9uUvB8gG7B96b3hOCNrBeTNYH0UXdEyRHKBCpi9cI
+9ZYtsz5rNrUhClOywj2uTRGB3lHlbodu3zm6nPjoqaitH4Ipk1OWRgESIX0lrqA+
+j1Ae9AYWYjwp7o/yv6npFGKMawuhj9fLO4pXJQIDAQABAoIBABCU2tfDjJKvjLV5
+qOwiC6wOvakDekykGrvy31xKoDAneOpvasC+GGZZTIb3eX229DWD2NfS25bjluKS
++LOloMExj/SP6gfCJ81ZNMg8LgJCMl9DG9lQYeasjoioQALBmE2HfOL0yQ/gvSM+
+2tbegL3hKxxY75y+drLgZjh/dCgxqz//azRP2GCj0sdDItW+smdzm04Df3fm9A5M
+TzVWXvaFzK3/hApg1cFBBIiKjUwjFzdBby3bumnai1XUn/YrR7kZQEONWzmDztY4
+ok5dn8GuFumtDksuJ2JVWajmAXNwWLW3XLuCqzaYqXeBu5GamrOBHFlhC5RhLo21
+vqi+3IECgYEA+Ko83gGHN35DFSVexLdLLpDEel+c0g8IOkzeJNj/yLUFpga1mafR
+SEmiSubPLTgwFx1mCVS4npdJ4wo86JmMo3GZneyMF2FXZ0JvusQ8zZ4//Ba2wdow
+4gTJIGBmqW5+o7rSTDSMPfcbupzcaUDiZFyvI5y6yx0KYXEeW5k8SZUCgYEAwRaj
+vY0rjSUn7hf7NBwfk+Krk7qf7Q+w14/qK3N2Rej0RNK+Ur5t/NpRC5v7D+vLkbWM
+X4nC8s5TkAWW+0FbnCfcSzG0CiEeh/rOmbpROQWIj586vCkbytlbAfKyQLGAOWZp
+5SY2jDAV67a9jRnrk5hzOPEZQ8KdtSrRR2e9E1ECgYBMwRdam3QmT+Xa8BcJd15Q
+eET9VOft+s/aVwG2s/h39lBRB/8j96Xkvz3GCupmFdLaP6vQM4NtCFu5Jd7ZGRRN
+GvKEyZAQY258JAiiyJHQEgnEASrWOUgfa8S9JqRppf6XAUKKXSnwsoavml16a5m1
+ytoQjv8lVMhwfV8WfP0b5QKBgGgUSgKcm8MjKhje+FsoZaUTY6Tnzdi8wngPbQwq
+2q/oV/LZHhn/582J6HG3jGcSlNJf5+B/o4O5z7UsLiwVGMpdehNWIVPsckad3Mtk
+cO+pmejAzaorBn4bF0E/jvHsO8+08pPAO1rpeIdsI1Rxilgurr0cyJ+LwfKrt88j
+jflhAoGBAMPh54ToIfFegR68la1298byDKuaAAFnONXnr0BSZ5YqxNs/PC/08k2k
+QBqqTxWmqohXpREKLPw6Im/1oi9tKZaAQvAUdOgtsaX3Oqx6KO1/3tpBxPhs3hIY
+e1FsQ7bWg0vszUltOPN0tzE6UgOHYZc8mxUXPk67kMwx10LoiWdx
+-----END RSA PRIVATE KEY-----
 EOF
-			chmod 600 $NX_HOME_DIR/.ssh/client.id_dsa.key
+			chmod 600 $NX_HOME_DIR/.ssh/client.id_rsa.key
 		else
 			# generate a new key, backup the old and copy it to $SSH_AUTHORIZED_KEYS
 			$PATH_BIN/nxkeygen
@@ -307,7 +322,7 @@ test_nx()
 			;;
 		esac
 
-	done < <(NODE_PUBLICKEY="$NX_HOME_DIR/.ssh/client.id_dsa.key" $PATH_BIN/nxnode-login test-nx nx "$SSHD_PORT" nxserver --check)
+	done < <(NODE_PUBLICKEY="$NX_HOME_DIR/.ssh/client.id_rsa.key" $PATH_BIN/nxnode-login test-nx nx "$SSHD_PORT" nxserver --check)
 
 	if [ -z "$CONNECTION" ]
 	then
@@ -435,8 +450,8 @@ then
 	then
 		echo
 		echo "Warning: Clients will not be able to login to this server with the standard key."
-		echo "         Please replace /usr/NX/share/client.id_dsa.key on all clients you want"
-		echo "         to use with $NX_HOME_DIR/.ssh/client.id_dsa.key"
+		echo "         Please replace /etc/rx-etersoft/client.id_rsa.key on all clients you want"
+		echo "         to use with $NX_HOME_DIR/.ssh/client.id_rsa.key"
 		echo "         and protect it accordingly."
 		echo ""
 		echo "         Since 1.5.0 you need to import the correct key via the GUI."
