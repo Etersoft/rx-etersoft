@@ -15,7 +15,7 @@
 
 #JJK: borrowed from Aron Griffis
 
-requote
+requote()
 {
 	declare arg
 
@@ -55,6 +55,7 @@ do
 		--display) DISPLAY="$2"; shift 2 ;;
 		--printer) DIALOG_PRINTER="$2"; shift 2 ;;
 		--parent) DIALOG_PARENT="$2"; shift 2 ;;
+		--window) echo "--window is not implement: X11 id of window where to embed the pulldown dialog type." ; shift 2 ;;
 		--) shift ; break ;;
                 *) echo "Internal error!" ; exit 1; ;;
 	esac
