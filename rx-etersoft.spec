@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.4.6
+Version: 1.4.7
 Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
@@ -196,6 +196,13 @@ fi
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Wed Feb 09 2022 Vitaly Lipatov <lav@altlinux.ru> 1.4.7-alt1
+- nxserver: rewrite set_auth_mode detection
+- use authorized_keys instead of authorized_keys2
+- nxloadconfig: add check for DEFAULT_X_SESSION=/etc/X11/xinit/xinitrc
+- nxserver: improve logs, cleanup
+- replace nxclient/opennx with rxclient, remove obsoleted INSTALL
+
 * Sun Sep 05 2021 Vitaly Lipatov <lav@altlinux.ru> 1.4.6-alt1
 - nxdialog: fix requote function
 - don't pack nx-session-launcher*
