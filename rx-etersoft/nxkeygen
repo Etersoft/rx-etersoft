@@ -51,7 +51,7 @@ main ()
 		chown nx:root $x
 	done
 	
-	# copy the key to the authorized_keys2 file
+	# copy the key to the authorized_keys file
 	rm -f $NX_KEY_DIR/$SSH_AUTHORIZED_KEYS
 	echo -n "no-port-forwarding,no-agent-forwarding,command=\"$PATH_BIN/nxserver\" " >$NX_KEY_DIR/$SSH_AUTHORIZED_KEYS
 	cat ${NX_SERVER_KEY} >> $NX_KEY_DIR/$SSH_AUTHORIZED_KEYS

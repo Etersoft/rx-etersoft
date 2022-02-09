@@ -71,7 +71,7 @@ APPLICATION_LIBRARY_PATH="" #Calculated
 APPLICATION_LIBRARY_PRELOAD="" #Calculated
 
 # the name of the authorized keys file for ssh
-SSH_AUTHORIZED_KEYS="authorized_keys2"
+SSH_AUTHORIZED_KEYS="authorized_keys"
 SSH_LOCAL_KEY="users.id_rsa"
 SSH_LOCAL_KEY_TYPE="rsa"
 
