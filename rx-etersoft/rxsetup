@@ -144,7 +144,7 @@ rxsetup_init()
                 echo "There is some configuration error. All output saved to $LOG."
                 return 1
         else
-                echo "Complete. Now, you may use opennx for connection to this server."
+                echo "Complete. Now, you may use rxclient for connection to this server."
                 rm -f $LOG
         fi
 }

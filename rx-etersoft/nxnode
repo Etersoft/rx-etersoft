@@ -1781,7 +1781,7 @@ startsession()
 	rdpcache=$(getparam rdpcache)
 	http=$(getparam http)
 	
-	# nxclient > 1.5.0-106 variables
+	# rxclient > 1.5.0-106 variables
 	resize=$(getparam resize)
 	keybd=$(getparam keybd)
 

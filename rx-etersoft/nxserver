@@ -268,7 +268,7 @@ session_count_user()
 
 # List all sessions of a user
 
-# Cache the session list output for up to 30 seconds because nxclient
+# Cache the session list output for up to 30 seconds because rxclient
 # repeatedly queries it very fast, which creates performance problems.
 session_list_user_suspended() {
        args="$1 $2 $3 $4"
@@ -520,7 +520,7 @@ session_suspend()
 
 
 #
-# Main nxserver <-> nxclient communication module
+# Main nxserver <-> rxclient communication module
 #
 
 # do not run in server mode loop
@@ -1786,7 +1786,7 @@ done
 fi
 
 #
-# End of Main nxserver <--> nxclient communication module
+# End of Main nxserver <--> rxclient communication module
 #
 
 ################### PACKAGE cmd.bm ############################
