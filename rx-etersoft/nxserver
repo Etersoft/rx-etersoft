@@ -875,7 +875,7 @@ do
 			if [ "$ENABLE_SSH_AUTHENTICATION" = "1" -a "$LOGIN_SUCCESS" = "0" ]
 			then
 				log 6 -n "ssh "
-				export COMMAND_SSH			
+				export COMMAND_SSH
 				nxnode_login "$PASS" -- "ssh.$AUTH_MODE" "$USER" "$SSHD_PORT" "$PATH_BIN/nxnode" --check 2>&1 >/dev/null
 				if [ $? -eq 0 ]
 				then
@@ -906,6 +906,7 @@ do
 
 			if [ "$LOGIN_SUCCESS" = "1" ]
 			then
+				log 6 "Login success with LOGIN_METHOD='$LOGIN_METHOD', reread config files with userconf"
 				# Reread the config files (so that $USER.node.conf get sourced)
 				. $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --userconf
 				break
