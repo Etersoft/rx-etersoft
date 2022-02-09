@@ -788,30 +788,21 @@ do
 			exit 0
 		;;
 		hello*|HELLO*)
-			PROTO=$(echo $CMD | sed 's/.*Version \(.*\)/\1/g')
+			PROTO="$(echo $CMD | sed 's/.*Version \(.*\)/\1/g')" #'
 			echo_x "NX> 134 Accepted protocol: $PROTO"
 		;;
 
-		"set auth_mode*"|"SET AUTH_MODE*")
-			if [ "$CMD" = "set auth_mode password" -o "$CMD" = "SET AUTH_MODE PASSWORD" ]
-			then
-				echo_x "Set auth_mode: password"
-				AUTH_MODE="password"
-			elif [ "$CMD" = "set auth_mode sshkey" -o "$CMD" = "SET AUTH_MODE SSHKEY" ]
-			then
-				echo_x "Set auth_mode: sshkey"
-				AUTH_MODE="sshkey"
-			elif [ "$CMD" = "set auth_mode pcsc" -o "$CMD" = "SET AUTH_MODE PCSC" ]
-			then
-				echo_x "Set auth_mode: pcsc"
-				AUTH_MODE="pcsc"
-			elif [ "$CMD" = "set auth_mode kerberos" -o "$CMD" = "SET AUTH_MODE KERBEROS" ]
-			then
-				echo_x "Set auth_mode: kerberos"
-				AUTH_MODE="kerberos"
-			else
-				echo_x "NX> 500 ERROR: unknown auth mode ''"
-			fi
+		"set auth_mode"*|"SET AUTH_MODE"*)
+			AUTH_MODE="$(echo $CMD | sed 's/set auth_mode \(.*\)/\1/gi' | tr '[A-Z]' '[a-z]')" #'
+			case "$AUTH_MODE" in
+				password|sshkey|pcsc|kerberos)
+					echo_x "Set auth_mode: $AUTH_MODE"
+					;;
+				*)
+					echo_x "NX> 500 ERROR: unknown auth mode '$AUTH_MODE'"
+					unset AUTH_MODE
+					;;
+			esac
 		;;
 		login|LOGIN)
 			LOGIN_SUCCESS="0"
