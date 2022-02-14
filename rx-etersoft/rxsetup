@@ -92,12 +92,6 @@ nx_install()
         docmd nxsetup --setup-nomachine-key --install
 }
 
-start_rx_server()
-{
-        item "Enable RX@Etersoft service and run it"
-        serv rx-etersoft on
-}
-
 clean_known_hosts()
 {
 	item "Clean known_hosts..."
@@ -127,7 +121,6 @@ rxsetup_stages()
                     enable_cupsd \
                     nx_install \
                     clean_known_hosts \
-                    start_rx_server \
                     ; do
             $func || ER=$?
         done

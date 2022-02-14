@@ -91,7 +91,7 @@ mkdir -p %buildroot%_datadir/misc/
 
 install -m755 rxsetup %buildroot%_bindir/
 install -m755 rxreport %buildroot%_bindir/
-install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
+#install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
 install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/%name/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/%name/Xsession
 install -Dp -m644 data/Xkbmap %buildroot%_sysconfdir/%name/Xkbmap
@@ -152,7 +152,7 @@ EOF
 %_libdir/%hooksroot/hooks/*
 %attr(0400,root,root) %config(noreplace) %_sysconfdir/cron.d/%name
 %_sbindir/nx-terminate-suspend
-%_initddir/%name
+#%_initddir/%name
 %if %_vendor != "alt"
 %_datadir/misc/%name.outformat
 %endif
