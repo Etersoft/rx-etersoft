@@ -126,14 +126,8 @@ EOF
 
 %pre
 %groupadd nx 2>/dev/null ||:
-%useradd -g nx -G utmp -d /var/lib/%name/home/ -s %_bindir/nxserver \
+%useradd -g nx -G utmp -d /var/lib/%name/home -s %_bindir/nxserver \
         -c "NX System User" nx 2>/dev/null ||:
-
-# Obsoleted (moved to conf.d/07-misc.conf)
-# rename config if updated
-if [ -r %_sysconfdir/sysconfig/%oname ] && [ ! -r %_sysconfdir/sysconfig/%name ] ; then
-    mv -vf %_sysconfdir/sysconfig/%oname %_sysconfdir/sysconfig/%name
-fi
 
 %files
 %doc AUTHORS CONTRIB
