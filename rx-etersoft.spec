@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.4.7
+Version: 1.4.8
 Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
@@ -190,6 +190,11 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Sun Feb 20 2022 Vitaly Lipatov <lav@altlinux.ru> 1.4.8-alt1
+- spec: remove last slash from nx user work dir path
+- drop rx-etersoft service (todo: use something from it in future)
+- change nxssh prompt options for disable ssh host key checking
+
 * Wed Feb 09 2022 Vitaly Lipatov <lav@altlinux.ru> 1.4.7-alt1
 - nxserver: rewrite set_auth_mode detection
 - use authorized_keys instead of authorized_keys2
