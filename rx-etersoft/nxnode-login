@@ -59,15 +59,15 @@ set password $expect_out(1,string)
 set stty_init "raw icrnl -echo"
 
 if { "$auth_method"=="ssh" } { 
-	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -o "NumberOfPasswordPrompts 1" -p "$port" "$executable $command" ]
+	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -o "NumberOfPasswordPrompts 1" -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" -p "$port" "$executable $command" ]
 } elseif { "$auth_method"=="ssh.password" } {
-	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -o "NumberOfPasswordPrompts 1" -p "$port" "$executable $command" ]
+	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -o "NumberOfPasswordPrompts 1" -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" -p "$port" "$executable $command" ]
 } elseif { "$auth_method"=="ssh.sshkey" } {
-	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -A -p "$port" "$executable $command" ]
+	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -A -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" -p "$port" "$executable $command" ]
 } elseif { "$auth_method"=="ssh.kerberos" } {
-	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -K -p "$port" "$executable $command" ]
+	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -K -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" -p "$port" "$executable $command" ]
 } elseif { "$auth_method"=="ssh.pcsc" } {
-	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -A -p "$port" "$executable $command" ]
+	set pid [spawn -noecho $command_ssh -2 -x -l "$user" "$host" -A -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" -p "$port" "$executable $command" ]
 } elseif { "$auth_method"=="su" } {
         set env(LANG) "C"
 	set pid [spawn -noecho su - "$user" -c "$executable $command" ]
