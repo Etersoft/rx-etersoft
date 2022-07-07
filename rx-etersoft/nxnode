@@ -665,6 +665,9 @@ node_start_applications()
 	    CUPS_SERVER_SOCKET="$(LC_ALL=C /usr/bin/lpstat -H 2>/dev/null)"
 	    [ -r $CUPS_SERVER_SOCKET ] || CUPS_SERVER_SOCKET=""
 	} || CUPS_SERVER_SOCKET="$USER_FAKE_HOME/.nx/C-$sess_id/cups/cups.sock"
+
+	# Eterbug #15556
+	CUPS_SERVER_SOCKET="localhost:4631"
 	[ "$ENABLE_CUPS_SERVER_EXPORT" = "1" -a -n "$CUPS_SERVER_SOCKET" ] && {
 	    [ "$cups" = "1" -o "$samba" = "1" ] && {
 		nxlog "$FUNCNAME ($$): export CUPS_SERVER=$CUPS_SERVER_SOCKET" &
