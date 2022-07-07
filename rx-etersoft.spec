@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.4.9
+Version: 1.5.0
 Release: eter1
 
 Summary: RX@Etersoft - NX based application/thin-client server
@@ -45,7 +45,7 @@ Requires: cups cifs-utils
 # for %_libexecdir/cups/backend/smb
 # Requires: samba-client
 
-%if %_vendor == "alt"
+%if "%_vendor" == "alt"
 Requires: dbus-tools-gui
 %endif
 
@@ -108,7 +108,7 @@ cp -r hooks %buildroot%_sysconfdir/%hooksroot
 mkdir -p -m755 %buildroot%_libdir/%hooksroot
 cp -r hooks %buildroot%_libdir/%hooksroot
 
-%if %_vendor != "alt"
+%if "%_vendor" != "alt"
 install -m755 %SOURCE2 %buildroot%_datadir/misc/
 %endif
 
@@ -190,6 +190,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Jul 07 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.0-eter1
+- new experimental CUPS and PCSCD tunneling (eterbug #15556)
+
 * Tue Feb 22 2022 Konstantin Kondratyuk <kondratyuk@altlinux.org> 1.4.9-eter1
 - disable ssh host key checking in nxnode-login
 
