@@ -2,8 +2,8 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.5.0
-Release: eter1
+Version: 1.5.1
+Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
 
@@ -190,6 +190,10 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Jul 08 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.1-alt1
+- nxsetup: remove ssh-dss support
+- nxsetup: temp. drop no-port-forwarding
+
 * Thu Jul 07 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.0-eter1
 - new experimental CUPS and PCSCD tunneling (eterbug #15556)
 
