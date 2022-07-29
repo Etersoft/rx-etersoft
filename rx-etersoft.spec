@@ -3,7 +3,7 @@
 
 Name: rx-etersoft
 Version: 1.5.1
-Release: alt1
+Release: alt2
 
 Summary: RX@Etersoft - NX based application/thin-client server
 
@@ -153,7 +153,7 @@ EOF
 %attr(0400,root,root) %config(noreplace) %_sysconfdir/cron.d/%name
 %_sbindir/nx-terminate-suspend
 #%_initddir/%name
-%if %_vendor != "alt"
+%if "%_vendor" != "alt"
 %_datadir/misc/%name.outformat
 %endif
 
@@ -190,6 +190,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Jul 29 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.1-alt2
+- fix bare words in spec
+
 * Fri Jul 08 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.1-alt1
 - nxsetup: remove ssh-dss support
 - nxsetup: temp. drop no-port-forwarding
