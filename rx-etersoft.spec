@@ -2,8 +2,8 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.5.1
-Release: alt2
+Version: 1.5.2
+Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
 
@@ -192,6 +192,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Wed Nov 09 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.2-alt1
+- use xephyr-run wrapper if /etc/rx-etersoft/Xephyr.conf is exists
+
 * Fri Jul 29 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.1-alt2
 - fix bare words in spec
 
