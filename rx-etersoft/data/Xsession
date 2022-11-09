@@ -199,6 +199,7 @@ CMD=""
 #ssh-agent doesnt start
 [ -z "$SSH_AGENT_PID" ] && CMD="$CMD /usr/bin/ssh-agent"
 [ -z "$DBUS_SESSION_BUS_ADDRESS" ] && CMD="$CMD /usr/bin/dbus-launch --exit-with-session"
+[ -r "/etc/rx-etersoft/Xephyr.conf" ] && CMD="/usr/bin/xephyr-run $CMD"
 CMD="$CMD $@"
 
 if [ $# -ge 1 ]; then

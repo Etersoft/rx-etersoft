@@ -89,6 +89,7 @@ mkdir -p %buildroot%_sysconfdir/cron.d/
 mkdir -p %buildroot%_datadir/misc/
 
 
+install -m755 xephyr-run %buildroot%_bindir/
 install -m755 rxsetup %buildroot%_bindir/
 install -m755 rxreport %buildroot%_bindir/
 #install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
@@ -181,6 +182,7 @@ EOF
 %_bindir/nxviewer_helper
 %_bindir/rxsetup
 %_bindir/rxreport
+%_bindir/xephyr-run
 %dir %_libdir/%name/
 %attr(755,root,root) %_libdir/%name/libnxredir.so.0
 %attr(755,root,root) %_libdir/%name/libcupsredir.so.0

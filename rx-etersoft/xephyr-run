@@ -1,0 +1,174 @@
+#!/bin/sh -e
+
+# xvfb-run - run the specified command in a virtual X server
+
+# This script starts an instance of Xvfb, the "fake" X server, runs
+# a command with that server available, and kills the X server when
+# done.  The return value of the command becomes the return value
+# of this script.
+
+PROGNAME='xephyr-run'
+SERVERNUM='99'
+XVFB_RUN_TMPDIR=''
+AUTHFILE="$XAUTHORITY"
+[ -n "$AUTHFILE" ] || AUTHFILE="$SHADOW_XAUTHORITY"
+ERRORFILE=''
+XSERVER='Xephyr'
+XVFBARGS="$(cat /etc/rx-etersoft/Xephyr.conf)"
+[ -n "$XVFBARGS" ] || XVFBARGS='-extension GLX -fullscreen'
+LISTENTCP='-nolisten tcp'
+XAUTHPROTO='.'
+
+message()
+{
+	printf '%s\n' "$PROGNAME: $*" >&2
+}
+
+fatal()
+{
+	message "$@"
+	exit 1
+}
+
+# Display a usage message.
+usage ()
+{
+    [ "$1" = 0 ] || exec >&2
+    cat << EOF
+$PROGNAME - run COMMAND (usually an X client) in a virtual X server environment
+
+Usage: $PROGNAME [OPTIONS] COMMAND
+
+Valid options are:
+-a       --auto-servernum       try to get a free server number
+-e FILE  --error-file=FILE      file used to store xauth errors and Xvfb output
+                                  (default: no redirection)
+-f FILE  --auth-file=FILE       file used to store auth cookie
+                                  (default: create a temporary file)
+-n NUM   --server-num=NUM       server number to use
+                                  (default: $SERVERNUM)
+-l       --listen-tcp           enable TCP port listening in the X server
+-p PROTO --xauth-protocol=PROTO X authority protocol name to use
+                                  (default: xauth's command default)
+-s ARGS  --server-args=ARGS     arguments (other than server number and
+                                  -nolisten tcp) to pass to the Xvfb server
+                                  (default: $XVFBARGS)
+-h       --help                 display this text and exit
+EOF
+    [ -n "$1" ] && exit "$1" || exit
+}
+
+# Find a free server number by looking at .X*-lock files in /tmp
+find_free_servernum()
+{
+	local last_display
+	last_display="$(find /tmp/ -mindepth 1 -maxdepth 1 -type f -name '.X*-lock' |
+		sed -ne 's,^/tmp/\.X\([[:digit:]]\+\)-lock$,\1,p' |
+		sort -n |
+		tail -1)"
+	[ -z "$last_display" ] && echo 0 || echo "$((1+$last_display))"
+}
+
+XVFBPID=''
+kill_xvfb()
+{
+	if [ -n "$XVFBPID" ]; then
+		kill "$XVFBPID"
+		XVFBPID=''
+	fi
+}
+
+# Parse command line.
+ARGS=$(getopt --options +ae:f:hn:lp:s:w: \
+       --long auto-servernum,error-file:,auth-file:,help,server-num:,listen-tcp,xauth-protocol:,server-args:,wait: \
+       --name "$PROGNAME" -- "$@") || usage
+eval set -- "$ARGS"
+
+while :; do
+    case "$1" in
+	-a|--auto-servernum) SERVERNUM=$(find_free_servernum) ;;
+	-e|--error-file) shift; ERRORFILE="$1" ;;
+	-f|--auth-file) shift; AUTHFILE="$1" ;;
+	-n|--server-num) shift; SERVERNUM="$1" ;;
+	-l|--listen-tcp) LISTENTCP='' ;;
+	-p|--xauth-protocol) shift; XAUTHPROTO="$1" ;;
+	-s|--server-args) shift; XVFBARGS="$1" ;;
+	-w|--wait) shift ;; # ignored for backwards compatibility
+	-h|--help) usage 0 ;;
+	--) shift; break ;;
+	*) fatal "unrecognized option: $1" ;;
+    esac
+    shift
+done
+
+[ -n "$*" ] || fatal "need a command to run"
+
+cleanup()
+{
+	trap - EXIT HUP INT QUIT TERM
+	set +e
+	[ -z "$ERRORFILE" ] ||
+		exec >>"$ERRORFILE" 2>&1
+	if [ -n "$XVFB_RUN_TMPDIR" ]; then
+		rm -rf -- "$XVFB_RUN_TMPDIR"
+	elif [ -s "$AUTHFILE" ]; then
+		XAUTHORITY="$AUTHFILE" xauth remove ":$SERVERNUM"
+	fi
+	kill_xvfb
+	exit "$@"
+}
+
+exit_handler()
+{
+	cleanup $?
+}
+
+signal_handler()
+{
+	cleanup 1
+}
+
+trap exit_handler EXIT
+trap signal_handler HUP INT QUIT TERM
+
+# If the user did not specify an X authorization file to use,
+# set up a temporary directory to house one.
+if [ -z "$AUTHFILE" ] ; then
+	XVFB_RUN_TMPDIR="$(mktemp -d -t "$PROGNAME.XXXXXX")"
+	AUTHFILE="$XVFB_RUN_TMPDIR/Xauthority"
+	> "$AUTHFILE"
+fi
+
+MCOOKIE="$(mcookie)"
+
+start_xvfb()
+{
+	XAUTHORITY="$AUTHFILE" xauth source - <<__EOF__
+add :$SERVERNUM $XAUTHPROTO $MCOOKIE
+__EOF__
+	(trap '' USR1;
+	XAUTHORITY="$AUTHFILE" exec $XSERVER \
+		:"$SERVERNUM" $XVFBARGS $LISTENTCP) &
+}
+
+# Install a SIGUSR1 signal handler.  When Xvfb starts, it checks
+# whether it has inherited SIGUSR1 as SIG_IGN instead of the usual
+# SIG_DFL.  In this the case, the server sends a SIGUSR1
+# to its parent process when it's ready to accept connections.
+trap : USR1
+
+if [ -z "$ERRORFILE" ]; then
+	start_xvfb
+else
+	start_xvfb > "$ERRORFILE" 2>&1
+fi
+
+XVFBPID=$!
+wait ||:
+kill -0 "$XVFBPID" 2>/dev/null || {
+	XVFBPID=''
+	fatal 'Xvfb failed to start'
+}
+
+set +e
+DISPLAY=:"$SERVERNUM" XAUTHORITY="$AUTHFILE" "$@"
