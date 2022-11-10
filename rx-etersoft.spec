@@ -3,7 +3,7 @@
 
 Name: rx-etersoft
 Version: 1.5.2
-Release: alt1
+Release: alt2
 
 Summary: RX@Etersoft - NX based application/thin-client server
 
@@ -109,6 +109,10 @@ cp -r hooks %buildroot%_sysconfdir/%hooksroot
 mkdir -p -m755 %buildroot%_libdir/%hooksroot
 cp -r hooks %buildroot%_libdir/%hooksroot
 
+cat > %buildroot%_sysconfdir/%hooksroot/Xephyr.conf <<EOF
+-extension GLX -fullscreen
+EOF
+
 %if "%_vendor" != "alt"
 install -m755 %SOURCE2 %buildroot%_datadir/misc/
 %endif
@@ -145,6 +149,7 @@ EOF
 %attr(0400,root,root) %config(noreplace) %_sudoersdir/rxetersoft
 #%config(noreplace) %_sysconfdir/dbus-1/system.d/ConsoleKit-NX.conf
 %config(noreplace) %_sysconfdir/%name/Xkbmap
+%config(noreplace) %_sysconfdir/%name/Xephyr.conf
 %_sysconfdir/%name/fixkeyboard
 %_sysconfdir/%name/Xsession
 %dir %_sysconfdir/%hooksroot/hooks/
@@ -192,6 +197,10 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Nov 10 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.2-alt2
+- add default /etc/rx-etersoft/Xephyr.conf and use xephyr-run if Xephyr command is exists
+- use xephyr-run as latest wrapper in the command line
+
 * Wed Nov 09 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.2-alt1
 - use xephyr-run wrapper if /etc/rx-etersoft/Xephyr.conf is exists
 
