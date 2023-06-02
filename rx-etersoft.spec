@@ -3,7 +3,7 @@
 
 Name: rx-etersoft
 Version: 1.5.2
-Release: alt2
+Release: alt3
 
 Summary: RX@Etersoft - NX based application/thin-client server
 
@@ -197,6 +197,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Jun 02 2023 Konstantin Kondratyuk <kondratyuk@altlinux.org> 1.5.2-alt3
+- turn off forced xephyr-run in Xsession script
+
 * Thu Nov 10 2022 Vitaly Lipatov <lav@altlinux.ru> 1.5.2-alt2
 - add default /etc/rx-etersoft/Xephyr.conf and use xephyr-run if Xephyr command is exists
 - use xephyr-run as latest wrapper in the command line
