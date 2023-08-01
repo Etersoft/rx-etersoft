@@ -20,6 +20,9 @@
 # Read the config file
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --userconf
 
+# Pulseaudio
+. nxpulse.sh
+
 # directory for hooks (order is important)
 [ -z "$NX_HOOKS_DIRS" ] && NX_HOOKS_DIRS="/etc/rx-etersoft/hooks /usr/lib/rx-etersoft/hooks /usr/lib64/rx-etersoft/hooks"
 [ -z "$NX_HOOKS_CONFDIR" ] && NX_HOOKS_CONFDIR="/etc/rx-etersoft/hooks"
@@ -633,32 +636,21 @@ node_start_applications()
 	# Check if we want to use a mediahelper
 	#
 
-	if [ "$mediahelper" = "esd" ]
-	then
-		# Set Espeaker variable
-		let ESPEAKER=$display+7000
-		export ESPEAKER="127.0.0.1:$ESPEAKER"
-		
-		# Do not spawn new ESD daemons
-		export ESD_NO_SPAWN="yes"
-			
-		# Check for config file directive
-		if [ "$ENABLE_ESD_PRELOAD" = "1" -a -x "$(find_app $ESD_BIN_PRELOAD)" ]
-		then
-			nxlog "$FUNCNAME ($$): Preload \"$ESD_BIN_PRELOAD\"" &
-			NODE_APPLICATION="$ESD_BIN_PRELOAD $NODE_APPLICATION"
-			nxlog "$FUNCNAME ($$): NODE_APPLICATION is \"$NODE_APPLICATION\"" &
-			echo "Info: NXNODE - Using $ESD_BIN_PRELOAD wrapper script." >> "$USER_FAKE_HOME/.nx/C-$sess_id/session"
-		fi
-	elif [ "$mediahelper" = "artsd" ]
-	then
-		# Overwrite users mcoprc
-		echo -n "GlobalComm=Arts::X11GlobalComm" > $HOME/.mcoprc
-		if [ "$ENABLE_ARTSD_PRELOAD" = "1" -a -x "$(find_app $ARTSD_BIN_PRELOAD)" ]
-		then
-			NODE_APPLICATION="$ARTSD_BIN_PRELOAD $NODE_APPLICATION"
-			echo "Info: NXNODE - Using $ARTSD_BIN_PRELOAD wrapper script." >> "$USER_FAKE_HOME/.nx/C-$sess_id/session"
-		fi
+	#if [ -n "$mediahelper" -a "$1" != "application" ]; then
+	if [ "$mediahelper" = "esd" ]; then
+		#nxlog "$lp display='$display', waiting for it's ready" #debug
+		ok="" step="0.01" timeo=$((AGENT_STARTUP_TIMEOUT*100))
+		for (( i=0; i<=timeo; i++ )); do
+			[ -f /tmp/.X$display-lock ] && { ok="1"; break; }
+			sleep $step"s"
+		done
+		[ -n "$ok" ] || \
+			nxlog "$lp /tmp/.X$display-lock not found after $AGENT_STARTUP_TIMEOUT s";
+		[ -n "$ok" ] && {
+			#nxlog "$lp env: $(env)" #debug
+			#uservice_start ${mediahelper%%-*} "4713" "media-pa" "" "" "" "$mediahelper" "" "$sess_id"
+			uservice_start "pa" "44714" "media-pa" "" "" "" "pa" "" "$sess_id"
+		}
 	fi
 
 	[ "$ENABLE_CUPS_SERVER_MODE" = "1" ] && {
@@ -1560,6 +1552,8 @@ node_stop_services()
 	node_umount_smb
 	nxlog "$FUNCNAME ($$): call node_cupsd_stop" &
 	node_cupsd_stop
+	nxlog "$FUNCNAME ($$): call node_pulse_stop" &
+	node_pulse_stop
 	nxlog "$FUNCNAME ($$): end" &
 }
 
@@ -2082,6 +2076,12 @@ then
 	rm -f "$USER_FAKE_HOME/.nx/C-$sess_id/pids/monitor"
 	rm -f "$USER_FAKE_HOME/.nx/C-$sess_id/pids/tail"
 fi
+
+# pulse
+cat << EOF > "$USER_FAKE_HOME/.nx/C-$sess_id/pulse"
+status=on
+EOF
+
 wait # for all children
 nxlog "$FUNCNAME ($$): end" &
 }

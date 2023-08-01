@@ -1,0 +1,495 @@
+#!/bin/bash
+#
+# Copyright (c) 2020 by Dmitry Borisov <i@dimbor.ru>
+#
+# License: GPL, version 2
+#
+# ========================================================================
+
+ip4_pattern='[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+'
+num_pattern='[+-]?[0-9]+([.][0-9]+)?'
+
+# setup NX_ETC_DIR here because we allways should to read settings first
+NX_ETC_DIR="/etc/nxserver"
+sq_settings_fn="$NX_ETC_DIR/nxsettings.sq3"
+
+# following two functions are Copyright by Klaus Knopper
+stringinstring() { case "$2" in *$1*) return 0;; esac; return 1; }
+
+getparam() {
+#args: <instring> <param_name> [recode_hex_%NN] [delimiter='&']
+# Reread given line; echo last parameter's argument or return false.
+	local d='&'; [ -n "$4" ] && d="$4"
+	local pattern=".*$d$2=([^$d]*)" str="$d$1" r;
+	[[ "$str" =~ $pattern ]]; r=${BASH_REMATCH[1]}
+	[ -n "$3" ] && echo -e "${r//\%/\\x}" || echo "$r"
+	[ "$BASH_REMATCH" != "" ]
+}
+
+delparam() {
+#args: <instring> <param_name> [delimiter='&']
+# Delete parameter with value.
+	local d='&'; [ -n "$3" ] && d="$3"
+	local pat=".*($d$2=[^$d]*)" str="$1" r;
+	[ "${str:0:1}" = "$d" ] || str="$d$str"
+	[[ "$str" =~ $pat ]]; r=${BASH_REMATCH[1]}
+	echo "${str/$r/}"
+}
+
+trim() {
+	local v="$*"; v=${v#${v%%[![:space:]]*}};
+	v=${v%${v##*[![:space:]]}}; echo -n "$v"
+}
+
+fcount() {
+#args: <text> [delim=$'\n']
+#ret: count of fields (lines by default)
+	local IFS=$'\n'; [ -n "$2" ] && IFS="$2"
+	local a=($1); echo "${#a[@]}"
+}
+
+cutfn() {
+#args: line field_num_start_at_0 [delim=$IFS]
+	if [ -n "$3" ]; then local IFS="$3"; fi
+	local a=($1);
+	#echo "${a[($2)]}" # negative values works on all systems?
+	echo "${a[@]:($2):1}"
+}
+
+rematchfn(){
+#args: (pattern) <text> [match_num=0] [reversive]
+# if match_num == "all" returns all found matches delimited by newlines
+	local pat n OIFS a ntl nr a r r1 res;
+	pat="$1"; [ -z "$3" -o "$3" = "all" ] && n=0 || n="$3"
+	OIFS=$IFS; local IFS=$'\n'; a=($2); IFS=$OIFS;
+	ntl=${#a[@]}; nr=0; r=(); res="";
+	if [ -z "$4" ]; then
+		for ((i=0;i<$ntl;i++)) {
+			[[ "${a[$i]}" =~ $pat ]] || continue
+			((nr++)); r+=(${BASH_REMATCH[1]})
+			[ "$nr" = "$n" ] && break
+		}
+	else
+		for ((i=$ntl;i>=0;i--)) {
+			[[ "${a[$i]}" =~ $pat ]] || continue
+			((nr++)); r+=(${BASH_REMATCH[1]})
+			[ "$nr" = "$n" ] && break
+		}
+	fi
+	if [ "$3" = "all" ]; then
+		for r1 in ${r[@]}; do res+="${res:+$'\n'}$r1"; done
+		echo "$res"
+	else echo "${r[($n)]}"
+	fi
+	[ "$nr" != "0" ]
+}
+
+set_vars_from_params() {
+#args: <instring> <varnames> [var_prefix=""] [%hex_recode=""]
+# varnames_list_delimited_by_spaces_or_commas
+	local vnames vn vv;
+	vnames="${2//,/ }"
+	for vn in $vnames; do
+		vv=$(getparam "$1" $vn $4); #[ -z "$vv" ] && continue;
+		declare -g $3$vn="$vv"
+	done
+}
+
+set_vars_from_ampstr() {
+#param: <ampstr> [var_prefix=""] [%hex_recode=""]
+	local kv vn vv;
+	local IFS='&'; local -a a=($1) a2;
+	for kv in ${a[@]}; do
+		IFS='=' a2=($kv); vn=${a2[0]}; [ -z "$vn" ] && continue;
+		vv=${a2[1]}; [ -n "$3" ] && vv=$(echo -e  "${vv//\%/\\x}")
+		declare -g $2$vn=$vv
+	done
+}
+
+set_vars_from_ampvals() {
+#args: <instring> <varnames> [var_prefix=""] [%hex_recode=""]
+# varnames_list_delimited_by_spaces_or_commas, values delimited by '&'
+	local vnames vn vv i=0
+	local OIFS=$IFS IFS='&' a
+	a=($1); IFS=$OIFS; vnames="${2//,/ }"
+	for vn in $vnames; do
+		vv=${a[$i]}; declare -g $4$vn="$vv"; ((i++))
+	done
+}
+
+port_is_listening() {
+#args: <port> [host=127.0.0.1] [proto=tcp]
+	local hip="127.0.0.1"; [ -n "$3" ] && hip=$2
+	local proto="tcp"; [ -n "$3" ] && proto=$3
+	#2>/dev/null > /dev/$proto/$hip/$1
+	# Do not use /dev/proto/hip/port 
+	# Hardcore check of port
+	# NEED TO REFCATORING
+	#local port=$(printf "%x\n" $1)
+	#res=$(cut -d" " -f4 /proc/net/tcp | grep $port -q)
+	#nxlog "$FUNCNAME ($$)  $port and $res"
+	#
+	#The Easiest way to use netcat
+	/usr/bin/netcat $hip $1 -z
+}
+
+# -------------- user services (uservices) control --------
+#usvcs_add() args: <col1,col2...> <val1&val2...>
+#usvcs_add() {	q_row_ins "usvcs" "$1" "$2"; }
+usvcs_add() {	
+    #args: <pulse_file> <key1=val1,key2=val2>
+    local p_file="$1"
+    
+    : > $p_file 
+    for arg in $(echo "$2" | sed 's/\,/\n/g') 
+    do
+        echo $arg >> $p_file
+    done
+}
+
+#usvcs_set() args: <service> <col1,col2...> <val1&val2...>
+#usvcs_set() { q_rows_upd "usvcs" "svc='$1'" "$2" "$3"; }
+usvcs_set() {  
+    #args: <p_file> <col1> <val1>
+    p_file="$1"
+    local check=$(cat $p_file |grep "$2")
+
+    [ -n "$check" ] && {
+		    sed -i "/^$2/s/^$2=.*$/$2=$3/" $p_file
+	    } || {
+		    echo "$2=$3" >> $p_file
+	    }
+    p_file_str=$(cat $p_file)
+}
+#usvcs_get() args: <service> <col1,col2...> [values_delim='&']
+usvcs_get() {
+    p_file="$1"
+    local raw=$(cat $p_file |grep "$2")
+    res="$(echo $raw | awk -F= '{print $2}')"
+    echo "$res"
+}
+
+usvcs_get_list() { 
+    p_file="$1"
+    local raw="" res=""
+
+    for arg in $(echo "$2" | sed 's/\,/\n/g') 
+    do
+        raw=$(cat $p_file |grep "$arg")
+        echo $raw
+        res+="$(echo $raw | awk -F= '{print $2}')"
+        res+="&"
+    done
+    echo "$res" | sed 's/&$//';
+}
+
+# ===========================================================================
+# sqlite3 functions
+declare -g sq_cmd="/usr/bin/sqlite3";
+declare -g DBE_PID="" DBE_PIDS_FILE="";
+
+lock_dbe() {
+#arg: [wait_cycles=80] [whit_step=0.05s]
+	local i rc ccls=60; [ -n "$1" ] && ccls=$1
+	local step=0.05; [ -n "$2" ] && step=$2
+	for (( i=0; i<=ccls; i++ )); do
+		mkdir "$DBE_PIDS_FILE.lock" &>/dev/null; rc=$?
+		[ $rc -eq 0 ] && break
+		sleep $step"s"
+	done
+	return $rc
+}
+
+unlock_dbe() { rmdir "$DBE_PIDS_FILE.lock" &>/dev/null; return 0; }
+
+q_dbe0() {
+	local rc
+	echo -e "$@" >/proc/$DBE_PID/fd/0; rc=$?
+	return $rc
+}
+
+q_dbe() {
+    nxlog "!!!WARNING: Bad request to sqlite3 db"
+#	local rc; lock_dbe || return 1
+#	q_dbe0 "$@"; rc=$?
+#	unlock_dbe; return $rc
+}
+
+qa_dbe0() {
+#args: <query_string> ...
+	local qstr="$@" r res=""; qstr+="SELECT '{end}';"
+	echo -e "$qstr" >/proc/$DBE_PID/fd/0
+	while read r </proc/$DBE_PID/fd/1; do
+		r=$(trim "$r")
+		[ "${r:(-5)}" = "{end}" ] && break
+		res+="${res:+$'\n'}$r"
+	done
+	echo "$res";
+}
+
+qa_dbe() {
+#args: <query_string> ...
+	local rc
+	lock_dbe || return 1
+	local res=$(qa_dbe0 "$@"); rc=$?
+	echo "$res"; unlock_dbe; return $rc
+}
+
+ctl_dbe() {
+#arg: <pid_of_parent>
+	#coproc /usr/bin/stdbuf -i0 -o0 $sq_cmd -batch 2>/tmp/dbe_stderr-$$.log
+	coproc /usr/bin/stdbuf -i0 -o0 $sq_cmd -batch 2>/dev/null
+	echo "$COPROC_PID" > "$DBE_PIDS_FILE"
+	wait $COPROC_PID
+}
+
+open_dbe() {
+#arg: <pid_of_parent>
+#ret: 0 if dbe started, 1 - dbe connected, 2 - error;
+	#echo "open dbe start $1"
+	local new_dbe="" pids cntr;
+	[ "$USER" != "nx" ] && DBE_PIDS_FILE="/var/lock/nxdbe-$USER"
+	if [ -z "$DBE_PID" ]; then
+		if [ -r "$DBE_PIDS_FILE" ]; then
+			pids=($(< "$DBE_PIDS_FILE")); DBE_PID=${pids[0]};
+		else new_dbe="1"
+		fi
+	fi
+	if [ -n "$DBE_PID" ]; then
+		if kill -0 $DBE_PID 2>/dev/null; then
+			echo "$1" >> "$DBE_PIDS_FILE"
+			return 1
+		else
+			DBE_PID=""; rm -f "$DBE_PIDS_FILE"; new_dbe="1";
+			#echo "rm old pidfile";
+		fi
+	fi
+	if [ -n "$new_dbe" ]; then
+		local dbc_pid="";
+		[ "$USER" = "nx" ] && DBE_PIDS_FILE="/var/lock/nxdbe-$1"
+		(ctl_dbe $1) &
+		dbc_pid=$!; disown $dbc_pid;
+		cntr=200;
+		while [ ! -e "$DBE_PIDS_FILE" ]; do sleep 0.01s; ((cntr--)); ((cntr<=0)) && break; done
+		#echo "create dbe $((200-cntr))0 ms"
+		DBE_PID=$(< "$DBE_PIDS_FILE"); echo "$1" >> "$DBE_PIDS_FILE"
+		q_dbe ".timeout 500\n.separator '&'" # not work with later attached tables after '.mode csv tname'
+		#q_dbe "PRAGMA journal_mode = WAL;" # causes error on keyslst_for_user() now
+		return 0
+	fi
+	return 2
+}
+
+attach_db() {
+#args: <filename> [ro=""]
+	local dbname=${1##*\/}; dbname=${dbname%.*}
+	local db=$1; [ -n "$2" ] && db="file:$1?mode=ro"
+	q_dbe "ATTACH DATABASE '$db' AS $dbname;"
+}
+
+close_dbe() {
+#arg: <pid_of_parent>
+# if arg empty close ultimately
+	#echo "dbe close start - $1; $DBE_PIDS_FILE; $DBE_PID"
+	[ -z "$DBE_PID" ] && return
+	[ ! -e "$DBE_PIDS_FILE" ] && return
+	local pids=($(< "$DBE_PIDS_FILE"))
+	local chgfl="" i;
+	for ((i=1; i<${#pids[@]}; i++)) do
+		if kill -0 ${pids[i]} &>/dev/null; then
+			[ "$1" = "${pids[$i]}" ] && { unset pids[i]; chgfl="1"; }
+		else
+			unset pids[i]; chgfl="1"
+		fi
+	done
+	if ((${#pids[@]}>1)); then
+		[ -n "$chgfl" ] && echo ${pids[@]} > "$DBE_PIDS_FILE"
+		return 1
+	fi
+	q_dbe ".quit"; unset DBE_PID; rm -f "$DBE_PIDS_FILE"
+	return 0
+}
+
+exit_proc() {
+	close_dbe $$; exit $1;
+}
+
+s2sq() {
+	local res="$1" v
+	v=${res:0:1}; stringinstring "$v" "'\"" && res=${res:1:-1}
+	res=${res//&/%26}; res="${res//\"/%22}"; res="${res//\'/%27}"
+	echo "$res"
+}
+
+sq2s() {
+	local res="$1"; [ "$res" = "\"\"" ] && return
+	res=${res//%26/&}; res="${res//%22/\"}"; res="${res//%27/\'}"
+	echo "$res"
+}
+
+colval_set_or_cond() {
+#args: <col1,col2...> <val1&val2...> [cond] [values_delim='&']
+#ret: string of columns and values for SET or for WHERE
+#		if cond='INS' returns list_cols&list_vals for INSERT env
+	local delim="&"; [ -n "$4" ] && delim="$4"
+	local ret="" r2="" key val keys=(${1//,/ });
+	OIFS=$IFS; IFS=$delim; local -a vals=($2); IFS=$OIFS
+	for idx in ${!keys[*]}; do
+		key=${keys[$idx]}; val=${vals[$idx]}
+		if [ -z "$3" ]; then # set env
+			[ "$val" = "NULL" -o "$val" = "null" ] && continue
+			ret+="${ret:+,}$key='$val'"
+		elif [ "$3" = "INS" ]; then # ins env
+			[ "$val" = "NULL" -o "$val" = "null" ] && continue
+			ret+="${ret:+,}$key"; r2+="${r2:+,}'$val'"
+		else # cond env
+			if [ "$val" = "NULL" -o "$val" = "null" ]; then
+				ret+="${ret:+ $4 }$key IS NULL"
+			else ret+="${ret:+ $4 }$key='$val'"
+			fi
+		fi
+		#echo "\"$key\" = \"$val\""
+	done
+	[ "$3" = "INS" ] && ret+="&$r2"
+	echo "$ret"
+}
+
+q_row_ins() {
+#args: <table_name> <col1,col2...> <val1&val2...> [values_delim='&']
+	local colvals=$(colval_set_or_cond "$2" "$3" "INS" "$4")
+	local keys=${colvals%%&*} vals=${colvals#*&}
+	q_dbe "INSERT INTO $1($keys) VALUES($vals);"
+}
+
+q_rows_upd() {
+#args: <table_name> <where_str> <col1,col2...> <val1&val2...> [values_delim='&']
+	local setls=$(colval_set_or_cond "$3" "$4" "" "$5")
+	q_dbe "UPDATE $1 SET $setls WHERE $2;"
+}
+
+q_vals_str_get() {
+#args: <table_name> <where_str> <col1,col2...> [values_delim='&']
+	local d="&"; [ -n "$4" ] && d="$4";
+	local mode=".mode csv $1\n.separator '$d'\n"
+	local rs=$(qa_dbe "$mode" "SELECT count(*),$3 FROM $1 WHERE $2 LIMIT 1;") #"
+	[ "${rs%%$d*}" -gt "0" 2>/dev/null ] || { echo; return 1; }
+	local ret=${rs#*$d}; ret=${ret//\"/}
+	echo "$ret"
+}
+
+q_vals_strs_get() {
+#args: <table_name> <where_str> <col1,col2...> [query_tail_str] [values_delim='&']
+	local d="&"; [ -n "$5" ] && d="$5";
+	local mode=".mode csv $1\n.separator '$d'\n"
+	local rs=$(qa_dbe "$mode" "SELECT $3 FROM $1 WHERE $2 $4;") #"
+	local ret=${rs//\"/}
+	echo "$ret"
+}
+
+str_eq_cond() {
+#args: expr vals_str [vals_delim='|'] [NOT=""]
+#ret: "expr IN ('A','B','C'...)" or "expr='A'"
+	local delim="|"; [ -n "$3" ] && delim="$3";
+	local comma="" ivs="$2" val vals="";
+	local inv1="" inv2=""
+	[ -n "$4" ] && { inv1="!"; inv2=" NOT"; }
+	[ -z "$ivs" ] && ivs="NULL" || ivs=${ivs//$delim/$'\n'}
+	while read val; do comma="${vals:+,}"; vals+="$comma'$val'"; done <<< "$ivs"
+	if [ -n "$comma" ]; then echo "$1$inv2 IN ($vals)"
+	elif [ "$ivs" = "NULL" ]; then echo "$1 IS$inv2 NULL"
+	else echo "$1$inv1=$vals"
+	fi
+}
+
+q_where_str() {
+#arg: term1[&term2...]; term: <exp><cond><val_str>
+#cond: = != > < >= <= ; val_str: val1[|val2...] or val_start,val_end
+#ret: formated string for sqlite WHERE
+	local oifs=$IFS IFS='&' terms i res; terms=($1); IFS=$oifs
+	local pat exp cond inv vals start_val stop_val s simple
+	for ((i=0;i<${#terms[@]};i++)) {
+		local pat="([[:alnum:]]+)([^[:alnum:]]+)(.+)"
+		[[ "${terms[$i]}" =~ $pat ]] || continue
+		exp=${BASH_REMATCH[1]}; cond=${BASH_REMATCH[2]}; vals=${BASH_REMATCH[3]}
+		#echo "$exp : $cond : $vals" #debug
+		[ "${cond:0:1}" = "!" ] && inv=" NOT" || inv=""
+		simple=0; stringinstring '>' "$cond" && simple=1
+		[ "$simle" = "0" ] && stringinstring '<' "$cond" && simple=1
+		if stringinstring ',' "$vals"; then
+			start_val=$(cutfn "$vals" 0 ','); stop_val=$(cutfn "$vals" 1 ',')
+			s="$exp$inv BETWEEN $start_val AND $stop_val"
+		elif [ "$simple" = "0" ]; then
+			s=$(str_eq_cond "$exp" "$vals" "" "$inv")
+		else
+			s="$exp$cond$vals"
+		fi
+		res+=${res:+ AND }$s
+	}
+	echo "$res"
+}
+
+q_sort_str() {
+#arg: exp1[!][,exp2...]
+#if '!' present then DESC else ASC
+#ret: formated string for sqlite ORDER BY
+	local oifs=$IFS IFS=',' terms i exp order res; terms=($1); IFS=$oifs
+	for ((i=0;i<${#terms[@]};i++)) {
+		exp=${terms[$i]}
+		if [ "${exp:(-1):1}" = "!" ]; then order="DESC"; exp=${exp::-1}
+		else order="ASC"
+		fi
+		res+="${res:+,}$exp $order"
+	}
+	echo "$res"
+}
+
+qtxt2cmdstrs() {
+#params: <text from sqlite3 query (.mode line)>
+#ret: nx command strings
+	local res="" fl="1" line k v;
+	while read line; do
+		[ -z "$line" ] && { res+=$'\n'; fl=1; continue; }
+		[ "$fl" = "1" ] && { res+="a=b&"; fl=0; }
+		k=$(trim "$(cutfn "$line" 0 '=')") #"
+		v=$(trim "$(cutfn "$line" 1 '=')") #"
+		res+="$k=$v&"
+	done <<< "$@"
+	echo "$res"
+}
+
+# ===========================================================================
+# functions to read settings
+
+set_vars_from_db() {
+#args: [varnames_list_delimited_by_commas] [[username] [only_users_vars=""]]
+# if varnames is empty str rquests all variables
+# if username is empty str rquests all variables for NULL
+# if username is not empty str rquests all variables user over NULL
+# if username and only_users_vars are not empty str rquests users variables only
+	local mode=".mode csv settings\n.separator '&'\n"
+	local qstr0 qs_keys0="" qs_keys="" ts a qstr var value;
+	local keylist
+	[ -n "$1" ] && {
+		keylist="'${1//,/\',\'}'"
+		qs_keys0=" AND key IN ($keylist)"
+		qs_keys=" AND rs.key IN ($keylist)"
+	}
+	if [ -n "$2" ]; then
+		[ -n "$3" ] && \
+			qstr="SELECT key,value FROM settings WHERE user='$2' $qs_keys0;" || \
+			qstr="SELECT rs.key,coalesce(us.value,rs.value) \
+ as value FROM settings AS rs LEFT JOIN settings AS us ON us.key=rs.key \
+ AND us.user='$2' WHERE rs.user IS NULL $qs_keys;"
+	else
+		qstr="SELECT key,value FROM settings WHERE user IS NULL $qs_keys0;"
+	fi
+	#echo "$qstr" #debug
+	ts=$(qa_dbe "$mode" "$qstr"); #echo "$ts" #debug
+	while read line; do
+		[ -n "$line" ] || continue
+		local OIFS="$IFS"; local IFS='&'; a=($line); IFS="$OIFS"
+		var=${a[0]}; value=${a[1]}; value=${value//\"/}; value=$(sq2s "$value")
+		declare -g $var="$value";
+		#echo "$var=\"$value\"" #debug
+	done <<< "$ts"
+}
