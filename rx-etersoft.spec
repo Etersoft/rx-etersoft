@@ -3,7 +3,7 @@
 
 Name: rx-etersoft
 Version: 1.5.2
-Release: alt3
+Release: alt4
 
 Summary: RX@Etersoft - NX based application/thin-client server
 
@@ -37,7 +37,7 @@ Requires: netcat expect sudo xauth
 Requires: zenity
 Requires: iconv
 
-Requires: cups cifs-utils
+Requires: cups cifs-utils pulseaudio-daemon
 
 # See eterbug #12003
 # Requires: foomatic-db foomatic-db-engine
@@ -92,6 +92,8 @@ mkdir -p %buildroot%_datadir/misc/
 install -m755 xephyr-run %buildroot%_bindir/
 install -m755 rxsetup %buildroot%_bindir/
 install -m755 rxreport %buildroot%_bindir/
+install -m755 nxpulse.sh %buildroot%_bindir/
+install -m755 nxpulsefuncs %buildroot%_bindir/
 #install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
 install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/%name/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/%name/Xsession
@@ -188,6 +190,8 @@ EOF
 %_bindir/rxsetup
 %_bindir/rxreport
 %_bindir/xephyr-run
+%_bindir/nxpulse.sh
+%_bindir/nxpulsefuncs
 %dir %_libdir/%name/
 %attr(755,root,root) %_libdir/%name/libnxredir.so.0
 %attr(755,root,root) %_libdir/%name/libcupsredir.so.0
@@ -197,6 +201,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Tue Aug 01 2023 Konstantin Artyushkin <akv@altlinux.org> 1.5.2-alt4
+- implementation of PulseAudio new generation
+
 * Fri Jun 02 2023 Konstantin Kondratyuk <kondratyuk@altlinux.org> 1.5.2-alt3
 - turn off forced xephyr-run in Xsession script
 
