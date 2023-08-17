@@ -390,7 +390,7 @@ uservice_start() {
 			nxlog "$lp service $svc is allready mounted, skipping"; return 0
 		else
 			nxlog "$lp $svc service status is \"$st\", but it's not mounted. Try to start again";
-			startfl=1; [ -n "$type" ] && checkfl=1;
+			startfl=1; [ -n "$type" ] && checkfl="";
 			st="starting"; usvcs_set $PA_CONF "status" $st
 		fi
 	else
@@ -400,7 +400,7 @@ uservice_start() {
 			uservice_umount $type $svc $data || {	return 1; }
 		fi
 		if [ "$st" = "off" ]; then
-			startfl=1; [ -n "$type" ] && checkfl=1;
+			startfl=1; [ -n "$type" ] && checkfl="";
 			st="starting"; usvcs_set $PA_CONF "status" $st
 		else # svc is not found in usess table
 			hpass=$(echo $pass | $COMMAND_HIDE)
