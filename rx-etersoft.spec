@@ -2,8 +2,8 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.5.2
-Release: alt4
+Version: 1.5.3
+Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
 
@@ -201,6 +201,10 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Aug 17 2023 Konstantin Artyushkin <akv@altlinux.org> 1.5.3-alt1
+- change netcat to nc
+- temporarily disable checkfl=1
+
 * Tue Aug 01 2023 Konstantin Artyushkin <akv@altlinux.org> 1.5.2-alt4
 - implementation of PulseAudio new generation
 
