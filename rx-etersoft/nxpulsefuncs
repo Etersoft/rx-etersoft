@@ -130,7 +130,8 @@ port_is_listening() {
 	#nxlog "$FUNCNAME ($$)  $port and $res"
 	#
 	#The Easiest way to use netcat
-	/usr/bin/netcat $hip $1 -z
+    [ ! -x /usr/bin/nc ] && nxlog "!!!!!!! netcat not installed"
+	/usr/bin/nc $hip $1 -z
 }
 
 # -------------- user services (uservices) control --------
