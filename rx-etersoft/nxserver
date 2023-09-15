@@ -762,9 +762,6 @@ else
 
 echo_x "HELLO NXSERVER - Version $NX_VERSION $NX_LICENSE"
 
-# Eterbug #15556
-chmod "a+rw" "$PCSCD_SOCK_PATH"
-
 # Login stage
 while true
 do

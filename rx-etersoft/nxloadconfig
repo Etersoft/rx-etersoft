@@ -250,9 +250,6 @@ COMMAND_VNCPASSWD="vncpasswd"
 COMMAND_X11VNC="x11vnc"
 COMMAND_TASKSET="taskset"
 
-# Eterbug #15556
-PCSCD_SOCK_PATH="/tmp/.pcscd.comm"
-
 COMMAND_NXSHADOWACL="$PATH_BIN/nxshadowacl"
 COMMAND_NXACL="$PATH_BIN/nxacl"
 COMMAND_NXCHECKLOAD="$PATH_BIN/nxcheckload"
