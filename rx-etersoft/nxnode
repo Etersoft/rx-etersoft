@@ -619,6 +619,7 @@ node_start_applications()
 	#
 
 	NODE_APPLICATION=$(node_find_application "$type")
+	local session_dir="$USER_FAKE_HOME/.nx/C-$sess_id"
 
 	if ! check_license /etc/rx-etersoft/rx-etersoft.lic ; then
 		nxlog "$FUNCNAME ($$): License file is missed in /etc/rx-etersoft/rx-etersoft.lic" &
@@ -649,7 +650,8 @@ node_start_applications()
 		[ -n "$ok" ] && {
 			#nxlog "$lp env: $(env)" #debug
 			#uservice_start ${mediahelper%%-*} "4713" "media-pa" "" "" "" "$mediahelper" "" "$sess_id"
-			uservice_start "pa" "44714" "media-pa" "" "" "" "pa" "" "$sess_id"
+           local media_port=$(cat $session_dir/scripts/mediaport)
+			uservice_start "pa" "$media_port" "media-pa" "" "" "" "pa" "" "$sess_id"
 		}
 	fi
 
@@ -657,6 +659,9 @@ node_start_applications()
 	    CUPS_SERVER_SOCKET="$(LC_ALL=C /usr/bin/lpstat -H 2>/dev/null)"
 	    [ -r $CUPS_SERVER_SOCKET ] || CUPS_SERVER_SOCKET=""
 	} || CUPS_SERVER_SOCKET="$USER_FAKE_HOME/.nx/C-$sess_id/cups/cups.sock"
+
+   local cups_port=$(cat $session_dir/scripts/cupsport)
+   CUPS_SERVER_SOCKET="localhost:$cups_port"
 	[ "$ENABLE_CUPS_SERVER_EXPORT" = "1" -a -n "$CUPS_SERVER_SOCKET" ] && {
 	    [ "$cups" = "1" -o "$samba" = "1" ] && {
 		nxlog "$FUNCNAME ($$): export CUPS_SERVER=$CUPS_SERVER_SOCKET" &
@@ -665,7 +670,7 @@ node_start_applications()
 	}
 	if [ "$ENABLE_SAMBA_PRELOAD" = "1" -a -x "$PATH_BIN/nxredir" ]
 	then
-		let NXSAMBA_PORT=$display+3000
+		local NXSAMBA_PORT=$(cat $session_dir/scripts/mport)
 		export NXSAMBA_PORT
 		nxlog "$FUNCNAME ($$): Preload SAMBA using nxredir. NXSAMBA_PORT is \"$NXSAMBA_PORT\"" &
 		NODE_APPLICATION="$PATH_BIN/nxredir $NODE_APPLICATION"
@@ -1603,8 +1608,28 @@ node_start_monitor()
 		
 		if stringinstring "Info: Listening * SMB connections on port" "$line"
 		then
-			SMBMOUNT_PORT=$(echo $line | cut -d"'" -f2)
+			SMBMOUNT_PORT=$(echo $line | cut -d"'" -f2 | cut -d":" -f3)
 			echo "$SMBMOUNT_PORT" >"$USER_FAKE_HOME/.nx/C-$sess_id/scripts/mport"
+		fi
+
+		#
+		# Catch NXAGENT CUPS Port (sometimes the port differs from what we got from nxserver)
+		#
+
+		if stringinstring "Info: Listening * CUPS connections on port" "$line"
+		then
+			local cups_port_=$(echo $line | cut -d"'" -f2 | cut -d":" -f3)
+			echo "$cups_port_" >"$USER_FAKE_HOME/.nx/C-$sess_id/scripts/cupsport"
+		fi
+
+		#
+		# Catch NXAGENT multimedia Port (sometimes the port differs from what we got from nxserver)
+		#
+
+		if stringinstring "Info: Listening * multimedia connections on port" "$line"
+		then
+			local media_port_=$(echo $line | cut -d"'" -f2 | cut -d":" -f3)
+			echo "$media_port_" >"$USER_FAKE_HOME/.nx/C-$sess_id/scripts/mediaport"
 		fi
 
 		#
