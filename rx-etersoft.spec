@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.5.3
+Version: 1.6.0
 Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
@@ -201,6 +201,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Mon Sep 18 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.0-alt1
+- new version
+
 * Thu Aug 17 2023 Konstantin Artyushkin <akv@altlinux.org> 1.5.3-alt1
 - change netcat to nc
 - temporarily disable checkfl=1
