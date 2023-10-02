@@ -637,8 +637,7 @@ node_start_applications()
 	# Check if we want to use a mediahelper
 	#
 
-	#if [ -n "$mediahelper" -a "$1" != "application" ]; then
-	if [ "$mediahelper" = "esd" ]; then
+	if [ -n "$mediahelper" -a "$1" != "application" ]; then
 		#nxlog "$lp display='$display', waiting for it's ready" #debug
 		ok="" step="0.01" timeo=$((AGENT_STARTUP_TIMEOUT*100))
 		for (( i=0; i<=timeo; i++ )); do
@@ -651,7 +650,7 @@ node_start_applications()
 			#nxlog "$lp env: $(env)" #debug
 			#uservice_start ${mediahelper%%-*} "4713" "media-pa" "" "" "" "$mediahelper" "" "$sess_id"
            local media_port=$(cat $session_dir/scripts/mediaport)
-			uservice_start "pa" "$media_port" "media-pa" "" "" "" "pa" "" "$sess_id"
+			uservice_start "pa" "$media_port" "media-pa" "" "" "" "$mediahelper" "" "$sess_id"
 		}
 	fi
 
