@@ -223,7 +223,8 @@ module-udev-detect module-suspend-on-idle module-console-kit"
 			nxlog "$FUNCNAME ($$): PULSE: tunneled Pulseadio"
 			local rsink=$(cutfn "$cmdstr" 0) rsource=$(cutfn "$cmdstr" 1)
 			local mname="module-tunnel-sink" opts="server=127.0.0.1:$3" oo args ok2=""
-			oo=$(cutfn "$6" 1 '-'); [ -n "$oo" ] && opts+=" rate=$oo"
+           local mutemic=$(cutfn "$6" 3 '-')
+           oo=$(cutfn "$6" 1 '-'); [ -n "$oo" ] && opts+=" rate=$oo"
 			oo=$(cutfn "$6" 2 '-'); [ -n "$oo" ] && opts+=" channels=$oo"
 			[ "$oo" = "1" ] && opts+=" channel_map=mono"
 			if [ "$rsink" != "(null)" ]; then
@@ -241,6 +242,9 @@ module-udev-detect module-suspend-on-idle module-console-kit"
 				[ $? -eq 0 ] && ok2="tcl_in" || \
 					nxlog "$FUNCNAME ($$): $2 ($3) can't load $mname $args; '$errstr'"
 				[ -n "$ok2" ] && $COMMAND_PACTL set-default-source "tcl_in" &>/dev/null
+				[ -n "$mutemic" ] \
+                   && $COMMAND_PACTL set-source-mute "tcl_in" 1 \
+                   || $COMMAND_PACTL set-source-mute "tcl_in" 0
 			else nxlog "$lp $2 ($3) can't load $name with rsource=$rsource"
 			fi
 			if [ -n "$ok" -o  -n "$ok2" ]; then 
