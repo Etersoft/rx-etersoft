@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.6.2
+Version: 1.6.3
 Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
@@ -201,6 +201,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Tue Oct 10 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.3-alt1
+- enable/disable audio sink/sources by conf.d/02-restriction.conf
+
 * Wed Oct 04 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.2-alt1
 - added microphone muting
 
