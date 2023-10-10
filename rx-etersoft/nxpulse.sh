@@ -196,6 +196,7 @@ uservice_mount() {
 		nxlog "$lp $2 ($3) printer installed"
 	;;
 	media-pa)
+       if [ "$ENABLE_AUDIO" != "none" ]; then
 		nxlog "$FUNCNAME ($$): PULSE: setting Pulseadio"
 		if  ! $COMMAND_PA --check &>/dev/null; then
 			$COMMAND_PA --start --exit-idle-time=-1 &>/dev/null || {
@@ -236,7 +237,7 @@ module-udev-detect module-suspend-on-idle module-console-kit"
 			else nxlog "$lp $2 ($3) can't load $name with rsink=$rsink"
 			fi
 			mname="module-tunnel-source"
-			if [ "$rsource" != "(null)" ]; then
+			if [ "$rsource" != "(null)" -a "$ENABLE_AUDIO" != "output" ]; then
 				args="source_name=tcl_in source=$rsource $opts"
 				errstr=$($COMMAND_PACTL load-module $mname $args 2>&1)
 				[ $? -eq 0 ] && ok2="tcl_in" || \
@@ -253,6 +254,7 @@ module-udev-detect module-suspend-on-idle module-console-kit"
 			fi
 		;;
 		esac
+       fi
 	;;
 	esac
 	return $rc
