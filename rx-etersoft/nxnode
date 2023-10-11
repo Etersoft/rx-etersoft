@@ -239,14 +239,19 @@ norm_param()
 	nxlog "$FUNCNAME ($$): iconv not found, codepages converting is disabled." &
 	echo $res; return
     }
-    for cp_pair in $WIN_CP_CONVERT_CHAIN ; do
-	cp_from="$(echo "$cp_pair" | cut -d\> -f1)"
-        [ -n "$cp_from" ] || cp_from="UTF-8"
-	cp_to="$(echo "$cp_pair" | cut -d\> -f2)"
-	[ -n "$cp_to" ] || cp_to="UTF-8"
-	res="$(echo "$res" | iconv -f $cp_from -t $cp_to)"
-	#nxlog "$FUNCNAME ($$): converting $cp_from > $cp_to == \"$res\"" &
-    done
+    local tmp="$(echo "$res" | iconv -f UTF-8 -t UTF-8)"
+    if [ $? != 0 ]; then
+        for cp_pair in $WIN_CP_CONVERT_CHAIN ; do
+        cp_from="$(echo "$cp_pair" | cut -d\> -f1)"
+            [ -n "$cp_from" ] || cp_from="UTF-8"
+        cp_to="$(echo "$cp_pair" | cut -d\> -f2)"
+        [ -n "$cp_to" ] || cp_to="UTF-8"
+        res="$(echo "$res" | iconv -f $cp_from -t $cp_to)"
+        #nxlog "$FUNCNAME ($$): converting $cp_from > $cp_to == \"$res\"" &
+        done
+    else
+        res=$tmp
+    fi
     #nxlog "$FUNCNAME ($$): return res === \"$res\"" &
     echo $res
 }
