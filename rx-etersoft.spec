@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.6.4
+Version: 1.6.5
 Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
@@ -201,6 +201,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Fri Nov 03 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.5-alt1
+- PCSC forward hack #eterbug16794
+
 * Wed Oct 11 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.4-alt1
 - added UTF-8 check to the samba sharing
 
