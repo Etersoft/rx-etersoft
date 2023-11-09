@@ -21,7 +21,7 @@
 . $(PATH=$(cd $(dirname $0) && pwd):$PATH which nxloadconfig) --userconf
 
 # Pulseaudio
-. nxpulse.sh
+. nxpulse
 
 # directory for hooks (order is important)
 [ -z "$NX_HOOKS_DIRS" ] && NX_HOOKS_DIRS="/etc/rx-etersoft/hooks /usr/lib/rx-etersoft/hooks /usr/lib64/rx-etersoft/hooks"

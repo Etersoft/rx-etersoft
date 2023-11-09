@@ -1,10 +1,158 @@
-. nxpulsefuncs
+#!/bin/bash
+#   Pulseadio forwarding
+#===============================================================================
 
 COMMAND_PA=pulseaudio
 COMMAND_PACTL=pactl
 #PA_CONF="$USER_FAKE_HOME/.nx/C-$sess_id/pulse"
 PA_CONF=""
 AGENT_STARTUP_TIMEOUT=15
+
+ip4_pattern='[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+'
+num_pattern='[+-]?[0-9]+([.][0-9]+)?'
+
+# following two functions are Copyright by Klaus Knopper
+stringinstring() { case "$2" in *$1*) return 0;; esac; return 1; }
+
+getparam() {
+#args: <instring> <param_name> [recode_hex_%NN] [delimiter='&']
+# Reread given line; echo last parameter's argument or return false.
+	local d='&'; [ -n "$4" ] && d="$4"
+	local pattern=".*$d$2=([^$d]*)" str="$d$1" r;
+	[[ "$str" =~ $pattern ]]; r=${BASH_REMATCH[1]}
+	[ -n "$3" ] && echo -e "${r//\%/\\x}" || echo "$r"
+	[ "$BASH_REMATCH" != "" ]
+}
+
+delparam() {
+#args: <instring> <param_name> [delimiter='&']
+# Delete parameter with value.
+	local d='&'; [ -n "$3" ] && d="$3"
+	local pat=".*($d$2=[^$d]*)" str="$1" r;
+	[ "${str:0:1}" = "$d" ] || str="$d$str"
+	[[ "$str" =~ $pat ]]; r=${BASH_REMATCH[1]}
+	echo "${str/$r/}"
+}
+
+trim() {
+	local v="$*"; v=${v#${v%%[![:space:]]*}};
+	v=${v%${v##*[![:space:]]}}; echo -n "$v"
+}
+
+cutfn() {
+#args: line field_num_start_at_0 [delim=$IFS]
+	if [ -n "$3" ]; then local IFS="$3"; fi
+	local a=($1);
+	#echo "${a[($2)]}" # negative values works on all systems?
+	echo "${a[@]:($2):1}"
+}
+
+rematchfn(){
+#args: (pattern) <text> [match_num=0] [reversive]
+# if match_num == "all" returns all found matches delimited by newlines
+	local pat n OIFS a ntl nr a r r1 res;
+	pat="$1"; [ -z "$3" -o "$3" = "all" ] && n=0 || n="$3"
+	OIFS=$IFS; local IFS=$'\n'; a=($2); IFS=$OIFS;
+	ntl=${#a[@]}; nr=0; r=(); res="";
+	if [ -z "$4" ]; then
+		for ((i=0;i<$ntl;i++)) {
+			[[ "${a[$i]}" =~ $pat ]] || continue
+			((nr++)); r+=(${BASH_REMATCH[1]})
+			[ "$nr" = "$n" ] && break
+		}
+	else
+		for ((i=$ntl;i>=0;i--)) {
+			[[ "${a[$i]}" =~ $pat ]] || continue
+			((nr++)); r+=(${BASH_REMATCH[1]})
+			[ "$nr" = "$n" ] && break
+		}
+	fi
+	if [ "$3" = "all" ]; then
+		for r1 in ${r[@]}; do res+="${res:+$'\n'}$r1"; done
+		echo "$res"
+	else echo "${r[($n)]}"
+	fi
+	[ "$nr" != "0" ]
+}
+
+port_is_listening() {
+#args: <port> [host=127.0.0.1] [proto=tcp]
+	local hip="127.0.0.1"; [ -n "$3" ] && hip=$2
+	local proto="tcp"; [ -n "$3" ] && proto=$3
+	#2>/dev/null > /dev/$proto/$hip/$1
+	# Do not use /dev/proto/hip/port
+	# Hardcore check of port
+	# NEED TO REFCATORING
+	#local port=$(printf "%x\n" $1)
+	#res=$(cut -d" " -f4 /proc/net/tcp | grep $port -q)
+	#nxlog "$FUNCNAME ($$)  $port and $res"
+	#
+	#The Easiest way to use netcat
+    [ ! -x /usr/bin/nc ] && nxlog "!!!!!!! netcat not installed"
+	/usr/bin/nc $hip $1 -z
+}
+
+# -------------- user services (uservices) control --------
+#usvcs_add() args: <col1,col2...> <val1&val2...>
+#usvcs_add() {	q_row_ins "usvcs" "$1" "$2"; }
+usvcs_add() {
+    #args: <pulse_file> <key1=val1,key2=val2>
+    local p_file="$1"
+
+    : > $p_file
+    for arg in $(echo "$2" | sed 's/\,/\n/g')
+    do
+        echo $arg >> $p_file
+    done
+}
+
+#usvcs_set() args: <service> <col1,col2...> <val1&val2...>
+#usvcs_set() { q_rows_upd "usvcs" "svc='$1'" "$2" "$3"; }
+usvcs_set() {
+    #args: <p_file> <col1> <val1>
+    p_file="$1"
+    local check=$(cat $p_file |grep "$2")
+
+    [ -n "$check" ] && {
+		    sed -i "/^$2/s/^$2=.*$/$2=$3/" $p_file
+	    } || {
+		    echo "$2=$3" >> $p_file
+	    }
+    p_file_str=$(cat $p_file)
+}
+
+#usvcs_get() args: <service> <col1,col2...> [values_delim='&']
+usvcs_get() {
+    p_file="$1"
+    local raw=$(cat $p_file |grep "$2")
+    res="$(echo $raw | awk -F= '{print $2}')"
+    echo "$res"
+}
+
+usvcs_get_list() {
+    p_file="$1"
+    local raw="" res=""
+
+    for arg in $(echo "$2" | sed 's/\,/\n/g')
+    do
+        raw=$(cat $p_file |grep "$arg")
+        echo $raw
+        res+="$(echo $raw | awk -F= '{print $2}')"
+        res+="&"
+    done
+    echo "$res" | sed 's/&$//';
+}
+
+# ===========================================================================
+# sqlite3 functions
+
+q_dbe() {
+    nxlog "!!!WARNING: Bad request to sqlite3 db"
+#	local rc; lock_dbe || return 1
+#	q_dbe0 "$@"; rc=$?
+#	unlock_dbe; return $rc
+}
+
 #
 # -----------------------------------------------------------------------------
 # Node functions module
@@ -35,25 +183,8 @@ uservice_mounted() {
 	local patt_addr="127.0.0.1"; [ -n "$4" ] && patt_addr=$4
 	case $1 in
 	smb-share)
-		# output of mount cmd not contains mount.cifs port option value
-		# because we need to port arg ($3)
-		txt=$(env LC_ALL=C $COMMAND_MOUNT_LIST 2>/dev/null)
-		if stringinstring "//" "$2"; then pattern="($2)"
-		elif ! stringinstring "/" "$2"; then pattern="//$patt_addr/($2)"
-		else pattern="($2)"
-		fi
-		[ -n "$(rematchfn "$pattern" "$txt")" ] || return 1
-		if [ -n "$3" ]; then
-			 port_is_listening $3 || rc=1
-		fi
 	;;
 	smb-prn|ipp-prn)
-		txt=$(env LC_ALL=C $COMMAND_LPSTAT -v 2>/dev/null)
-		pattern=".*$2.*//$patt_addr:("
-		[ -n "$3" ] && pattern+="$3)" || pattern+="$num_pattern)"
-		port=$(rematchfn "$pattern" "$txt"); rc=$?
-		[ -n "$port" ] || return $rc
-		port_is_listening "$port" || rc=1
 	;;
 	media-pa)
 		case $2 in
@@ -84,49 +215,8 @@ uservice_configure() {
 	local cmdstr optstr comp rc=0 txt errstr uri
 	case $1 in
 	smb-share)
-		# create/check mountpoint
-		mkdir -p "$6" &>/dev/null
-		[ -d "$6" ] || { nxlog "$lp unable to create dir='$6'"; return 1; }
-		local egroup=$(id -gn "$USER") tmpopts=${SMB_MOUNT_OPTIONS//,/&}
-		local dir_mode=$(getparam "$tmpopts" dir_mode)
-		dir_mode=${dir_mode:(-3)}; [ -n "$dir_mode" ] || dir_mode="700"
-		[ "$(stat -c %a "$6")" != "$dir_mode" ] && chown "0$dir_mode" "$6" &>/dev/null
-		# mount options string
-		optstr="uid=$USER,gid=$egroup,ip=127.0.0.1,port=$3,username=$4"
-		[ -n "$5" ] && optstr+=",password=$5"
-		[ -n "$SMB_MOUNT_OPTIONS" ] && optstr+=",$SMB_MOUNT_OPTIONS"
-		cmdstr="$COMMAND_SUDO $COMMAND_SMBMOUNT $2 $6 -o $optstr"
-		echo "$cmdstr"
 	;;
 	smb-prn|ipp-prn)
-		local model=$(getparam "$6" "model" "" ';')
-		[ "$model" = "NULL" ] && model=""
-		local ppdn=${2#$USER}; ppdn=${ppdn:1}; ppdn=${ppdn%#[0-9]*}
-		local ppdfn="$NX_PPD_DIR/$ppdn.ppd"
-		[ -r "$ppdfn" ] || { # ppd is not found, search for driver in CUPS
-			txt=$($COMMAND_LPINFO -m 2>/dev/null)
-			local str drv=""
-			[ -n "$model" ] && {
-				while read str; do
-					[[ "$str" =~ "$model" ]] && { drv="${str%% *}"; break; }
-				done <<< "$txt"
-			}
-			[ -n "$drv" ] || {
-				while read str; do
-					[[ "$str" =~ "$ppdn" ]] && { drv="${str%% *}"; break; }
-				done <<< "$txt"
-			}
-			[ -n "$drv" ] || {
-				nxlog "$lp '$svc'; CUPS driver for service is not found";
-				return 1; }
-			$COMMAND_PPDCAT cat "$drv" > "$ppdfn" || {
-				nxlog "$lp Can't save $ppdfn"; return 1; }
-		}
-		[ "${1:0:3}" = "smb" ] && \
-			uri="nxsmb://$4:$5@127.0.0.1:$3/cifs/$8" || \
-			uri="ipp://$4:$5@127.0.0.1:$3/printers/$8"
-		cmdstr="$COMMAND_SUDO $COMMAND_LPADMIN -p $svc -P $ppdfn -v $uri -E"
-		echo "$cmdstr"
 	;;
 	media-pa)
 		case $2 in
@@ -172,31 +262,11 @@ uservice_mount() {
 	cmdstr=$(uservice_configure "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8") || return 1
 	case $1 in
 	smb-share)
-		#nxlog "$lp share cmdstr='$cmdstr'" #debug
-		errstr=$($cmdstr 2>&1) || \
-			{ nxlog "$lp $2 ($3) share mount failed: $errstr"
-				rmdir "$6" &>/dev/null; return 1; }
-		nxlog "$lp $2 ($3) share mounted"
 	;;
 	smb-prn|ipp-prn)
-		#nxlog "$lp add printer cmdstr='$cmdstr'" #debug
-		errstr=$($cmdstr 2>&1) || \
-			{ nxlog "$lp $2 ($3) printer installing failed: $errstr"; return 1; }
-		# post-configure
-		local public=$(getparam "$6" "public" "" ';')
-		[ "$public" != "1" ] && {
-		errstr=$($COMMAND_SUDO $COMMAND_LPADMIN -p $svc -u allow:$USER,guest,root 2>&1) || \
-			{ nxlog "$lp $2 ($3) printer set permission failed: $errstr"; }
-		}
-		local defp=$(getparam "$6" "defaultprinter" "" ';')
-		[ "$defp" = "1" ] && {
-		errstr=$($COMMAND_SUDO $COMMAND_LPADMIN -d $svc 2>&1) || \
-			{ nxlog "$lp $2 ($3) printer set to default failed: $errstr"; }
-		}
-		nxlog "$lp $2 ($3) printer installed"
 	;;
 	media-pa)
-       if [ "$ENABLE_AUDIO" != "none" ]; then
+       if [ -n "$ENABLE_AUDIO" -a "$ENABLE_AUDIO" != "none" ]; then
 		nxlog "$FUNCNAME ($$): PULSE: setting Pulseadio"
 		if  ! $COMMAND_PA --check &>/dev/null; then
 			$COMMAND_PA --start --exit-idle-time=-1 &>/dev/null || {
@@ -248,12 +318,13 @@ module-udev-detect module-suspend-on-idle module-console-kit"
                    || $COMMAND_PACTL set-source-mute "tcl_in" 0
 			else nxlog "$lp $2 ($3) can't load $name with rsource=$rsource"
 			fi
-			if [ -n "$ok" -o  -n "$ok2" ]; then 
+			if [ -n "$ok" -o  -n "$ok2" ]; then
 				nxlog "$lp $2 ($3) tunnel modules loaded: $ok $ok2"
 			else rc=1
 			fi
 		;;
 		esac
+       else nxlog "$lp ENABLE_AUDIO is zero or none"
        fi
 	;;
 	esac
@@ -266,37 +337,8 @@ uservice_umount() {
 	local i ok="" step="0.5" ct=4
 	case $1 in
 	smb-share)
-		local mdir=$3 res ffl=""
-		if stringinstring "//" "$2"; then res="$2" # svc
-		elif ! stringinstring "/" "$2"; then res="//127.0.0.1/$2" # sharename
-		else mdir="$2" res="$2" # dir
-		fi
-		#[ -z "$mdir" ] && { # get mount dir directly
-		#	local txt=$(LC_ALL=C mount 2>/dev/null)
-		#	pattern="$res""[[:blank:]]+on[[:blank:]]+([^[:blank:]]+)"
-		#	mdir=$(remathfn "$pattern" "$txt")
-		#	nxlog "$lp share $res: given empty mount dir, loaded mdir='$mdir' "
-		#}
-		for (( i=1; i<=ct; i++ )); do
-			(( i>=ct/2 )) && ffl="-f"
-			errstr+=$($COMMAND_SUDO $COMMAND_SMBUMOUNT $ffl "$res" 2>&1) && \
-				{ ok="1"; break; }
-			sleep $step"s"
-		done
-		[ -n "$ok" ] || \
-			 { nxlog "$lp $res share umount failed: $errstr"; return 1; }
-		[ -n "$mdir" ] && [ -d "$mdir" ] && rmdir "$mdir" &>/dev/null
-		nxlog "$lp $res share umounted"
 	;;
 	smb-prn|ipp-prn)
-		for (( i=1; i<=ct; i++ )); do
-			errstr+=$($COMMAND_SUDO $COMMAND_LPADMIN -x "$2" 2>&1) && \
-				{ ok="1"; break; }
-			sleep $step"s"
-		done
-		[ -n "$ok" ] || \
-			 { nxlog "$lp $2 printer deleting failed: $errstr"; return 1; }
-		nxlog "$lp $2 printer deleted"
 	;;
 	media-pa)
 		case $2 in
@@ -457,8 +499,8 @@ uservice_start() {
 			usvcs_set $PA_CONF "$updvars" $updvals
 			return 0
         }
-		else { 
-            usvcs_set $PA_CONF "status" "off" 
+		else {
+            usvcs_set $PA_CONF "status" "off"
             usvcs_set $PA_CONF "port" "off";
         }
 		fi
