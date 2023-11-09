@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.6.5
+Version: 1.6.6
 Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
@@ -92,8 +92,7 @@ mkdir -p %buildroot%_datadir/misc/
 install -m755 xephyr-run %buildroot%_bindir/
 install -m755 rxsetup %buildroot%_bindir/
 install -m755 rxreport %buildroot%_bindir/
-install -m755 nxpulse.sh %buildroot%_bindir/
-install -m755 nxpulsefuncs %buildroot%_bindir/
+install -m755 nxpulse %buildroot%_bindir/
 #install -Dp -m755 %SOURCE1 %buildroot%_initdir/%name
 install -Dp -m755 data/fixkeyboard %buildroot%_sysconfdir/%name/fixkeyboard
 install -Dp -m755 data/Xsession %buildroot%_sysconfdir/%name/Xsession
@@ -190,8 +189,7 @@ EOF
 %_bindir/rxsetup
 %_bindir/rxreport
 %_bindir/xephyr-run
-%_bindir/nxpulse.sh
-%_bindir/nxpulsefuncs
+%_bindir/nxpulse
 %dir %_libdir/%name/
 %attr(755,root,root) %_libdir/%name/libnxredir.so.0
 %attr(755,root,root) %_libdir/%name/libcupsredir.so.0
@@ -201,6 +199,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Thu Nov 09 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.6-alt1
+- added nxpulse file release
+
 * Fri Nov 03 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.5-alt1
 - PCSC forward hack #eterbug16794
 
