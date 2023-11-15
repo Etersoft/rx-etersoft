@@ -704,7 +704,8 @@ node_start_applications()
 
     # Eterbug #16794
     [ "$ENABLE_SMARTCARD" = "1" ] && \
-        echo "export PCSCLITE_CSOCK_NAME=/tmp/.$USER.pcscd.comm" >> ${NX_HOOKS_EXPORT_FILE}
+        local PCSC_USER="$1"
+        echo "export PCSCLITE_CSOCK_NAME=/tmp/.$PCSC_USER.pcscd.comm" >> ${NX_HOOKS_EXPORT_FILE}
     [ -r "$NX_HOOKS_EXPORT_FILE" ] && . ${NX_HOOKS_EXPORT_FILE}
     #---------------
 
@@ -1986,7 +1987,7 @@ then
 	rootless="1"
 	virtualdesktop="0"
 	nxlog "$FUNCNAME ($$): call 'node_start_applications'" &
-	node_start_applications &
+	node_start_applications "$user" &
 	echo "NX> 596 Application $application started successfully."
 	return
 fi
@@ -2065,7 +2066,7 @@ else
 	    fi
 	done
 	nxlog "$FUNCNAME ($$): call 'node_start_applications'" &
-	node_start_applications &
+	node_start_applications "$user" &
 fi
 
 if which "$NODE_AUTOSTART" >/dev/null 2>&1
