@@ -2,7 +2,7 @@
 %define hooksroot rx-etersoft
 
 Name: rx-etersoft
-Version: 1.6.6
+Version: 1.6.7
 Release: alt1
 
 Summary: RX@Etersoft - NX based application/thin-client server
@@ -199,6 +199,9 @@ EOF
 %attr(2750,root,nx) %_var/lib/%name/db/
 
 %changelog
+* Wed Nov 15 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.7-alt1
+- get pcsc socket name from startsession function
+
 * Thu Nov 09 2023 Konstantin Artyushkin <akv@altlinux.org> 1.6.6-alt1
 - added nxpulse file release
 
