@@ -1763,7 +1763,10 @@ do
 			if [ "$ENABLE_SHARING" = "1" ]
 			then
 				server_get_params $CMD
-				PARAMS=$SERVER_PARAMS
+                CMDLINE=$SERVER_PARAMS
+                mount_encoding="$(getparam encoding)"
+                PARAMS=$(echo "$SERVER_PARAMS" | iconv -f $mount_encoding -t UTF-8)
+
 				( server_nxnode_start --smbmount "$USER" "$PARAMS" >/dev/null 2>&1 ) &
 			else
 				echo_x "Sharing is disabled by server configuration"
